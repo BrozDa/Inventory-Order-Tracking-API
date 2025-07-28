@@ -1,10 +1,9 @@
-﻿using Inventory_Order_Tracking.API.Services.Interfaces;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 
-namespace Inventory_Order_Tracking.API.Services
+namespace Inventory_Order_Tracking.API.Utils
 {
-    public class PasswordService : IPasswordService
+    public class PasswordHasher
     {
         private static string GenerateHash(string password, string salt)
         {
@@ -17,9 +16,9 @@ namespace Inventory_Order_Tracking.API.Services
 
             return hash;
         }
-        public (string hash, string salt) GenerateHashAndSalt(string password)
+        public static (string hash, string salt) GenerateHashAndSalt(string password)
         {
-            if(string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(password))
             {
                 throw new ArgumentNullException("Password null or empty");
             }
@@ -34,7 +33,7 @@ namespace Inventory_Order_Tracking.API.Services
             return (hash, strSalt);
         }
 
-        public bool VerifyPassword(string hash, string password, string salt)
+        public static bool VerifyPassword(string hash, string password, string salt)
         {
             var passwordHash = GenerateHash(password, salt);
             return (hash == passwordHash);
