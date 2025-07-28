@@ -1,7 +1,7 @@
-using Inventory_Order_Tracking.API.Services;
+
 using Inventory_Order_Tracking.API.Utils;
 
-namespace InventoryOrderTracking.API.Tests.Services;
+namespace InventoryOrderTracking.API.Tests.Utils;
 
 public class PasswordHasherTests
 {
@@ -26,7 +26,7 @@ public class PasswordHasherTests
     [Fact]
     public void GenerateHashAndSalt_NullPassword_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => PasswordHasher.GenerateHashAndSalt(null));
+        Assert.Throws<ArgumentNullException>(() => PasswordHasher.GenerateHashAndSalt(null!));
     }
     [Fact]
     public void VerifyPassword_CorrectValues_ReturnsTrue()
