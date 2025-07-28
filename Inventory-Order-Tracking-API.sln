@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D63579B8-A0C1-4548-9FA2-02E9A4500C45}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{881E3DED-66E3-457C-8A49-080265666B2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryOrderTracking.API.Tests", "tests\InventoryOrderTrackingAPI.Tests\InventoryOrderTracking.API.Tests.csproj", "{EA2E96AF-A98C-42D9-A8F1-032155E2FAD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory-Order-Tracking.API", "src\Inventory-Order-Tracking.API\Inventory-Order-Tracking.API.csproj", "{57AF4D75-1EE9-408F-A815-5ACE12A79A39}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA2E96AF-A98C-42D9-A8F1-032155E2FAD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA2E96AF-A98C-42D9-A8F1-032155E2FAD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA2E96AF-A98C-42D9-A8F1-032155E2FAD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA2E96AF-A98C-42D9-A8F1-032155E2FAD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57AF4D75-1EE9-408F-A815-5ACE12A79A39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57AF4D75-1EE9-408F-A815-5ACE12A79A39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57AF4D75-1EE9-408F-A815-5ACE12A79A39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57AF4D75-1EE9-408F-A815-5ACE12A79A39}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA2E96AF-A98C-42D9-A8F1-032155E2FAD5} = {881E3DED-66E3-457C-8A49-080265666B2E}
+		{57AF4D75-1EE9-408F-A815-5ACE12A79A39} = {D63579B8-A0C1-4548-9FA2-02E9A4500C45}
+	EndGlobalSection
+EndGlobal
