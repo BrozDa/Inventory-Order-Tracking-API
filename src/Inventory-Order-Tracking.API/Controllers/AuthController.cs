@@ -1,4 +1,5 @@
 ﻿using Inventory_Order_Tracking.API.Dtos;
+using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace Inventory_Order_Tracking.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(RegisterRequestValidator validator, IAuthService service) : ControllerBase
+    public class AuthController(RegisterRequestValidator validator, IAuthService service, ILogger<AuthController> logger) : ControllerBase
     {
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegistrationDto request)
@@ -18,7 +19,12 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             if (!validationResult.IsValid) 
             {
-                return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage)});
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage);
+                logger.LogInformation("[Register][Validation] Validation failed for {Username}. Encountered Errors: {Errors}",
+                    request.Username,
+                    errors);
+                    
+                return BadRequest(errors);
             }
 
             var serviceResult = await service.Register(request);

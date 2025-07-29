@@ -13,13 +13,14 @@ using System.Text;
 
 namespace Inventory_Order_Tracking.API.Services
 {
-    public class AuthService(InventoryManagementContext context, IConfiguration configuration)
+    public class AuthService(InventoryManagementContext context, IConfiguration configuration, ILogger<IAuthService> logger)
         : IAuthService
     {
         public async Task<AuthServiceResult<string>> Register(UserRegistrationDto request)
         {
             try
             {
+                logger.LogInformation("called");
                 if (await context.Users.AnyAsync(u => u.Username == request.Username))
                 {
                     return AuthServiceResult<string>.BadRequest("User Already Exists");
@@ -43,16 +44,19 @@ namespace Inventory_Order_Tracking.API.Services
             catch (ArgumentNullException ArgNullEx) when (ArgNullEx.ParamName == nameof(request.Password))
             {
                 // should not ever happen - validation is prior calling this 
+                logger.LogError(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
                 return AuthServiceResult<string>.BadRequest("Password cannot be empty");
             }
             catch (DbUpdateException dbEx)
             {
-                //add logging
+                logger.LogError(dbEx, 
+                    "[Registration][DbUpdateException] Database error during processing request for {Username}", request.Username);
                 return AuthServiceResult<string>.InternalServerError("A database error occured during processing the request");
             }
             catch (Exception ex) 
             {
-                //add logging
+                logger.LogError(ex,
+                    "[Registration][Exception] Unexpected error during processing request for {Username}", request.Username);
                 return AuthServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
             }
             
@@ -85,16 +89,19 @@ namespace Inventory_Order_Tracking.API.Services
             catch (ArgumentNullException ArgNullEx) when (ArgNullEx.ParamName == nameof(request.Password))
             {
                 // should not ever happen - validation is prior calling this 
+                logger.LogError(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
                 return AuthServiceResult<string>.BadRequest("Password cannot be empty");
             }
             catch (DbUpdateException dbEx)
             {
-                //add logging
+                logger.LogError(dbEx,
+                    "[Registration][DbUpdateException] Database error during processing request for {Username}", request.Username);
                 return AuthServiceResult<string>.InternalServerError("A database error occured during processing the request");
             }
             catch (Exception ex)
             {
-                //add logging
+                logger.LogError(ex,
+                    "[Registration][Exception] Unexpected error during processing request for {Username}", request.Username);
                 return AuthServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
             }
 
