@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Inventory-Order-Tracking.API\Inventory-Order-Tracking.API.csproj" />
+    <ProjectReference Include="..\..\src\Inventory-Order-Tracking.API\InventoryManagement.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

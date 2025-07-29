@@ -1,6 +1,6 @@
-using Inventory_Order_Tracking.API.Utils;
+using Inventory_Order_Tracking.API.Validators;
 
-namespace InventoryOrderTracking.API.Tests;
+namespace InventoryOrderTracking.API.Tests.Validators;
 
 public class PasswordValidatorTests
 {

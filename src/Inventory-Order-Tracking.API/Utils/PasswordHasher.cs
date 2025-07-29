@@ -35,6 +35,11 @@ namespace Inventory_Order_Tracking.API.Utils
 
         public static bool VerifyPassword(string hash, string password, string salt)
         {
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentNullException("Password null or empty");
+            }
+
             var passwordHash = GenerateHash(password, salt);
             return (hash == passwordHash);
         }

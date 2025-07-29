@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D63579B8-A0C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{881E3DED-66E3-457C-8A49-080265666B2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryOrderTracking.API.Tests", "tests\InventoryOrderTrackingAPI.Tests\InventoryOrderTracking.API.Tests.csproj", "{EA2E96AF-A98C-42D9-A8F1-032155E2FAD5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManagement.API.Tests", "tests\InventoryOrderTrackingAPI.Tests\InventoryManagement.API.Tests.csproj", "{EA2E96AF-A98C-42D9-A8F1-032155E2FAD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory-Order-Tracking.API", "src\Inventory-Order-Tracking.API\Inventory-Order-Tracking.API.csproj", "{57AF4D75-1EE9-408F-A815-5ACE12A79A39}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManagement.API", "src\Inventory-Order-Tracking.API\InventoryManagement.API.csproj", "{57AF4D75-1EE9-408F-A815-5ACE12A79A39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

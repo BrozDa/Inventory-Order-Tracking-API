@@ -1,5 +1,8 @@
 
+using Inventory_Order_Tracking.API.Context;
+using Inventory_Order_Tracking.API.Controllers;
 using Inventory_Order_Tracking.API.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventory_Order_Tracking.API
 {
@@ -8,17 +11,16 @@ namespace Inventory_Order_Tracking.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
+            builder.Services.AddScoped<PasswordValidator>();
+            builder.Services.AddDbContext<InventoryManagementContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            );
 
-            // Configure the HTTP request pipeline.
+            var app = builder.Build();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

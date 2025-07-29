@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Inventory_Order_Tracking.API.Utils
+namespace Inventory_Order_Tracking.API.Validators
 {
     public class PasswordValidator : AbstractValidator<string>
     {
