@@ -29,16 +29,6 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage ?? "Bad request"
             };
         }
-        
-        public static AuthServiceResult<T> NotFound(string? errorMessage)
-        {
-            return new AuthServiceResult<T>
-            {
-                IsSuccessful = false,
-                StatusCode = HttpStatusCode.NotFound,
-                ErrorMessage = errorMessage ?? "Resource not found"
-            };
-        }
         public static AuthServiceResult<T> InternalServerError(string? errorMessage)
         {
             return new AuthServiceResult<T>

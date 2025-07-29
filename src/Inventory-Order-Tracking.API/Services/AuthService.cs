@@ -8,6 +8,7 @@ using Inventory_Order_Tracking.API.Services.Shared;
 using Inventory_Order_Tracking.API.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -17,13 +18,13 @@ namespace Inventory_Order_Tracking.API.Services
     public class AuthService(IUserRepository repository, IConfiguration configuration, ILogger<IAuthService> logger)
         : IAuthService
     {
-        public async Task<AuthServiceResult<string>> Register(UserRegistrationDto request)
+        public async Task<AuthServiceResult<string>> RegisterAsync(UserRegistrationDto request)
         {
             try
             {
-                logger.LogInformation("called");
                 if (await repository.UsernameExistsAsync(request.Username))
                 {
+                    logger.LogWarning("[Registration][UsernameExistsAsync] Duplicate username {Username}", request.Username);
                     return AuthServiceResult<string>.BadRequest("User Already Exists");
                 }
 
@@ -41,10 +42,10 @@ namespace Inventory_Order_Tracking.API.Services
 
                 return AuthServiceResult<string>.Ok("Registration successful. Please verify your email to activate your account.");
             }
-            catch (ArgumentNullException ArgNullEx) when (ArgNullEx.ParamName == nameof(request.Password))
+            catch (ArgumentNullException ArgNullEx)
             {
                 // should not ever happen - validation is prior calling this 
-                logger.LogError(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
+                logger.LogWarning(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
                 return AuthServiceResult<string>.BadRequest("Password cannot be empty");
             }
             catch (DbUpdateException dbEx)
@@ -56,7 +57,7 @@ namespace Inventory_Order_Tracking.API.Services
             catch (Exception ex) 
             {
                 logger.LogError(ex,
-                    "[Registration][Exception] Unexpected error during processing request for {Username}", request.Username);
+                    "[Registration][UnhandledException] Unexpected error during processing request for {Username}", request.Username);
                 return AuthServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
             }
             
@@ -69,15 +70,19 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (user is null)
                 {
-                    return AuthServiceResult<string>.BadRequest("Username or password invalid");
+                    logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
+                    return AuthServiceResult<string>.BadRequest("Invalid username or password");
                 }
-                bool isAuthenticated = PasswordHasher.VerifyPassword(user.PasswordHash, request.Password, user.PasswordSalt);
-
-                if (!isAuthenticated)
-                    return AuthServiceResult<string>.BadRequest("Username or password invalid");
+                if(!PasswordHasher.VerifyPassword(user.PasswordHash, request.Password, user.PasswordSalt))
+                { 
+                    logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
+                    return AuthServiceResult<string>.BadRequest("Invalid username or password");
+                }
+                    
 
                 if (!user.IsVerified)
                 {
+                    logger.LogWarning("[LoginAsync][Unverified] Unverified user login: {Username}", request.Username);
                     return AuthServiceResult<string>.BadRequest("User not verified");
                 }
 
@@ -85,22 +90,16 @@ namespace Inventory_Order_Tracking.API.Services
 
                 return AuthServiceResult<string>.Ok(token);
             }
-            catch (ArgumentNullException ArgNullEx) when (ArgNullEx.ParamName == nameof(request.Password))
+            catch (ArgumentNullException ArgNullEx)
             {
                 // should not ever happen - validation is prior calling this 
-                logger.LogError(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
+                logger.LogWarning(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
                 return AuthServiceResult<string>.BadRequest("Password cannot be empty");
-            }
-            catch (DbUpdateException dbEx)
-            {
-                logger.LogError(dbEx,
-                    "[Registration][DbUpdateException] Database error during processing request for {Username}", request.Username);
-                return AuthServiceResult<string>.InternalServerError("A database error occured during processing the request");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex,
-                    "[Registration][Exception] Unexpected error during processing request for {Username}", request.Username);
+                    "[LoginAsync][Exception] Unexpected error during processing request for {Username}", request.Username);
                 return AuthServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
             }
 

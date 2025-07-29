@@ -26,7 +26,7 @@ namespace Inventory_Order_Tracking.API.Controllers
                 return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage) });
             }
 
-            var serviceResult = await service.Register(request);
+            var serviceResult = await service.RegisterAsync(request);
 
             return serviceResult.IsSuccessful 
                 ? Ok(serviceResult.Data)
@@ -40,9 +40,6 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             if (!serviceResult.IsSuccessful) 
             {
-                logger.LogWarning("[Login] Login failed for {Username}. Encountered Error: {Error}",
-                    request.Username,
-                    serviceResult.ErrorMessage);
                 return StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
             }
 
