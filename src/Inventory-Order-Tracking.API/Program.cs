@@ -1,10 +1,10 @@
 
 using Inventory_Order_Tracking.API.Context;
-using Inventory_Order_Tracking.API.Controllers;
+using Inventory_Order_Tracking.API.Repository;
+using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Utils;
-using Inventory_Order_Tracking.API.Validators;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -36,6 +36,7 @@ namespace Inventory_Order_Tracking.API
                 
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<RegisterRequestValidator>();
+                builder.Services.AddScoped<IUserRepository, UserRepository>();
                 builder.Services.AddDbContext<InventoryManagementContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );

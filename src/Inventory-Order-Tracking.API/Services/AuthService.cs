@@ -2,6 +2,7 @@
 using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Models;
+using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Inventory_Order_Tracking.API.Utils;
@@ -13,7 +14,7 @@ using System.Text;
 
 namespace Inventory_Order_Tracking.API.Services
 {
-    public class AuthService(InventoryManagementContext context, IConfiguration configuration, ILogger<IAuthService> logger)
+    public class AuthService(IUserRepository repository, IConfiguration configuration, ILogger<IAuthService> logger)
         : IAuthService
     {
         public async Task<AuthServiceResult<string>> Register(UserRegistrationDto request)
@@ -21,14 +22,14 @@ namespace Inventory_Order_Tracking.API.Services
             try
             {
                 logger.LogInformation("called");
-                if (await context.Users.AnyAsync(u => u.Username == request.Username))
+                if (await repository.UsernameExistsAsync(request.Username))
                 {
                     return AuthServiceResult<string>.BadRequest("User Already Exists");
                 }
 
                 var (hash, salt) = PasswordHasher.GenerateHashAndSalt(request.Password);
 
-                await context.AddAsync(new User
+                await repository.AddAsync(new User
                 {
                     Username = request.Username,
                     PasswordHash = hash,
@@ -37,7 +38,6 @@ namespace Inventory_Order_Tracking.API.Services
                     Role = UserRoles.Admin,
                     IsVerified = false,
                 });
-                await context.SaveChangesAsync();
 
                 return AuthServiceResult<string>.Ok("Registration successful. Please verify your email to activate your account.");
             }
@@ -65,8 +65,7 @@ namespace Inventory_Order_Tracking.API.Services
         {
             try
             {
-                var user = await context.Users.FirstOrDefaultAsync(
-                x => x.Username == request.Username);
+                var user = await repository.GetByUsernameAsync(request.Username);
 
                 if (user is null)
                 {

@@ -19,12 +19,11 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             if (!validationResult.IsValid) 
             {
-                var errors = validationResult.Errors.Select(e => e.ErrorMessage);
-                logger.LogInformation("[Register][Validation] Validation failed for {Username}. Encountered Errors: {Errors}",
+                logger.LogWarning("[Register][Validation] Validation failed for {Username}. Encountered Errors: {Errors}",
                     request.Username,
-                    errors);
+                    string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)));
                     
-                return BadRequest(errors);
+                return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage) });
             }
 
             var serviceResult = await service.Register(request);
@@ -39,9 +38,15 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await service.LoginAsync(request);
 
-            return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            if (!serviceResult.IsSuccessful) 
+            {
+                logger.LogWarning("[Login] Login failed for {Username}. Encountered Error: {Error}",
+                    request.Username,
+                    serviceResult.ErrorMessage);
+                return StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            }
+
+            return Ok(serviceResult.Data);
         }
         
     }
