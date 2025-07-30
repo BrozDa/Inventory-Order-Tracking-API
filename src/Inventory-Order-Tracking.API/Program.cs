@@ -30,8 +30,6 @@ namespace Inventory_Order_Tracking.API
                     outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .MinimumLevel.Information()
                 .CreateLogger();
-
-            var jwtSettingValidator = new JwtSettingValidator();
            
             try
             {
@@ -46,15 +44,10 @@ namespace Inventory_Order_Tracking.API
 
                 var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
 
-                Console.WriteLine("1");
-                Console.WriteLine(jwtSettings is not null);
-                Console.WriteLine("2");
                 if (jwtSettings is null)
                     throw new ArgumentNullException("Missing JwtSettings in Appconfig.js");
 
-                
                 var validator = new JwtSettingValidator();
-
 
                 var result = validator.Validate(jwtSettings);
                 

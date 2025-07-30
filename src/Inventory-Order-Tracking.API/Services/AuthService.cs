@@ -44,10 +44,8 @@ namespace Inventory_Order_Tracking.API.Services
 
                 return AuthServiceResult<string>.Ok("Registration successful. Please verify your email to activate your account.");
             }
-            catch (ArgumentNullException ArgNullEx)
+            catch(ArgumentNullException)
             {
-                // should not ever happen - validation is prior calling this 
-                logger.LogWarning(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
                 return AuthServiceResult<string>.BadRequest("Password cannot be empty");
             }
             catch (DbUpdateException dbEx)
@@ -90,12 +88,6 @@ namespace Inventory_Order_Tracking.API.Services
 
                 return AuthServiceResult<TokenResponseDto>.Ok(tokenResponse);
 
-            }
-            catch (ArgumentNullException ArgNullEx)
-            {
-                // should not ever happen - validation is prior calling this 
-                logger.LogWarning(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
-                return AuthServiceResult<TokenResponseDto>.BadRequest("Password cannot be empty");
             }
             catch (Exception ex)
             {

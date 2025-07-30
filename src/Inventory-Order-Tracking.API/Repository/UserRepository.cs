@@ -2,6 +2,7 @@
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Inventory_Order_Tracking.API.Repository
 {
@@ -11,6 +12,7 @@ namespace Inventory_Order_Tracking.API.Repository
         {
             return await context.Users.AnyAsync(u => u.Username == username);
         }
+        [ExcludeFromCodeCoverage]
         public async Task AddAsync(User user)
         {
             await context.Users.AddAsync(user);
@@ -25,6 +27,7 @@ namespace Inventory_Order_Tracking.API.Repository
         {
             return await context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
+        [ExcludeFromCodeCoverage]
         public async Task SaveChangesAsync()
         {
             await context.SaveChangesAsync();

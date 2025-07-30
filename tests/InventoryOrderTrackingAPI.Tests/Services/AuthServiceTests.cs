@@ -17,14 +17,14 @@ public class AuthServiceTests
     private readonly AuthService _sut;
     private readonly JwtSettings _jwtSettings = new()
     {
-        Token = "TokenKey",
+        Token = "ThisIsMySuperSecretApiTokenTwiceThisIsMySuperSecretApiToken",
         Audience = "InventoryOrderTracking.API.Tests",
         Issuer = "InventoryOrderTracking.API.Tests",
         TokenExpirationDays = 7,
         RefreshTokenExpirationDays = 1
     };
     private readonly Mock<IUserRepository> _userRepoMock = new Mock<IUserRepository>();
-    private readonly Mock<ILogger<IAuthService>> _loggerMock = new Mock<ILogger<IAuthService>>();
+    private readonly Mock<ILogger<AuthService>> _loggerMock = new Mock<ILogger<AuthService>>();
 
     public AuthServiceTests()
     {
@@ -373,5 +373,119 @@ public class AuthServiceTests
             It.IsAny<Exception>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
+    }
+
+    [Fact]
+    public async Task RefreshTokens_InvalidUserId_ReturnUnauthorized() {
+
+        var userId = Guid.NewGuid();
+        var expiredToken = "ThisIsExpiredRefreshToken";
+        var request = new RefreshTokenRequestDto
+        {
+            UserId = userId,
+            ExpiredRefreshToken = expiredToken
+        };
+
+        _userRepoMock.Setup(x => x.GetByIdAsync(request.UserId)).ReturnsAsync(default(User));
+
+        var result = await _sut.RefreshTokens(request);
+
+        Assert.False(result.IsSuccessful);
+        Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+
+    }
+
+    [Fact]
+    public async Task RefreshTokens_RefreshTokensDontMatch_ReturnsUnauthorized() 
+    {
+        var userId = Guid.NewGuid();
+        var expiredToken = "ThisIsExpiredRefreshToken";
+        var request = new RefreshTokenRequestDto
+        {
+            UserId = userId,
+            ExpiredRefreshToken = expiredToken
+        };
+
+        _userRepoMock
+            .Setup(x => x.GetByIdAsync(request.UserId))
+            .ReturnsAsync(new User
+            {
+                Id = userId,
+                Role = "User",
+                Username = "Test user",
+                PasswordHash = "!@##%$%NotCorrect",
+                PasswordSalt = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                Email = "test@email.com",
+                IsVerified = true,
+                RefreshToken = "DifferentExpiredToken",
+                RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(15),
+            });
+
+        var result = await _sut.RefreshTokens(request);
+
+        Assert.False(result.IsSuccessful);
+        Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+    }
+    [Fact]
+    public async Task RefreshTokens_RefreshTokenExpired_ReturnsUnauthorized() 
+    {
+        var userId = Guid.NewGuid();
+        var expiredToken = "ThisIsExpiredRefreshToken";
+        var request = new RefreshTokenRequestDto
+        {
+            UserId = userId,
+            ExpiredRefreshToken = expiredToken
+        };
+
+        _userRepoMock
+            .Setup(x => x.GetByIdAsync(request.UserId))
+            .ReturnsAsync(new User
+            {
+                Id = userId,
+                Role = "User",
+                Username = "Test user",
+                PasswordHash = "!@##%$%NotCorrect",
+                PasswordSalt = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                Email = "test@email.com",
+                IsVerified = true,
+                RefreshToken = "expiredToken",
+                RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(-15),
+            });
+
+        var result = await _sut.RefreshTokens(request);
+
+        Assert.False(result.IsSuccessful);
+        Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+    }
+    [Fact]
+    public async Task RefreshTokens_ValidInput_ReturnsTokenResponseDto()
+    {
+        var userId = Guid.NewGuid();
+        var expiredToken = "expiredToken";
+        var request = new RefreshTokenRequestDto
+        {
+            UserId = userId,
+            ExpiredRefreshToken = expiredToken
+        };
+
+        _userRepoMock
+            .Setup(x => x.GetByIdAsync(request.UserId))
+            .ReturnsAsync(new User
+            {
+                Id = userId,
+                Role = "User",
+                Username = "Test user",
+                PasswordHash = "!@##%$%Correct",
+                PasswordSalt = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                Email = "test@email.com",
+                IsVerified = true,
+                RefreshToken = "expiredToken",
+                RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(1),
+            });
+
+        var result = await _sut.RefreshTokens(request);
+
+        Assert.True(result.IsSuccessful);
+        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
     }
 }
