@@ -1,13 +1,13 @@
 ﻿using Inventory_Order_Tracking.API.Configuration;
 using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
+using Inventory_Order_Tracking.API.Migrations;
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Inventory_Order_Tracking.API.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,7 +16,7 @@ using System.Text;
 
 namespace Inventory_Order_Tracking.API.Services
 {                                                           
-    public class AuthService(IUserRepository repository, JwtSettings jwtSettings, ILogger<IAuthService> logger)
+    public class AuthService(IUserRepository repository, JwtSettings jwtSettings, ILogger<AuthService> logger)
         : IAuthService
     {
         //NOTE: jwtSettings is validated on startup in program.cs - right after build
@@ -75,25 +75,18 @@ namespace Inventory_Order_Tracking.API.Services
                     logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
                     return AuthServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
-                if(!PasswordHasher.VerifyPassword(user.PasswordHash, request.Password, user.PasswordSalt))
-                { 
+                if (!PasswordHasher.VerifyPassword(user.PasswordHash, request.Password, user.PasswordSalt))
+                {
                     logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
                     return AuthServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
-                    
-
                 if (!user.IsVerified)
                 {
                     logger.LogWarning("[LoginAsync][Unverified] Unverified user login: {Username}", request.Username);
                     return AuthServiceResult<TokenResponseDto>.BadRequest("User not verified");
                 }
 
-
-                var tokenResponse = new TokenResponseDto
-                {
-                    AccessToken = CreateToken(user),
-                    RefreshToken = await GenerateAndStoreRefreshToken(user)
-                };
+                TokenResponseDto tokenResponse = await GenerateTokenResponse(user);
 
                 return AuthServiceResult<TokenResponseDto>.Ok(tokenResponse);
 
@@ -110,6 +103,23 @@ namespace Inventory_Order_Tracking.API.Services
                     "[LoginAsync][Exception] Unexpected error during processing request for {Username}", request.Username);
                 return AuthServiceResult<TokenResponseDto>.InternalServerError("An Unexpected error occured during processing the request");
             }
+
+        }
+
+        
+
+        public async Task<AuthServiceResult<TokenResponseDto>> RefreshTokens(RefreshTokenRequestDto request)
+        {
+            var user = await ValidateRefreshToken(request.UserId, request.ExpiredRefreshToken);
+
+            if (user is null)
+            {
+                return AuthServiceResult<TokenResponseDto>.Unauthorized();
+            }
+
+            var tokenResponse = await GenerateTokenResponse(user);
+
+            return AuthServiceResult<TokenResponseDto>.Ok(tokenResponse);
 
         }
         private string CreateToken(User user)
@@ -165,6 +175,25 @@ namespace Inventory_Order_Tracking.API.Services
 
             return refreshToken;
 
+        }
+        private async Task<TokenResponseDto> GenerateTokenResponse(User user)
+        {
+            return new TokenResponseDto
+            {
+                AccessToken = CreateToken(user),
+                RefreshToken = await GenerateAndStoreRefreshToken(user)
+            };
+        }
+        private async Task<User?> ValidateRefreshToken(Guid userId, string refreshToken)
+        {
+            var user = await repository.GetByIdAsync(userId);
+            if (user is null
+                || user.RefreshToken != refreshToken
+                || user.RefreshTokenExpirationTime < DateTime.UtcNow)
+            {
+                return null;
+            }
+            return user;
         }
 
     }

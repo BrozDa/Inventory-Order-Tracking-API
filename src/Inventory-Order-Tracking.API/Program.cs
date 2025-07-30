@@ -54,6 +54,8 @@ namespace Inventory_Order_Tracking.API
 
                 
                 var validator = new JwtSettingValidator();
+
+
                 var result = validator.Validate(jwtSettings);
                 
                 if (!result.IsValid)

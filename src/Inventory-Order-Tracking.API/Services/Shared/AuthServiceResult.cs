@@ -38,5 +38,15 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage ?? "Resource not found"
             };
         }
+        public static AuthServiceResult<T> Unauthorized() 
+        {
+            return new AuthServiceResult<T>
+            {
+                IsSuccessful = false,
+                StatusCode = HttpStatusCode.Unauthorized,
+                ErrorMessage = "Unauthorized"
+            };
+
+        }
     }
 }
