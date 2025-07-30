@@ -1,4 +1,4 @@
-﻿using Inventory_Order_Tracking.API.Context;
+﻿using Inventory_Order_Tracking.API.Configuration;
 using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Models;
@@ -7,17 +7,19 @@ using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Inventory_Order_Tracking.API.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Data.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Inventory_Order_Tracking.API.Services
-{
-    public class AuthService(IUserRepository repository, IConfiguration configuration, ILogger<IAuthService> logger)
+{                                                           
+    public class AuthService(IUserRepository repository, JwtSettings jwtSettings, ILogger<IAuthService> logger)
         : IAuthService
     {
+        //NOTE: jwtSettings is validated on startup in program.cs - right after build
         public async Task<AuthServiceResult<string>> RegisterAsync(UserRegistrationDto request)
         {
             try
@@ -37,7 +39,7 @@ namespace Inventory_Order_Tracking.API.Services
                     PasswordSalt = salt,
                     Email = request.Email,
                     Role = UserRoles.Admin,
-                    IsVerified = false,
+                    IsVerified = true,
                 });
 
                 return AuthServiceResult<string>.Ok("Registration successful. Please verify your email to activate your account.");
@@ -62,7 +64,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             
         }
-        public async Task<AuthServiceResult<string>> LoginAsync(UserLoginDto request)
+        public async Task<AuthServiceResult<TokenResponseDto>> LoginAsync(UserLoginDto request)
         {
             try
             {
@@ -71,62 +73,98 @@ namespace Inventory_Order_Tracking.API.Services
                 if (user is null)
                 {
                     logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
-                    return AuthServiceResult<string>.BadRequest("Invalid username or password");
+                    return AuthServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
                 if(!PasswordHasher.VerifyPassword(user.PasswordHash, request.Password, user.PasswordSalt))
                 { 
                     logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
-                    return AuthServiceResult<string>.BadRequest("Invalid username or password");
+                    return AuthServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
                     
 
                 if (!user.IsVerified)
                 {
                     logger.LogWarning("[LoginAsync][Unverified] Unverified user login: {Username}", request.Username);
-                    return AuthServiceResult<string>.BadRequest("User not verified");
+                    return AuthServiceResult<TokenResponseDto>.BadRequest("User not verified");
                 }
 
-                string token = CreateToken(user);
 
-                return AuthServiceResult<string>.Ok(token);
+                var tokenResponse = new TokenResponseDto
+                {
+                    AccessToken = CreateToken(user),
+                    RefreshToken = await GenerateAndStoreRefreshToken(user)
+                };
+
+                return AuthServiceResult<TokenResponseDto>.Ok(tokenResponse);
+
             }
             catch (ArgumentNullException ArgNullEx)
             {
                 // should not ever happen - validation is prior calling this 
                 logger.LogWarning(ArgNullEx, "[Registration][ArgumentNullException] Empty password for {Username}", request.Username);
-                return AuthServiceResult<string>.BadRequest("Password cannot be empty");
+                return AuthServiceResult<TokenResponseDto>.BadRequest("Password cannot be empty");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex,
                     "[LoginAsync][Exception] Unexpected error during processing request for {Username}", request.Username);
-                return AuthServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
+                return AuthServiceResult<TokenResponseDto>.InternalServerError("An Unexpected error occured during processing the request");
             }
 
         }
-
-        
         private string CreateToken(User user)
         {
+            if(user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Role))
+                throw new ArgumentException("User must have valid username and role.");
+
+
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
             };
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(configuration.GetValue<string>("AppSettings:Token")!));
+                Encoding.UTF8.GetBytes(jwtSettings.Token));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new JwtSecurityToken(
-                issuer: configuration.GetValue<string>("AppSettings:Issuer"),
-                audience: configuration.GetValue<string>("AppSettings:Audience"),
+                issuer: jwtSettings.Issuer,
+                audience: jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
+                expires: DateTime.UtcNow.AddDays(jwtSettings.TokenExpirationDays),
                 signingCredentials: creds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        }
+        private string GenerateRefreshToken()
+        {
+            var refreshToken = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(refreshToken);
+
+            return Convert.ToBase64String(refreshToken);
+        }
+        private async Task<string> GenerateAndStoreRefreshToken(User user)
+        {
+            var refreshToken = GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+
+            var refreshTokenExpirationDays = jwtSettings.TokenExpirationDays;
+
+            user.RefreshTokenExpirationTime = DateTime
+                .UtcNow
+                .AddDays(jwtSettings.RefreshTokenExpirationDays);
+
+            await repository.SaveChangesAsync();
+
+            return refreshToken;
+
         }
 
     }

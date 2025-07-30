@@ -1,30 +1,34 @@
-using Azure.Core;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Inventory_Order_Tracking.API.Dtos;
 using Moq;
-using Serilog;
 using System.Net;
-using Inventory_Order_Tracking.API.Utils;
 using Inventory_Order_Tracking.API.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
+using Microsoft.Extensions.Options;
+using Inventory_Order_Tracking.API.Configuration;
 
 namespace InventoryOrderTracking.API.Tests;
 
 public class AuthServiceTests
 {
     private readonly AuthService _sut;
+    private readonly JwtSettings _jwtSettings = new()
+    {
+        Token = "TokenKey",
+        Audience = "InventoryOrderTracking.API.Tests",
+        Issuer = "InventoryOrderTracking.API.Tests",
+        TokenExpirationDays = 7,
+        RefreshTokenExpirationDays = 1
+    };
     private readonly Mock<IUserRepository> _userRepoMock = new Mock<IUserRepository>();
-    private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
     private readonly Mock<ILogger<IAuthService>> _loggerMock = new Mock<ILogger<IAuthService>>();
 
     public AuthServiceTests()
     {
-        _sut = new AuthService(_userRepoMock.Object, _configurationMock.Object, _loggerMock.Object);
+        _sut = new AuthService(_userRepoMock.Object, _jwtSettings, _loggerMock.Object);
     }
     [Fact]
     public async Task Register_UsernameAlreadyExists_ReturnsBadRequestAndLogsWarning()

@@ -75,7 +75,7 @@ public class AuthControllerTests
 
         _authServiceMock.Setup(
             s => s.LoginAsync(request))
-            .ReturnsAsync(AuthServiceResult<string>.BadRequest("Invalid Login"));
+            .ReturnsAsync(AuthServiceResult<TokenResponseDto>.BadRequest("Invalid Login"));
         //act
         var result = await _sut.Login(request);
         //assert
@@ -94,7 +94,13 @@ public class AuthControllerTests
 
         _authServiceMock.Setup(
             s => s.LoginAsync(request))
-            .ReturnsAsync(AuthServiceResult<string>.Ok("Token"));
+            .ReturnsAsync(AuthServiceResult<TokenResponseDto>
+            .Ok(new TokenResponseDto 
+                { 
+                    AccessToken="Sample Token",
+                    RefreshToken="Refresh token"
+                }
+            ));
         //act
         var result = await _sut.Login(request);
         //assert

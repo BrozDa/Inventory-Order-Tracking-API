@@ -8,6 +8,6 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
     {
         Task<AuthServiceResult<string>> RegisterAsync(UserRegistrationDto request);
 
-        Task<AuthServiceResult<string>> LoginAsync(UserLoginDto request);
+        Task<AuthServiceResult<TokenResponseDto>> LoginAsync(UserLoginDto request);
     }
 }

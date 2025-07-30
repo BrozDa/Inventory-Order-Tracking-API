@@ -9,6 +9,8 @@
         public string PasswordSalt {  get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public bool IsVerified { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpirationTime { get; set; }
         
     }
 }

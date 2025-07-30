@@ -13,13 +13,17 @@ namespace Inventory_Order_Tracking.API.Repository
         }
         public async Task AddAsync(User user)
         {
-            await context.AddAsync(user);
+            await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
 
         }
         public async Task<User?> GetByUsernameAsync(string username)
         {
             return await context.Users.FirstOrDefaultAsync(x => x.Username == username);
+        }
+        public async Task SaveChangesAsync()
+        {
+            await context.SaveChangesAsync();
         }
     }
 }
