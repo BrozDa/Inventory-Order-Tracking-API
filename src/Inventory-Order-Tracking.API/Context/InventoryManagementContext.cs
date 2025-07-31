@@ -9,8 +9,14 @@ namespace Inventory_Order_Tracking.API.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasKey(x => x.Id);
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.Id);
+
+                entity.HasIndex(u => u.Username).IsUnique();
+
+                entity.HasIndex(u => u.Email).IsUnique();
+            });
         }
     }
    

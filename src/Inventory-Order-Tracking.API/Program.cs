@@ -11,10 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
-using FluentValidation;
-using FluentValidation.Results;
 using Inventory_Order_Tracking.API.Validators;
-using Microsoft.Extensions.Options;
 
 namespace Inventory_Order_Tracking.API
 {
@@ -40,6 +37,7 @@ namespace Inventory_Order_Tracking.API
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 
+                /////////////////////////////////////////////////////////////////////////////////// VALIDATE JWT SETTINGS
                 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 
                 var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
@@ -58,9 +56,36 @@ namespace Inventory_Order_Tracking.API
                     throw new ArgumentException(errors);
                 }
 
-                Console.WriteLine("2");
-                builder.Services.AddSingleton(jwtSettings);
+                /////////////////////////////////////////////////////////////////////////////////// VALIDATE EMAIL SETTINGS
+                var emailSettingsSection = builder.Configuration.GetSection("EmailSettings");
 
+                var emailSettings = emailSettingsSection.Get<EmailSettings>();
+
+                if (emailSettings is null)
+                    throw new ArgumentNullException("Missing EmailSettings in Appconfig.js");
+
+
+                var emailSettingsValidator = new EmailSettingsValidator();
+
+                var emailSettingsResult = validator.Validate(jwtSettings);
+
+                if (!result.IsValid)
+                {
+                    var errors = string.Join("; ", result.Errors.Select(e => e.ErrorMessage));
+                    throw new ArgumentException(errors);
+                }
+
+                /////////////////////////////////////////////////////////////////////////////////// REGISTER BOTH SETTINGS
+                builder.Services.AddSingleton(jwtSettings);
+                builder.Services.AddSingleton(emailSettings);
+
+
+                /////////////////////////////////////////////////////////////////////////////////////// Rest of services
+                builder.Services
+                    .AddFluentEmail(emailSettings.SenderEmail, emailSettings.Sender)
+                    .AddSmtpSender(emailSettings.Host,  emailSettings.Port);
+
+                builder.Services.AddScoped<IEmailValidatingService, EmailValidatingService>();
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<RegisterRequestValidator>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
