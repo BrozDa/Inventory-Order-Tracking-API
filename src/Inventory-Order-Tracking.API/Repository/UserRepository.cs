@@ -12,11 +12,12 @@ namespace Inventory_Order_Tracking.API.Repository
         {
             return await context.Users.AnyAsync(u => u.Username == username);
         }
-        [ExcludeFromCodeCoverage]
-        public async Task AddAsync(User user)
+        public async Task<User> AddAsync(User user)
         {
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
+
+            return user;
 
         }
         public async Task<User?> GetByUsernameAsync(string username)
@@ -27,7 +28,6 @@ namespace Inventory_Order_Tracking.API.Repository
         {
             return await context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
-        [ExcludeFromCodeCoverage]
         public async Task SaveChangesAsync()
         {
             await context.SaveChangesAsync();

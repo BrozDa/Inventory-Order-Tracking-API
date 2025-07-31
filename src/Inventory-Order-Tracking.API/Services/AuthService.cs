@@ -16,7 +16,7 @@ using System.Text;
 
 namespace Inventory_Order_Tracking.API.Services
 {                                                           
-    public class AuthService(IUserRepository repository, IEmailValidatingService emailService, ILogger<AuthService> logger, JwtSettings jwtSettings)
+    public class AuthService(IUserRepository repository, IEmailVerificationService emailService, ILogger<AuthService> logger, JwtSettings jwtSettings)
         : IAuthService
     {
         //NOTE: jwtSettings is validated on startup in program.cs - right after build
@@ -32,7 +32,7 @@ namespace Inventory_Order_Tracking.API.Services
 
                 var (hash, salt) = PasswordHasher.GenerateHashAndSalt(request.Password);
 
-                await repository.AddAsync(new User
+                var user = await repository.AddAsync(new User
                 {
                     Username = request.Username,
                     PasswordHash = hash,
@@ -42,15 +42,7 @@ namespace Inventory_Order_Tracking.API.Services
                     IsVerified = false,
                 });
 
-                await emailService.SendVerificationEmail(new User
-                {
-                    Username = request.Username,
-                    PasswordHash = hash,
-                    PasswordSalt = salt,
-                    Email = request.Email,
-                    Role = UserRoles.Admin,
-                    IsVerified = false,
-                });
+                await emailService.SendVerificationEmail(user);
 
                 return AuthServiceResult<string>.Ok("Registration successful. Please verify your email to activate your account.");
             }

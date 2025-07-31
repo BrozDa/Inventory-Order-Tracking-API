@@ -85,10 +85,12 @@ namespace Inventory_Order_Tracking.API
                     .AddFluentEmail(emailSettings.SenderEmail, emailSettings.Sender)
                     .AddSmtpSender(emailSettings.Host,  emailSettings.Port);
 
-                builder.Services.AddScoped<IEmailValidatingService, EmailValidatingService>();
+                builder.Services.AddHttpContextAccessor();
+                builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<RegisterRequestValidator>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
+                builder.Services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();  
                 builder.Services.AddDbContext<InventoryManagementContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
