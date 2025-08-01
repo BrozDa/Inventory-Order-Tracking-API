@@ -17,7 +17,7 @@ namespace Inventory_Order_Tracking.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
 
             Log.Logger = new LoggerConfiguration()
@@ -117,6 +117,10 @@ namespace Inventory_Order_Tracking.API
 
                 var app = builder.Build();
                 
+                using var scope = app.Services.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<InventoryManagementContext>();
+                await context.Database.MigrateAsync();
+                await context.SeedAdminUserAsync();
 
                 if (app.Environment.IsDevelopment())
                 {

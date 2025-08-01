@@ -1,4 +1,6 @@
-﻿using Inventory_Order_Tracking.API.Models;
+﻿using Inventory_Order_Tracking.API.Domain;
+using Inventory_Order_Tracking.API.Models;
+using Inventory_Order_Tracking.API.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventory_Order_Tracking.API.Context
@@ -24,6 +26,24 @@ namespace Inventory_Order_Tracking.API.Context
                 entity.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId);
             });
         }
+        public async Task SeedAdminUserAsync()
+        {
+            var (hash, salt) = PasswordHasher.GenerateHashAndSalt("admin");
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Role = UserRoles.Admin,
+                Username = "admin",
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                Email = "admin@admin.com",
+                IsVerified = true,
+            };
+            await Users.AddAsync(user);
+            await SaveChangesAsync();
+        }
+
+    
     }
    
 }
