@@ -20,9 +20,11 @@ namespace Inventory_Order_Tracking.API.Services
             try
             {
                 var token = await GenerateAndStoreToken(user.Id);
-                var link = GenerateVerificationLink(token);
+                if (token is null)  //logging is in GenerateAndStoreToken
+                    return EmailVerificationServiceResult.InternalServerError("Could not store email verification token.");
 
-                if (link is null)
+                var link = GenerateVerificationLink(token);
+                if (link is null) //logging is in GenerateVerificationLink
                     return EmailVerificationServiceResult.InternalServerError("Failed to generate verification link");
 
                 var sendResult = await emailService
@@ -112,7 +114,7 @@ namespace Inventory_Order_Tracking.API.Services
 
             return uri;
         }
-        private async Task<EmailVerificationToken> GenerateAndStoreToken(Guid userId)
+        private async Task<EmailVerificationToken?> GenerateAndStoreToken(Guid userId)
         {
             try
             {
@@ -122,12 +124,13 @@ namespace Inventory_Order_Tracking.API.Services
                     CreatedOn = DateTime.UtcNow,
                     ExpiresOn = DateTime.UtcNow.AddDays(1)
                 });
+
                 return token;
             }
             catch (Exception ex) 
             {
                 logger.LogError(ex, "Error when storing verification token for user {UserId}", userId);
-                throw new ApplicationException("Could not store email verification token.");
+                return null;
             }
             
         }

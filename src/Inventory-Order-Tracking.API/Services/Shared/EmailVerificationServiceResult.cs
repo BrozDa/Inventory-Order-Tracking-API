@@ -20,7 +20,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
         {
             return new EmailVerificationServiceResult
             {
-                IsSuccessful = true,
+                IsSuccessful = false,
                 StatusCode = HttpStatusCode.Unauthorized,
                 ErrorMessage = errorMessage
             };

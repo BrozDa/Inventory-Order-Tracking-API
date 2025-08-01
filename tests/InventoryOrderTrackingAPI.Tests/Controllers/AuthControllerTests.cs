@@ -15,12 +15,12 @@ public class AuthControllerTests
 {
     private readonly AuthController _sut;
     private readonly RegisterRequestValidator _validator = new();
-    private readonly Mock<IAuthService> _authServiceMock = new Mock<IAuthService>();
-    private readonly Mock<ILogger<AuthController>> _loggerMock = new Mock<ILogger<AuthController>>();
-
+    private readonly Mock<IAuthService> _authServiceMock = new();
+    private readonly Mock<ILogger<AuthController>> _loggerMock = new();
+    private readonly Mock<IEmailVerificationService> _emailVerificationMock = new();
     public AuthControllerTests()
     {
-        _sut = new AuthController(_validator, _authServiceMock.Object, _loggerMock.Object);
+        _sut = new AuthController(_validator, _authServiceMock.Object, _emailVerificationMock.Object, _loggerMock.Object);
     }
 
     [Fact]

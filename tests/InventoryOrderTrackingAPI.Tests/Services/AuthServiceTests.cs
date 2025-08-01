@@ -25,10 +25,11 @@ public class AuthServiceTests
     };
     private readonly Mock<IUserRepository> _userRepoMock = new Mock<IUserRepository>();
     private readonly Mock<ILogger<AuthService>> _loggerMock = new Mock<ILogger<AuthService>>();
+    private readonly Mock<IEmailVerificationService> _emailServiceMock = new Mock<IEmailVerificationService>();
 
     public AuthServiceTests()
     {
-        _sut = new AuthService(_userRepoMock.Object, _jwtSettings, _loggerMock.Object);
+        _sut = new AuthService(_userRepoMock.Object, _emailServiceMock.Object,  _loggerMock.Object, _jwtSettings);
     }
     [Fact]
     public async Task Register_UsernameAlreadyExists_ReturnsBadRequestAndLogsWarning()
@@ -152,7 +153,7 @@ public class AuthServiceTests
             Email = "Test@email.com"
         };
         _userRepoMock.Setup(
-            r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
+            r => r.AddAsync(It.IsAny<User>())).ReturnsAsync(new User());
 
 
         //act
