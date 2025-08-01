@@ -9,8 +9,12 @@ namespace Inventory_Order_Tracking.API.Context
     {
         public required DbSet<User> Users { get; set; }
         public required DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+
+        public required DbSet<Product> Products { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);
@@ -24,6 +28,11 @@ namespace Inventory_Order_Tracking.API.Context
             {
                 entity.HasKey(t => t.Id);
                 entity.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId);
+            });
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.HasKey(t => t.Id);
             });
         }
         public async Task SeedAdminUserAsync()

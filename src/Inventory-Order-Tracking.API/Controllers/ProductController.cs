@@ -1,6 +1,8 @@
-﻿using Inventory_Order_Tracking.API.Dtos;
+﻿using Inventory_Order_Tracking.API.Domain;
+using Inventory_Order_Tracking.API.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Inventory_Order_Tracking.API.Controllers
 {
@@ -9,13 +11,5 @@ namespace Inventory_Order_Tracking.API.Controllers
     [Authorize]
     public class ProductController :ControllerBase
     {
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {}
-        [HttpGet("{productId}")]
-        public async Task<IActionResult> GetAll(Guid productId)
-        { }
-
-
     }
 }

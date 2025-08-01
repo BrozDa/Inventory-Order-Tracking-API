@@ -11,11 +11,10 @@ namespace Inventory_Order_Tracking.API.Dtos
 
         public string? Description { get; set; }
 
-        public StockStatus StockStatus { get; set; } = new();
+        public StockStatus StockStatus { get; set; }
 
         public decimal Price { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 
 

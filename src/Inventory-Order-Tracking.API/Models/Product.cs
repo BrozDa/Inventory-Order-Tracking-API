@@ -12,11 +12,9 @@ namespace Inventory_Order_Tracking.API.Models
 
         public string? Description { get; set; }
 
-        public int? StockQuantity { get; set; }
+        public int StockQuantity { get; set; }
 
         public decimal Price { get; set; }
-
-        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
 
         public ProductDto ToDto()
@@ -38,6 +36,18 @@ namespace Inventory_Order_Tracking.API.Models
             };
 
             return dto;
+        }
+
+        public ProductAdminDto ToAdminDto()
+        {
+            return new ProductAdminDto()
+            {
+                Id = Id,
+                Name = Name,
+                Description = Description,
+                Price = Price,
+                StockQuantity = StockQuantity
+            };
         }
     }
 
