@@ -17,10 +17,10 @@ public class AuthControllerTests
     private readonly RegisterRequestValidator _validator = new();
     private readonly Mock<IAuthService> _authServiceMock = new();
     private readonly Mock<ILogger<AuthController>> _loggerMock = new();
-    private readonly Mock<IEmailVerificationService> _emailVerificationMock = new();
+    private readonly Mock<IEmailVerificationService> _emailVerificationServiceMock = new();
     public AuthControllerTests()
     {
-        _sut = new AuthController(_validator, _authServiceMock.Object, _emailVerificationMock.Object, _loggerMock.Object);
+        _sut = new AuthController(_validator, _authServiceMock.Object, _emailVerificationServiceMock.Object, _loggerMock.Object);
     }
 
     [Fact]
@@ -105,6 +105,45 @@ public class AuthControllerTests
         var result = await _sut.Login(request);
         //assert
         var okResult = Assert.IsType<OkObjectResult>(result);
+    }
+    [Fact]
+    public async Task Verify_InvalidInput_ReturnsOtherThanOk() 
+    {
+        //arrange 
+        var serviceResult = new EmailVerificationServiceResult
+        {
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK
+        };
+
+        _emailVerificationServiceMock.Setup(x => x.VerifyEmail(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
+        //act
+
+        var result = await _sut.Verify(Guid.NewGuid());
+
+        //assert
+        Assert.IsType<OkResult>(result);
+
+    }
+    [Fact]
+    public async Task Verify_ValidInput_ReturnsOk() 
+    {
+        //arrange 
+        var serviceResult = new EmailVerificationServiceResult
+        { 
+            IsSuccessful = false,
+            ErrorMessage = "This is test generated error",
+            StatusCode = HttpStatusCode.Unauthorized
+        };
+
+        _emailVerificationServiceMock.Setup(x => x.VerifyEmail(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
+        //act
+
+        var result = await _sut.Verify(Guid.NewGuid());
+
+        //assert
+        Assert.IsNotType<OkResult>(result);
+
     }
 
 }

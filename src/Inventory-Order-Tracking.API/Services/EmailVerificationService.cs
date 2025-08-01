@@ -1,4 +1,5 @@
 ﻿using FluentEmail.Core;
+using FluentEmail.Core.Models;
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
@@ -33,6 +34,7 @@ namespace Inventory_Order_Tracking.API.Services
                     .Body($"Click on link to verify your email <a href='{link}'>Verification Link</a>", isHtml: true)
                     .SendAsync();
 
+                
                 if (!sendResult.Successful)
                 {
                     logger.LogError($"[VerificationEmailSending] Failed to send email: {string.Join(";", sendResult.ErrorMessages)}");

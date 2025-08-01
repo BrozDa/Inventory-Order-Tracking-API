@@ -66,12 +66,6 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
             Assert.Equal("Could not store email verification token.", result.ErrorMessage);
         }
-        public async Task SendVerificationEmail_LinkNull_ReturnsInternalServerError()
-        { //reponse text ["Failed to generate verification link"]
-            //arrange
-            //act.
-            //assert
-        }
         [Fact]
         public async Task SendVerificationEmail_EmailSendFail_ReturnsInternalServerErrorAndLogs()
         { //reponse text ["Failed to sent verification email"]
@@ -219,12 +213,6 @@ namespace InventoryManagement.API.Tests.Services
             //assert
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-        }
-        public async Task SendVerificationEmail_EmailBody_ContainsVerificationLink() {
-            /*To make sure link is there*/
-            //arrange
-            //act
-            //assert
         }
         [Fact]
         public async Task VerifyEmail_InvalidToken_ReturnsUnauthorizedAndLogs()
@@ -409,7 +397,6 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
-
 
     }
 }
