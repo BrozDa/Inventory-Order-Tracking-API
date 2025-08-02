@@ -76,7 +76,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsUpdateName([FromQuery] Guid id, ProductUpdateNameDto dto)
         {
-            var validationResult = stringValueValidator.Validate(dto.Name);
+            var validationResult = stringValueValidator.Validate(new StringWrapper { Value=dto.Name});
 
             if (!validationResult.IsValid)
             {
@@ -99,7 +99,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsUpdateDescription([FromQuery] Guid id, ProductUpdateDescription dto)
         {
-            var validationResult = stringValueValidator.Validate(dto.Description);
+            var validationResult = stringValueValidator.Validate(new StringWrapper { Value = dto.Description });
 
             if (!validationResult.IsValid)
             {
