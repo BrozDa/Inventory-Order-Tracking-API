@@ -1,6 +1,6 @@
 ﻿namespace Inventory_Order_Tracking.API.Dtos
 {
-    public class UpdateProductDto
+    public class ProductUpdateDto
     {
         public string? Name { get; set; }
         public string? Description { get; set; }

@@ -1,6 +1,9 @@
-﻿using Inventory_Order_Tracking.API.Domain;
+﻿using Azure.Core;
+using FluentValidation;
+using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Services.Interfaces;
+using Inventory_Order_Tracking.API.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +12,10 @@ namespace Inventory_Order_Tracking.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class ProductsController(IProductService service) : ControllerBase
+    public class ProductsController(
+        IProductService service,
+        StringValueValidator stringValueValidator,
+        ILogger<ProductsController> logger) : ControllerBase
     {
 
         [HttpGet("customer")]
@@ -66,33 +72,96 @@ namespace Inventory_Order_Tracking.API.Controllers
 
 
 
-        [HttpGet("admin/update-name/{id:guid}")]
+        [HttpPatch("admin/update-name/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> AdminsUpdateName(string newName)
+        public async Task<IActionResult> AdminsUpdateName([FromQuery] Guid id, ProductUpdateNameDto dto)
         {
-            throw new NotImplementedException();
+            var validationResult = stringValueValidator.Validate(dto.Name);
+
+            if (!validationResult.IsValid)
+            {
+                logger.LogWarning("[ProductsController][AdminsUpdateName] Invalid rename attempt for {id}. Encountered errors: {errors}",
+                    id,
+                    string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)));
+
+                return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage) });
+            }
+
+            var serviceResult = await service.UpdateName(id, dto.Name);
+
+            return serviceResult.IsSuccessful
+                ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+
+
         }
-        [HttpGet("admin/update-description/{id:guid}")]
+        [HttpPatch("admin/update-description/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> AdminsUpdateDescription(string newDescription)
+        public async Task<IActionResult> AdminsUpdateDescription([FromQuery] Guid id, ProductUpdateDescription dto)
         {
-            throw new NotImplementedException();
+            var validationResult = stringValueValidator.Validate(dto.Description);
+
+            if (!validationResult.IsValid)
+            {
+                logger.LogWarning("[ProductsController][AdminsUpdateDescription] Invalid description change attempt for {id}. Encountered errors: {errors}",
+                    id,
+                    string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)));
+
+                return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage) });
+            }
+
+            var serviceResult = await service.UpdateDescriptionAsync(id, dto.Description);
+
+            return serviceResult.IsSuccessful
+                ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
-        [HttpGet("admin/update-price/{id:guid}")]
+        [HttpPatch("admin/update-price/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> AdminsUpdatePrice(decimal newPrice)
+        public async Task<IActionResult> AdminsUpdatePrice([FromQuery] Guid id, ProductUpdatePriceDto dto)
         {
-            throw new NotImplementedException();
+            if (dto.Price < 0)
+            {
+                logger.LogWarning("[ProductsController][AdminsUpdatePrice] Invalid price change attempt for {id}. Attempted price {price}",
+                    id,
+                    dto.Price);
+
+                return BadRequest("Price must not be negative number");
+            }
+
+            var serviceResult = await service.UpdatePriceAsync(id, dto.Price);
+
+            return serviceResult.IsSuccessful
+                ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
-        [HttpGet("admin/update-stock/{id:guid}")]
+        [HttpPatch("admin/update-stock/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> AdminsAddStock(int newStockQuantity)
+        public async Task<IActionResult> UpdateStock([FromQuery] Guid id, ProductUpdateStockDto dto)
         {
-            throw new NotImplementedException();
+            if (dto.Stock < 0)
+            {
+                logger.LogWarning("[ProductsController][AdminsUpdatePrice] Invalid stock change attempt for {id}. Attempted stock {stock}",
+                    id,
+                    dto.Stock);
+
+                return BadRequest("Stock must not be negative number");
+            }
+
+            var serviceResult = await service.UpdateStockQuantityAsync(id, dto.Stock);
+
+            return serviceResult.IsSuccessful
+                ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
-        [HttpGet("admin/update/{id:guid}")]
+
+
+
+
+
+        [HttpPut("admin/update/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> AdminsAddStock(UpdateProductDto dto)
+        public async Task<IActionResult> AdminsAddStock(ProductUpdateDto dto)
         {
             throw new NotImplementedException();
         }

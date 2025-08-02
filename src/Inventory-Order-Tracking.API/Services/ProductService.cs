@@ -2,12 +2,14 @@
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
+using Inventory_Order_Tracking.API.Validators;
 
 namespace Inventory_Order_Tracking.API.Services
 {
     public class ProductService(
         IProductRepository repository,
-        ILogger<ProductService> logger) : IProductService
+        ILogger<ProductService> logger,
+        StringValueValidator stringValueValidator) : IProductService
     {
         public async Task<ProductServiceResult<List<ProductCustomerDto>>> CustomersGetAllAsync()
         {
@@ -70,6 +72,31 @@ namespace Inventory_Order_Tracking.API.Services
                 logger.LogError(ex, "[CustomerGetSingleAsync] Unhandled Exception has occured");
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to fetch product from database");
             }
+        }
+
+        public async Task<ProductServiceResult<ProductAdminDto>> UpdateName(Guid id, string newName)
+        {
+            var entity = await repository.GetByIdAsync(id);
+            if (entity is null)
+                return ProductServiceResult<ProductAdminDto>.NotFound();
+
+            entity.Name = newName;
+
+            await repository.SaveChangesAsync();
+
+            return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
+        }
+        public async Task<ProductServiceResult<ProductAdminDto>> UpdateDescriptionAsync(Guid id, string newDescription)
+        {
+            var entity = await repository.GetByIdAsync(id);
+            if (entity is null)
+                return ProductServiceResult<ProductAdminDto>.NotFound();
+
+            entity.Description = newDescription;
+
+            await repository.SaveChangesAsync();
+
+            return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
         }
     }
 }

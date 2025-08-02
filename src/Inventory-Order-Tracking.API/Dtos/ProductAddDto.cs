@@ -2,7 +2,7 @@
 
 namespace Inventory_Order_Tracking.API.Dtos
 {
-    public class AddProductDto
+    public class ProductAddDto
     {
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
