@@ -41,7 +41,7 @@ public class AuthControllerTests
         var result = await _sut.Register(request);
 
         //assert
-        var badResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.IsType<BadRequestObjectResult>(result);
     }
     [Fact]
     public async Task Register_ValidInput_ReturnsOk()
