@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inventory_Order_Tracking.API.Repository
 {
-    public class ProductRepository(InventoryManagementContext context)
+    public class ProductRepository(InventoryManagementContext context) : IProductRepository
     {
 
         /*
@@ -14,7 +14,7 @@ namespace Inventory_Order_Tracking.API.Repository
         {
             return await context.Products.ToListAsync();
         }
-        public async Task<Product?>GetByIdAsync(Guid productId)
+        public async Task<Product?> GetByIdAsync(Guid productId)
         {
             return await context.Products.FindAsync(productId);
         }
