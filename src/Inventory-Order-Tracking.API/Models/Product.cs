@@ -18,9 +18,9 @@ namespace Inventory_Order_Tracking.API.Models
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-        public ProductDto ToDto()
+        public ProductCustomerDto ToCustomerDto()
         {
-            var dto = new ProductDto()
+            var dto = new ProductCustomerDto()
             {
                 Id = Id,
                 Name = Name,

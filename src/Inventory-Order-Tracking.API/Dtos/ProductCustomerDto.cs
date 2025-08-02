@@ -3,7 +3,7 @@ using Inventory_Order_Tracking.API.Models;
 
 namespace Inventory_Order_Tracking.API.Dtos
 {
-    public class ProductDto
+    public class ProductCustomerDto
     {
         public Guid Id { get; set; }
 
