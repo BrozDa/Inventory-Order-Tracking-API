@@ -8,12 +8,12 @@ namespace Inventory_Order_Tracking.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class ProductsController(IProductService service) : ControllerBase
     {
 
         [HttpGet("customer")]
-        [Authorize(Roles = UserRoles.Customer)]
+        [Authorize(Policy = "customer")]
         public async Task<IActionResult> CustomerGetAll()
         {
             var serviceResult = await service.CustomersGetAllAsync();
@@ -25,7 +25,7 @@ namespace Inventory_Order_Tracking.API.Controllers
 
         }
         [HttpGet("customer/{id:guid}")]
-        [Authorize(Roles = UserRoles.Customer)]
+        [Authorize(Policy = "customer")]
         public async Task<IActionResult> CustomerGetSingle(Guid id)
         {
             var serviceResult = await service.CustomersGetSingleAsync(id);
@@ -36,7 +36,7 @@ namespace Inventory_Order_Tracking.API.Controllers
             return Ok(serviceResult.Data);
         }
         [HttpGet("admin")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize(Policy = "admin")]
         public async Task<IActionResult> AdminsGetAll()
         {
             var serviceResult = await service.AdminsGetAllAsync();
@@ -46,13 +46,8 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             return Ok(serviceResult.Data);
         }
-
-
-
-
-
         [HttpGet("admin/{id:guid}")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize(Policy = "admin")]
         public async Task<IActionResult> AdminsGetSingle(Guid id)
         {
             var serviceResult = await service.AdminsGetSingleAsync(id);
@@ -62,6 +57,15 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             return Ok(serviceResult.Data);
         }
+
+
+
+
+
+
+
+
+
         [HttpGet("admin/update-name/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsUpdateName(string newName)

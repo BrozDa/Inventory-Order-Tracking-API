@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
 using Inventory_Order_Tracking.API.Validators;
+using Inventory_Order_Tracking.API.Domain;
 
 namespace Inventory_Order_Tracking.API
 {
@@ -119,8 +120,12 @@ namespace Inventory_Order_Tracking.API
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(jwtSettings.Token)),
                     };
-                }
-            );
+                });
+                builder.Services.AddAuthorization(options =>
+                {
+                    options.AddPolicy("admin", policy => policy.RequireRole(UserRoles.Admin));
+                    options.AddPolicy("customer", policy => policy.RequireRole(UserRoles.Admin, UserRoles.Customer));
+                });
 
                 var app = builder.Build();
                 
