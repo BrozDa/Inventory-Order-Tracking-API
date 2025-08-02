@@ -5,10 +5,6 @@ namespace Inventory_Order_Tracking.API.Validators
 {
     public class EmailSettingsValidator :AbstractValidator<EmailSettings>
     {
-        public string SenderEmail { get; set; } = string.Empty;
-        public string Sender { get; set; } = string.Empty;
-        public string Host { get; set; } = string.Empty;
-
         public EmailSettingsValidator()
         {
             RuleFor(x => x.SenderEmail)

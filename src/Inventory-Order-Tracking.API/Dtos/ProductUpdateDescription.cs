@@ -2,5 +2,6 @@
 {
     public class ProductUpdateDescription
     {
+        public string Description { get; set; } = string.Empty;
     }
 }

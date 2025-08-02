@@ -2,5 +2,6 @@
 {
     public class ProductUpdateNameDto
     {
+        public string Name { get; set; } = string.Empty;
     }
 }

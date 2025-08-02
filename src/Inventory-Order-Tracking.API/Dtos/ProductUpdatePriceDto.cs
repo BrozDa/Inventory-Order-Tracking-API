@@ -2,5 +2,6 @@
 {
     public class ProductUpdatePriceDto
     {
+        public decimal Price { get; set; }  
     }
 }

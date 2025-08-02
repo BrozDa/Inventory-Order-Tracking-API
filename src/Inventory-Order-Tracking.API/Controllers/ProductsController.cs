@@ -87,7 +87,7 @@ namespace Inventory_Order_Tracking.API.Controllers
                 return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage) });
             }
 
-            var serviceResult = await service.UpdateName(id, dto.Name);
+            var serviceResult = await service.UpdateNameAsync(id, dto.Name);
 
             return serviceResult.IsSuccessful
                 ? Ok(serviceResult.Data)

@@ -2,5 +2,6 @@
 {
     public class ProductUpdateStockDto
     {
+        public int Stock {  get; set; }
     }
 }

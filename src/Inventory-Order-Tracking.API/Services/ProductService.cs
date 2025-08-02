@@ -8,8 +8,8 @@ namespace Inventory_Order_Tracking.API.Services
 {
     public class ProductService(
         IProductRepository repository,
-        ILogger<ProductService> logger,
-        StringValueValidator stringValueValidator) : IProductService
+        ILogger<ProductService> logger
+        ) : IProductService
     {
         public async Task<ProductServiceResult<List<ProductCustomerDto>>> CustomersGetAllAsync()
         {
@@ -74,7 +74,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
-        public async Task<ProductServiceResult<ProductAdminDto>> UpdateName(Guid id, string newName)
+        public async Task<ProductServiceResult<ProductAdminDto>> UpdateNameAsync(Guid id, string newName)
         {
             var entity = await repository.GetByIdAsync(id);
             if (entity is null)
@@ -93,6 +93,30 @@ namespace Inventory_Order_Tracking.API.Services
                 return ProductServiceResult<ProductAdminDto>.NotFound();
 
             entity.Description = newDescription;
+
+            await repository.SaveChangesAsync();
+
+            return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
+        }
+        public async Task<ProductServiceResult<ProductAdminDto>> UpdatePriceAsync(Guid id, decimal newPrice)
+        {
+            var entity = await repository.GetByIdAsync(id);
+            if (entity is null)
+                return ProductServiceResult<ProductAdminDto>.NotFound();
+
+            entity.Price = newPrice;
+
+            await repository.SaveChangesAsync();
+
+            return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
+        }
+        public async Task<ProductServiceResult<ProductAdminDto>> UpdateStockQuantityAsync(Guid id, int newStockQuantity)
+        {
+            var entity = await repository.GetByIdAsync(id);
+            if (entity is null)
+                return ProductServiceResult<ProductAdminDto>.NotFound();
+
+            entity.StockQuantity = newStockQuantity;
 
             await repository.SaveChangesAsync();
 
