@@ -9,8 +9,13 @@ namespace Inventory_Order_Tracking.API.Context
     {
         public required DbSet<User> Users { get; set; }
         public required DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
-
         public required DbSet<Product> Products { get; set; }
+
+        public required DbSet<Order> Orders { get; set; }
+        public required DbSet<OrderItem> OrderItems { get; set; }
+        public required DbSet <AuditLog> AuditLog { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -22,18 +27,47 @@ namespace Inventory_Order_Tracking.API.Context
                 entity.HasIndex(u => u.Username).IsUnique();
 
                 entity.HasIndex(u => u.Email).IsUnique();
+
+                entity.HasMany(u => u.Orders)
+                    .WithOne(o => o.User)
+                    .HasForeignKey(o => o.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(u => u.AuditLogs)
+                    .WithOne(al => al.User)
+                    .HasForeignKey(al => al.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
             });
 
             modelBuilder.Entity<EmailVerificationToken>(entity =>
             {
                 entity.HasKey(t => t.Id);
                 entity.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId);
+
             });
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.HasKey(t => t.Id);
+                entity.HasKey(p => p.Id);
+
+                entity.HasMany(p => p.OrderItems)
+                .WithOne(oi =>  oi.Product)
+                .HasForeignKey(oi => oi.ProductId);
             });
+
+            modelBuilder.Entity<Order>(entity => {
+
+                entity.HasKey(o => o.Id);
+
+                entity.HasMany(o => o.Items)
+                .WithOne(oi => oi.Order)
+                .HasForeignKey(oi => oi.OrderId);
+                
+            });
+            modelBuilder.Entity<OrderItem>().HasKey(oi => oi.Id);
+
+
         }
         public async Task SeedAdminUserAsync()
         {
