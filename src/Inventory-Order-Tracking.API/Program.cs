@@ -86,16 +86,23 @@ namespace Inventory_Order_Tracking.API
                     .AddSmtpSender(emailSettings.Host,  emailSettings.Port);
 
                 builder.Services.AddHttpContextAccessor();
+
                 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+                builder.Services.AddScoped<IProductService, ProductService>();
                 builder.Services.AddScoped<IAuthService, AuthService>();
-                builder.Services.AddScoped<RegisterRequestValidator>();
+                
+                builder.Services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
-                builder.Services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();  
+                builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+                builder.Services.AddScoped<RegisterRequestValidator>();
+
                 builder.Services.AddDbContext<InventoryManagementContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
  
                 builder.Services.AddControllers();
+
                 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -120,7 +127,7 @@ namespace Inventory_Order_Tracking.API
                 using var scope = app.Services.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<InventoryManagementContext>();
                 await context.Database.MigrateAsync();
-                await context.SeedAdminUserAsync();
+                //await context.SeedAdminUserAsync();
 
                 if (app.Environment.IsDevelopment())
                 {

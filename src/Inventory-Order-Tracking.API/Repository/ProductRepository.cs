@@ -1,5 +1,6 @@
 ﻿using Inventory_Order_Tracking.API.Context;
 using Inventory_Order_Tracking.API.Models;
+using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventory_Order_Tracking.API.Repository
