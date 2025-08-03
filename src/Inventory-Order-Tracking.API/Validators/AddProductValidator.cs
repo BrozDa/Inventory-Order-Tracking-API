@@ -22,7 +22,7 @@ namespace Inventory_Order_Tracking.API.Validators
                 .WithMessage("Price must be  positive number");
 
             RuleFor(x => x.StockQuantity)
-                .Must(val => val is not null || val > 0)
+                .Must(val => val is null || val > 0)
                 .WithMessage("Stock must be  positive number");
 
         }

@@ -64,14 +64,6 @@ namespace Inventory_Order_Tracking.API.Controllers
             return Ok(serviceResult.Data);
         }
 
-
-
-
-
-
-
-
-
         [HttpPatch("admin/update-name/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsUpdateName([FromQuery] Guid id, ProductUpdateNameDto dto)
@@ -178,7 +170,7 @@ namespace Inventory_Order_Tracking.API.Controllers
 
         [HttpPut("admin/add")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> AdminsAddStock(ProductAddDto dto)
+        public async Task<IActionResult> AdminsAdd(ProductAddDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -194,7 +186,7 @@ namespace Inventory_Order_Tracking.API.Controllers
             var serviceResult = await service.AddAsync(dto);
 
             return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
+                ? Created()
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
 
         }
