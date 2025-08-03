@@ -1,11 +1,8 @@
-﻿using Castle.Core.Logging;
-using Inventory_Order_Tracking.API.Domain;
-using Inventory_Order_Tracking.API.Dtos;
+﻿using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;

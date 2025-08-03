@@ -1,20 +1,11 @@
-﻿using Castle.Core.Logging;
-using Inventory_Order_Tracking.API.Controllers;
+﻿using Inventory_Order_Tracking.API.Controllers;
 using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
-using Inventory_Order_Tracking.API.Validators;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace InventoryManagement.API.Tests.Controllers
 {
@@ -22,12 +13,11 @@ namespace InventoryManagement.API.Tests.Controllers
     {
         private readonly ProductsController _sut;
         private readonly Mock<IProductService> _serviceMock = new();
-        private readonly StringValueValidator _validatorMock = new();
         private readonly Mock<ILogger<ProductsController>> _loggerMock = new();
 
         public ProductControllerTests()
         {
-            _sut = new ProductsController(_serviceMock.Object, _validatorMock, _loggerMock.Object);
+            _sut = new ProductsController(_serviceMock.Object, _loggerMock.Object);
         }
         [Fact]
         public async Task CustomerGetAll_SuccessfulRequest_ReturnsOk()

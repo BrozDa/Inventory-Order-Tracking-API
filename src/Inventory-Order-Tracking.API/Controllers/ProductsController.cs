@@ -14,7 +14,6 @@ namespace Inventory_Order_Tracking.API.Controllers
 
     public class ProductsController(
         IProductService service,
-        StringValueValidator stringValueValidator,
         ILogger<ProductsController> logger) : ControllerBase
     {
 
@@ -68,15 +67,15 @@ namespace Inventory_Order_Tracking.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsUpdateName([FromQuery] Guid id, ProductUpdateNameDto dto)
         {
-            var validationResult = stringValueValidator.Validate(new StringWrapper { Value=dto.Name});
-
-            if (!validationResult.IsValid)
+            if (!ModelState.IsValid)
             {
-                logger.LogWarning("[ProductsController][AdminsUpdateName] Invalid rename attempt for {id}. Encountered errors: {errors}",
-                    id,
-                    string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)));
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
 
-                return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage) });
+                logger.LogWarning("[ProductsController][AdminsUpdateName] Validation failed: {@errors}", errors);
+                return BadRequest(new { Errors = errors });
             }
 
             var serviceResult = await service.UpdateNameAsync(id, dto.Name);
@@ -89,17 +88,17 @@ namespace Inventory_Order_Tracking.API.Controllers
         }
         [HttpPatch("admin/update-description/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> AdminsUpdateDescription([FromQuery] Guid id, ProductUpdateDescription dto)
+        public async Task<IActionResult> AdminsUpdateDescription([FromQuery] Guid id, ProductUpdateDescriptionDto dto)
         {
-            var validationResult = stringValueValidator.Validate(new StringWrapper { Value = dto.Description });
-
-            if (!validationResult.IsValid)
+            if (!ModelState.IsValid)
             {
-                logger.LogWarning("[ProductsController][AdminsUpdateDescription] Invalid description change attempt for {id}. Encountered errors: {errors}",
-                    id,
-                    string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)));
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
 
-                return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage) });
+                logger.LogWarning("[ProductsController][AdminsUpdateDescription] Validation failed: {@errors}", errors);
+                return BadRequest(new { Errors = errors });
             }
 
             var serviceResult = await service.UpdateDescriptionAsync(id, dto.Description);

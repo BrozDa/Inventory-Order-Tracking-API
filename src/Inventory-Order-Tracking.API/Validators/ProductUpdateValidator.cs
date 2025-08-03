@@ -4,9 +4,9 @@ using Inventory_Order_Tracking.API.Dtos;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
-    public class UpdateProductValidator : AbstractValidator<ProductUpdateDto>
+    public class ProductUpdateValidator : AbstractValidator<ProductUpdateDto>
     {
-        public UpdateProductValidator()
+        public ProductUpdateValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Value cannot be empty")

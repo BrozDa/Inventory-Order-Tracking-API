@@ -97,7 +97,10 @@ namespace Inventory_Order_Tracking.API
                 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
                 builder.Services.AddScoped<RegisterRequestValidator>();
-                builder.Services.AddScoped<StringValueValidator>();
+                builder.Services.AddScoped<ProductAddValidator>();
+                builder.Services.AddScoped<ProductUpdateValidator>();
+                builder.Services.AddScoped<ProductUpdateNameValidator>();
+                builder.Services.AddScoped<ProductUpdateDescriptionValidator>();
 
                 builder.Services.AddDbContext<InventoryManagementContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))

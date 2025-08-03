@@ -1,15 +1,13 @@
 ﻿using FluentValidation;
-using Inventory_Order_Tracking.API.Configuration;
-using Inventory_Order_Tracking.API.Domain;
+using Inventory_Order_Tracking.API.Dtos;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
-    public class StringValueValidator : AbstractValidator<StringWrapper>
+    public class ProductUpdateNameValidator : AbstractValidator<ProductUpdateNameDto>
     {
-        public StringValueValidator()
+        public ProductUpdateNameValidator()
         {
-            RuleFor(data => data.Value)
-                .NotNull().WithMessage("Value cannot be empty")
+            RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Value cannot be empty")
                 .Length(1, 50).WithMessage("Value must be between 1 and 50 characters")
                 .Matches(@"^[a-zA-Z0-9\- ]+$").WithMessage("Value must contain only alphanumeric characters, space or dash");

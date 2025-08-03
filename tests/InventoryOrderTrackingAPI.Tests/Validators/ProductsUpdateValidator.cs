@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace InventoryManagement.API.Tests.Validators
 {
-    public class UpdateProductValidatorTests
+    public class ProductsUpdateValidator
     {
-        private readonly UpdateProductValidator _sut = new();
+        private readonly ProductUpdateValidator _sut = new();
         [Fact]
         public async Task Validate_NameEmpty_ReturnsFalse()
         {
