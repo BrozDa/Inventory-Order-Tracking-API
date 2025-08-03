@@ -18,6 +18,23 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 Data = data
             };
         }
+        public static ProductServiceResult<T> Created(T data)
+        {
+            return new ProductServiceResult<T>
+            {
+                IsSuccessful = true,
+                StatusCode = HttpStatusCode.Created,
+                Data = data
+            };
+        }
+        public static ProductServiceResult<T> NoContent()
+        {
+            return new ProductServiceResult<T>
+            {
+                IsSuccessful = true, 
+                StatusCode = HttpStatusCode.NoContent,
+            };
+        }
         public static ProductServiceResult<T> BadRequest(string? errorMessage)
         {
             return new ProductServiceResult<T>

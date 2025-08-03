@@ -154,17 +154,61 @@ namespace Inventory_Order_Tracking.API.Controllers
                 ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
-
-
-
-
-
         [HttpPut("admin/update/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> AdminsAddStock(ProductUpdateDto dto)
+        public async Task<IActionResult> AdminsUpdate([FromQuery] Guid id, ProductUpdateDto dto)
         {
-            throw new NotImplementedException();
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                logger.LogWarning("[ProductsController][AdminsUpdate] Validation failed: {@errors}", errors);
+                return BadRequest(new { Errors = errors });
+            }
+
+            var serviceResult = await service.UpdateAsync(id, dto);
+
+            return serviceResult.IsSuccessful
+                ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
+
+        [HttpPut("admin/add")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> AdminsAddStock(ProductAddDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                logger.LogWarning("[ProductsController][AdminsAddStock] Validation failed: {@errors}", errors);
+                return BadRequest(new { Errors = errors });
+            }
+
+            var serviceResult = await service.AddAsync(dto);
+
+            return serviceResult.IsSuccessful
+                ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+
+        }
+        [HttpPut("admin/delete/{id:guid}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> AdminsDelete([FromQuery] Guid id)
+        {
+            var serviceResult = await service.DeleteAsync(id);
+
+            return serviceResult.IsSuccessful
+                ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+        }
+
 
     }
 }

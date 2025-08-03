@@ -26,16 +26,10 @@ namespace Inventory_Order_Tracking.API.Repository
             await context.SaveChangesAsync();
             return entity;
         }
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Product entity)
         {
-            var toBeDeleted = await GetByIdAsync(id);
-
-            if (toBeDeleted is null)
-                return false;
-
-            context.Products.Remove(toBeDeleted);
+            context.Products.Remove(entity);
             await context.SaveChangesAsync();
-            return true;
         }
         public async Task SaveChangesAsync()
         {

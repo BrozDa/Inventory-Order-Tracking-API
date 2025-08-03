@@ -5,7 +5,7 @@ namespace Inventory_Order_Tracking.API.Repository.Interfaces
     public interface IProductRepository
     {
         Task<Product> AddAsync(Product entity);
-        Task<bool> DeleteAsync(Guid id);
+        Task DeleteAsync(Product entity);
         Task<List<Product>> GetAllAsync();
         Task<Product?> GetByIdAsync(Guid productId);
         Task SaveChangesAsync();
