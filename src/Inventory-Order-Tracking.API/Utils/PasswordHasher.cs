@@ -5,7 +5,6 @@ namespace Inventory_Order_Tracking.API.Utils
 {
     public class PasswordHasher
     {
-        
         public static (string hash, string salt) GenerateHashAndSalt(string password)
         {
             if (string.IsNullOrEmpty(password))
@@ -34,6 +33,7 @@ namespace Inventory_Order_Tracking.API.Utils
 
             return (hash == passwordHash);
         }
+
         private static string GenerateHash(string password, string salt)
         {
             var hash = Convert.ToBase64String(KeyDerivation.Pbkdf2(

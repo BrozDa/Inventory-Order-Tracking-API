@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
-using System.Net;
+﻿using System.Net;
 
 namespace Inventory_Order_Tracking.API.Services.Shared
 {
     public class AuthServiceResult<T>
     {
-        public required bool IsSuccessful { get; set; }
-        public required HttpStatusCode StatusCode { get; set; }
+        public bool IsSuccessful { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
         public string? ErrorMessage { get; set; }
         public T? Data { get; set; }
 
@@ -20,6 +18,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 Data = data
             };
         }
+
         public static AuthServiceResult<T> BadRequest(string? errorMessage)
         {
             return new AuthServiceResult<T>
@@ -29,6 +28,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage ?? "Bad request"
             };
         }
+
         public static AuthServiceResult<T> InternalServerError(string? errorMessage)
         {
             return new AuthServiceResult<T>
@@ -38,7 +38,8 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage ?? "Resource not found"
             };
         }
-        public static AuthServiceResult<T> Unauthorized() 
+
+        public static AuthServiceResult<T> Unauthorized()
         {
             return new AuthServiceResult<T>
             {
@@ -46,7 +47,6 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 StatusCode = HttpStatusCode.Unauthorized,
                 ErrorMessage = "Unauthorized"
             };
-
         }
     }
 }

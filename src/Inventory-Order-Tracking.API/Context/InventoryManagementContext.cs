@@ -7,19 +7,16 @@ namespace Inventory_Order_Tracking.API.Context
 {
     public class InventoryManagementContext(DbContextOptions options) : DbContext(options)
     {
-        public required DbSet<User> Users { get; set; }
-        public required DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
-        public required DbSet<Product> Products { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+        public DbSet<Product> Products { get; set; }
 
-        public required DbSet<Order> Orders { get; set; }
-        public required DbSet<OrderItem> OrderItems { get; set; }
-        public required DbSet <AuditLog> AuditLog { get; set; }
-
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<AuditLog> AuditLog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);
@@ -37,14 +34,12 @@ namespace Inventory_Order_Tracking.API.Context
                     .WithOne(al => al.User)
                     .HasForeignKey(al => al.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
-
             });
 
             modelBuilder.Entity<EmailVerificationToken>(entity =>
             {
                 entity.HasKey(t => t.Id);
                 entity.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId);
-
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -52,23 +47,21 @@ namespace Inventory_Order_Tracking.API.Context
                 entity.HasKey(p => p.Id);
 
                 entity.HasMany(p => p.OrderItems)
-                .WithOne(oi =>  oi.Product)
+                .WithOne(oi => oi.Product)
                 .HasForeignKey(oi => oi.ProductId);
             });
 
-            modelBuilder.Entity<Order>(entity => {
-
+            modelBuilder.Entity<Order>(entity =>
+            {
                 entity.HasKey(o => o.Id);
 
                 entity.HasMany(o => o.Items)
                 .WithOne(oi => oi.Order)
                 .HasForeignKey(oi => oi.OrderId);
-                
             });
             modelBuilder.Entity<OrderItem>().HasKey(oi => oi.Id);
-
-
         }
+
         public async Task SeedAdminUserAsync()
         {
             var (hash, salt) = PasswordHasher.GenerateHashAndSalt("admin");
@@ -85,8 +78,5 @@ namespace Inventory_Order_Tracking.API.Context
             await Users.AddAsync(user);
             await SaveChangesAsync();
         }
-
-    
     }
-   
 }

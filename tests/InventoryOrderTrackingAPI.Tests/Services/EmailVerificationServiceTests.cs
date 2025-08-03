@@ -31,6 +31,7 @@ namespace InventoryManagement.API.Tests.Services
                 _loggerMock.Object,
                 _linkGenerator.Object);
         }
+
         [Fact]
         public async Task SendVerificationEmail_TokenGenerationFails_ReturnsInternalServerError()
         { //reponse text ["Failed to generate verification token"]
@@ -66,12 +67,13 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
             Assert.Equal("Could not store email verification token.", result.ErrorMessage);
         }
+
         [Fact]
         public async Task SendVerificationEmail_EmailSendFail_ReturnsInternalServerErrorAndLogs()
         { //reponse text ["Failed to sent verification email"]
             //arrange
 
-            var userId = Guid.NewGuid();    
+            var userId = Guid.NewGuid();
 
             var user = new User
             {
@@ -91,9 +93,8 @@ namespace InventoryManagement.API.Tests.Services
                 UserId = userId,
                 CreatedOn = DateTime.UtcNow,
                 ExpiresOn = DateTime.UtcNow.AddDays(1),
-                User  = user
+                User = user
             };
-            
 
             var sendResponse = new SendResponse
             {
@@ -115,6 +116,7 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
             Assert.Equal("Failed to sent verification email", result.ErrorMessage);
         }
+
         [Fact]
         public async Task SendVerificationEmail_UnhandledException_ReturnsInternalServerErrorAndLogs()
         { //reponse text ["Unhandled error occurred"]
@@ -146,7 +148,7 @@ namespace InventoryManagement.API.Tests.Services
             var sendResponse = new SendResponse
             {
                 MessageId = "test-message-id",
-                ErrorMessages = new List<string>() {}
+                ErrorMessages = new List<string>() { }
             };
 
             _emailSenderMock.Setup(x => x.To(It.IsAny<string>())).Returns(_emailSenderMock.Object);
@@ -164,6 +166,7 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
             Assert.Equal("Unhandled error occurred", result.ErrorMessage);
         }
+
         [Fact]
         public async Task SendVerificationEmail_ValidFlow_ReturnsOk()
         {
@@ -192,7 +195,6 @@ namespace InventoryManagement.API.Tests.Services
                 ExpiresOn = DateTime.UtcNow.AddDays(1),
                 User = user
             };
-            
 
             var sendResponse = new SendResponse
             {
@@ -214,6 +216,7 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
+
         [Fact]
         public async Task VerifyEmail_InvalidToken_ReturnsUnauthorizedAndLogs()
         {//reponse text ["Invalid Token received"]
@@ -237,6 +240,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task VerifyEmail_TokenExpired_ReturnsUnauthorizedAndLogs()
         {//reponse text ["Verification link expired"]
@@ -282,10 +286,10 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task VerifyEmail_UserAlreadyVerified_ReturnsUnauthorizedAndLogs()
         {//reponse text ["User already verified"]
-
             //arrange
             var id = Guid.NewGuid();
             var user = new User
@@ -328,6 +332,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task VerifyEmail_UnhandledException_ReturnsInternalServerErrorAndLogs()
         { //reponse text ["Unhandled error occurred"]
@@ -360,10 +365,10 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
-        [Fact]  
+
+        [Fact]
         public async Task VerifyEmail_ValidFlow_ReturnsOk()
         {
-
             //arrange
             var tokenId = Guid.NewGuid();
 
@@ -397,6 +402,5 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
-
     }
 }

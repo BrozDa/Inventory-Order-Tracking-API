@@ -1,20 +1,20 @@
+using Inventory_Order_Tracking.API.Configuration;
+using Inventory_Order_Tracking.API.Dtos;
+using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Inventory_Order_Tracking.API.Dtos;
 using Moq;
 using System.Net;
-using Inventory_Order_Tracking.API.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Inventory_Order_Tracking.API.Configuration;
 
 namespace InventoryOrderTracking.API.Tests;
 
 public class AuthServiceTests
 {
     private readonly AuthService _sut;
+
     private readonly JwtSettings _jwtSettings = new()
     {
         Token = "ThisIsMySuperSecretApiTokenTwiceThisIsMySuperSecretApiToken",
@@ -23,14 +23,16 @@ public class AuthServiceTests
         TokenExpirationDays = 7,
         RefreshTokenExpirationDays = 1
     };
+
     private readonly Mock<IUserRepository> _userRepoMock = new Mock<IUserRepository>();
     private readonly Mock<ILogger<AuthService>> _loggerMock = new Mock<ILogger<AuthService>>();
     private readonly Mock<IEmailVerificationService> _emailServiceMock = new Mock<IEmailVerificationService>();
 
     public AuthServiceTests()
     {
-        _sut = new AuthService(_userRepoMock.Object, _emailServiceMock.Object,  _loggerMock.Object, _jwtSettings);
+        _sut = new AuthService(_userRepoMock.Object, _emailServiceMock.Object, _loggerMock.Object, _jwtSettings);
     }
+
     [Fact]
     public async Task Register_UsernameAlreadyExists_ReturnsBadRequestAndLogsWarning()
     {
@@ -63,6 +65,7 @@ public class AuthServiceTests
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
     }
+
     [Fact]
     public async Task Register_PasswordEmpty_ReturnsBadRequestAndLogsError()
     {   //arrange
@@ -83,8 +86,8 @@ public class AuthServiceTests
         Assert.False(result.IsSuccessful);
         Assert.Equal("Password cannot be empty", result.ErrorMessage);
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
-
     }
+
     [Fact]
     public async Task Register_DbFailure_ReturnsBadRequestAndLogsError()
     {
@@ -107,8 +110,8 @@ public class AuthServiceTests
         Assert.False(result.IsSuccessful);
         Assert.Equal("A database error occured during processing the request", result.ErrorMessage);
         Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-
     }
+
     [Fact]
     public async Task Register_UnexpectedError_ReturnsBadRequestAndLogsError()
     {
@@ -142,6 +145,7 @@ public class AuthServiceTests
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
     }
+
     [Fact]
     public async Task Register_ValidInput_AddstoDbAndReturnsOk()
     {
@@ -155,7 +159,6 @@ public class AuthServiceTests
         _userRepoMock.Setup(
             r => r.AddAsync(It.IsAny<User>())).ReturnsAsync(new User());
 
-
         //act
         var result = await _sut.RegisterAsync(request);
         //assert
@@ -163,6 +166,7 @@ public class AuthServiceTests
         Assert.Equal("Registration successful. Please verify your email to activate your account.", result.Data);
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
     }
+
     [Fact]
     public async Task Login_NonExistingUser_ReturnsBadRequestAndLogsWarning()
     {
@@ -175,7 +179,7 @@ public class AuthServiceTests
 
         _userRepoMock.Setup(
             r => r.GetByUsernameAsync(request.Username))
-            .ReturnsAsync((User?) null);
+            .ReturnsAsync((User?)null);
         //act
 
         var result = await _sut.LoginAsync(request);
@@ -194,8 +198,8 @@ public class AuthServiceTests
             null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
-
     }
+
     [Fact]
     public async Task Login_EmptyPassword_ReturnsBadRequesAndLogsWarning()
     {
@@ -207,7 +211,6 @@ public class AuthServiceTests
         };
         var user = new User
         {
-
             Id = Guid.NewGuid(),
             Role = "User",
             Username = request.Username,
@@ -215,7 +218,6 @@ public class AuthServiceTests
             PasswordSalt = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
             Email = "test@email.com",
             IsVerified = true
-
         };
 
         _userRepoMock.Setup(
@@ -239,8 +241,8 @@ public class AuthServiceTests
             null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
-
     }
+
     [Fact]
     public async Task Login_IncorrectPassword_ReturnsBadRequesAndLogsWarning()
     {
@@ -252,7 +254,6 @@ public class AuthServiceTests
         };
         var user = new User
         {
-
             Id = Guid.NewGuid(),
             Role = "User",
             Username = request.Username,
@@ -260,7 +261,6 @@ public class AuthServiceTests
             PasswordSalt = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
             Email = "test@email.com",
             IsVerified = true
-
         };
 
         _userRepoMock.Setup(
@@ -284,8 +284,8 @@ public class AuthServiceTests
             null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
-
     }
+
     [Fact]
     public async Task Login_CorrectCredentialsUnverifiedUser_ReturnsBadRequesAndLogsWarning()
     {
@@ -297,7 +297,6 @@ public class AuthServiceTests
         };
         var user = new User
         {
-
             Id = Guid.NewGuid(),
             Role = "User",
             Username = request.Username,
@@ -305,7 +304,6 @@ public class AuthServiceTests
             PasswordSalt = "NuxupY+YTWig0beCC4Ve0CwIRGvBvM3NT2KxnWTyaZurw+bUy9e3mBNgkjZiwTggTa9gG8fwPPYCdps5ci0SlwQm0X7SvB/wvpg4m8PS4IqVGeHmeSPjYeuMlcQ0p0IAwwn/y8MGcVSAxs4hSQja7VSJNJFip9scrmOg/lMQoQk=",
             Email = "test@email.com",
             IsVerified = false
-
         };
 
         _userRepoMock.Setup(
@@ -329,8 +327,8 @@ public class AuthServiceTests
             null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
-
     }
+
     [Fact]
     public async Task Login_UnhandledException_ReturnsBadRequesAndLogsError()
     {
@@ -342,7 +340,6 @@ public class AuthServiceTests
         };
         var user = new User
         {
-
             Id = Guid.NewGuid(),
             Role = "User",
             Username = request.Username,
@@ -350,7 +347,6 @@ public class AuthServiceTests
             PasswordSalt = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
             Email = "test@email.com",
             IsVerified = true
-
         };
 
         _userRepoMock.Setup(
@@ -377,8 +373,8 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task RefreshTokens_InvalidUserId_ReturnUnauthorized() {
-
+    public async Task RefreshTokens_InvalidUserId_ReturnUnauthorized()
+    {
         var userId = Guid.NewGuid();
         var expiredToken = "ThisIsExpiredRefreshToken";
         var request = new RefreshTokenRequestDto
@@ -393,11 +389,10 @@ public class AuthServiceTests
 
         Assert.False(result.IsSuccessful);
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
-
     }
 
     [Fact]
-    public async Task RefreshTokens_RefreshTokensDontMatch_ReturnsUnauthorized() 
+    public async Task RefreshTokens_RefreshTokensDontMatch_ReturnsUnauthorized()
     {
         var userId = Guid.NewGuid();
         var expiredToken = "ThisIsExpiredRefreshToken";
@@ -427,8 +422,9 @@ public class AuthServiceTests
         Assert.False(result.IsSuccessful);
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
     }
+
     [Fact]
-    public async Task RefreshTokens_RefreshTokenExpired_ReturnsUnauthorized() 
+    public async Task RefreshTokens_RefreshTokenExpired_ReturnsUnauthorized()
     {
         var userId = Guid.NewGuid();
         var expiredToken = "ThisIsExpiredRefreshToken";
@@ -458,6 +454,7 @@ public class AuthServiceTests
         Assert.False(result.IsSuccessful);
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
     }
+
     [Fact]
     public async Task RefreshTokens_ValidInput_ReturnsTokenResponseDto()
     {

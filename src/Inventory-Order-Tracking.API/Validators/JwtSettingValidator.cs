@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Inventory_Order_Tracking.API.Configuration;
-using System.Data;
 
 namespace Inventory_Order_Tracking.API.Validators
 {

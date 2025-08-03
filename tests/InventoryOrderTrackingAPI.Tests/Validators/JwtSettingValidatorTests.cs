@@ -9,7 +9,7 @@ namespace InventoryManagement.API.Tests.Validators
 
         public JwtSettingValidatorTests()
         {
-               _sut = new JwtSettingValidator();
+            _sut = new JwtSettingValidator();
         }
 
         [Fact]
@@ -26,8 +26,8 @@ namespace InventoryManagement.API.Tests.Validators
 
             var result = _sut.Validate(testSettings);
             Assert.False(result.IsValid);
-
         }
+
         [Fact]
         public void Validate_ValueEmpty_ReturnsFalse()
         {
@@ -43,6 +43,7 @@ namespace InventoryManagement.API.Tests.Validators
             var result = _sut.Validate(testSettings);
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_ExpirationValueEqualToZero_ReturnsFalse()
         {
@@ -58,6 +59,7 @@ namespace InventoryManagement.API.Tests.Validators
             var result = _sut.Validate(testSettings);
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_ExpirationValueLessThanZero_ReturnsFalse()
         {
@@ -73,6 +75,7 @@ namespace InventoryManagement.API.Tests.Validators
             var result = _sut.Validate(testSettings);
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_Valid_ReturnsTrue()
         {

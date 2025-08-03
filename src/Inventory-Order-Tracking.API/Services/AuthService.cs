@@ -1,7 +1,6 @@
 ﻿using Inventory_Order_Tracking.API.Configuration;
 using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
-using Inventory_Order_Tracking.API.Migrations;
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
@@ -15,7 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace Inventory_Order_Tracking.API.Services
-{                                                           
+{
     public class AuthService(IUserRepository repository, IEmailVerificationService emailService, ILogger<AuthService> logger, JwtSettings jwtSettings)
         : IAuthService
     {
@@ -46,24 +45,24 @@ namespace Inventory_Order_Tracking.API.Services
 
                 return AuthServiceResult<string>.Ok("Registration successful. Please verify your email to activate your account.");
             }
-            catch(ArgumentNullException)
+            catch (ArgumentNullException)
             {
                 return AuthServiceResult<string>.BadRequest("Password cannot be empty");
             }
             catch (DbUpdateException dbEx)
             {
-                logger.LogError(dbEx, 
+                logger.LogError(dbEx,
                     "[Registration][DbUpdateException] Database error during processing request for {Username}", request.Username);
                 return AuthServiceResult<string>.InternalServerError("A database error occured during processing the request");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 logger.LogError(ex,
                     "[Registration][UnhandledException] Unexpected error during processing request for {Username}", request.Username);
                 return AuthServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
             }
-            
         }
+
         public async Task<AuthServiceResult<TokenResponseDto>> LoginAsync(UserLoginDto request)
         {
             try
@@ -89,7 +88,6 @@ namespace Inventory_Order_Tracking.API.Services
                 TokenResponseDto tokenResponse = await GenerateTokenResponse(user);
 
                 return AuthServiceResult<TokenResponseDto>.Ok(tokenResponse);
-
             }
             catch (Exception ex)
             {
@@ -97,10 +95,7 @@ namespace Inventory_Order_Tracking.API.Services
                     "[LoginAsync][Exception] Unexpected error during processing request for {Username}", request.Username);
                 return AuthServiceResult<TokenResponseDto>.InternalServerError("An Unexpected error occured during processing the request");
             }
-
         }
-
-        
 
         public async Task<AuthServiceResult<TokenResponseDto>> RefreshTokens(RefreshTokenRequestDto request)
         {
@@ -114,16 +109,15 @@ namespace Inventory_Order_Tracking.API.Services
             var tokenResponse = await GenerateTokenResponse(user);
 
             return AuthServiceResult<TokenResponseDto>.Ok(tokenResponse);
-
         }
+
         private string CreateToken(User user)
         {
-            if(user is null)
+            if (user is null)
                 throw new ArgumentNullException(nameof(user));
 
             if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Role))
                 throw new ArgumentException("User must have valid username and role.");
-
 
             var claims = new List<Claim>()
             {
@@ -146,6 +140,7 @@ namespace Inventory_Order_Tracking.API.Services
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
+
         private string GenerateRefreshToken()
         {
             var refreshToken = new byte[32];
@@ -154,6 +149,7 @@ namespace Inventory_Order_Tracking.API.Services
 
             return Convert.ToBase64String(refreshToken);
         }
+
         private async Task<string> GenerateAndStoreRefreshToken(User user)
         {
             var refreshToken = GenerateRefreshToken();
@@ -168,8 +164,8 @@ namespace Inventory_Order_Tracking.API.Services
             await repository.SaveChangesAsync();
 
             return refreshToken;
-
         }
+
         private async Task<TokenResponseDto> GenerateTokenResponse(User user)
         {
             return new TokenResponseDto
@@ -178,6 +174,7 @@ namespace Inventory_Order_Tracking.API.Services
                 RefreshToken = await GenerateAndStoreRefreshToken(user)
             };
         }
+
         private async Task<User?> ValidateRefreshToken(Guid userId, string refreshToken)
         {
             var user = await repository.GetByIdAsync(userId);
@@ -189,6 +186,5 @@ namespace Inventory_Order_Tracking.API.Services
             }
             return user;
         }
-
     }
 }

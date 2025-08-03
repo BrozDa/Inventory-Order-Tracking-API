@@ -3,7 +3,7 @@ using Inventory_Order_Tracking.API.Configuration;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
-    public class EmailSettingsValidator :AbstractValidator<EmailSettings>
+    public class EmailSettingsValidator : AbstractValidator<EmailSettings>
     {
         public EmailSettingsValidator()
         {

@@ -1,6 +1,5 @@
 ﻿using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
-using System.Runtime.CompilerServices;
 
 namespace Inventory_Order_Tracking.API.Models
 {
@@ -26,7 +25,6 @@ namespace Inventory_Order_Tracking.API.Models
                 Name = Name,
                 Description = Description,
                 Price = Price,
-
             };
 
             dto.StockStatus = StockQuantity switch
@@ -51,6 +49,4 @@ namespace Inventory_Order_Tracking.API.Models
             };
         }
     }
-
-    
 }

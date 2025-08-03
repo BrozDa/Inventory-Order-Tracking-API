@@ -6,7 +6,7 @@
         public string Role { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
-        public string PasswordSalt {  get; set; } = string.Empty;
+        public string PasswordSalt { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public bool IsVerified { get; set; }
         public string? RefreshToken { get; set; }
@@ -14,6 +14,5 @@
 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
-
     }
 }

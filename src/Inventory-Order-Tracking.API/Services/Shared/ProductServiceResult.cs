@@ -4,8 +4,8 @@ namespace Inventory_Order_Tracking.API.Services.Shared
 {
     public class ProductServiceResult<T>
     {
-        public required bool IsSuccessful { get; set; }
-        public required HttpStatusCode StatusCode { get; set; }
+        public bool IsSuccessful { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
         public string? ErrorMessage { get; set; }
         public T? Data { get; set; }
 
@@ -18,6 +18,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 Data = data
             };
         }
+
         public static ProductServiceResult<T> Created(T data)
         {
             return new ProductServiceResult<T>
@@ -27,14 +28,16 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 Data = data
             };
         }
+
         public static ProductServiceResult<T> NoContent()
         {
             return new ProductServiceResult<T>
             {
-                IsSuccessful = true, 
+                IsSuccessful = true,
                 StatusCode = HttpStatusCode.NoContent,
             };
         }
+
         public static ProductServiceResult<T> BadRequest(string? errorMessage)
         {
             return new ProductServiceResult<T>
@@ -44,6 +47,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage ?? "Bad request"
             };
         }
+
         public static ProductServiceResult<T> NotFound(string? errorMessage = "Not found")
         {
             return new ProductServiceResult<T>
@@ -53,6 +57,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage ?? "Bad request"
             };
         }
+
         public static ProductServiceResult<T> InternalServerError(string? errorMessage)
         {
             return new ProductServiceResult<T>
@@ -62,6 +67,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage ?? "Resource not found"
             };
         }
+
         public static ProductServiceResult<T> Unauthorized()
         {
             return new ProductServiceResult<T>
@@ -70,8 +76,6 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 StatusCode = HttpStatusCode.Unauthorized,
                 ErrorMessage = "Unauthorized"
             };
-
         }
     }
-
 }

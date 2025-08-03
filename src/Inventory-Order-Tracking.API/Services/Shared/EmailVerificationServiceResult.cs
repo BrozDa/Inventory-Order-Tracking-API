@@ -4,8 +4,8 @@ namespace Inventory_Order_Tracking.API.Services.Shared
 {
     public class EmailVerificationServiceResult
     {
-        public required bool IsSuccessful { get; set; }
-        public required HttpStatusCode StatusCode { get; set; }
+        public bool IsSuccessful { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
         public string? ErrorMessage { get; set; }
 
         public static EmailVerificationServiceResult Ok()
@@ -16,6 +16,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 StatusCode = HttpStatusCode.OK,
             };
         }
+
         public static EmailVerificationServiceResult Unauthorized(string? errorMessage = "Unauthorized")
         {
             return new EmailVerificationServiceResult
@@ -25,6 +26,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage
             };
         }
+
         public static EmailVerificationServiceResult InternalServerError(string? errorMessage = "Internal Server Error")
         {
             return new EmailVerificationServiceResult

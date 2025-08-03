@@ -1,5 +1,5 @@
-using Inventory_Order_Tracking.API.Utils;
 using Inventory_Order_Tracking.API.Dtos;
+using Inventory_Order_Tracking.API.Utils;
 
 namespace InventoryManagement.API.Tests.Validators;
 
@@ -10,11 +10,12 @@ public class RegisterRequestValidatorTests
     [Fact]
     public void Validate_InvalidUsername_ReturnsFalse()
     {
-        var result = _sut.Validate(new UserRegistrationDto 
-            { Username = "$pec!alChar", Password = "This1sV4lid!", Email = "test@test.com" }
+        var result = _sut.Validate(new UserRegistrationDto
+        { Username = "$pec!alChar", Password = "This1sV4lid!", Email = "test@test.com" }
         );
         Assert.False(result.IsValid);
     }
+
     [Fact]
     public void Validate_InvalidPassword_ReturnsFalse()
     {
@@ -23,6 +24,7 @@ public class RegisterRequestValidatorTests
         );
         Assert.False(result.IsValid);
     }
+
     [Fact]
     public void Validate_InvalidEmail_ReturnsFalse()
     {
@@ -31,6 +33,7 @@ public class RegisterRequestValidatorTests
         );
         Assert.False(result.IsValid);
     }
+
     [Fact]
     public void Validate_ValidRequest_ReturnsTrue()
     {

@@ -1,6 +1,4 @@
-﻿using Inventory_Order_Tracking.API.Models;
-
-namespace Inventory_Order_Tracking.API.Dtos
+﻿namespace Inventory_Order_Tracking.API.Dtos
 {
     public class UserDto
     {
@@ -10,8 +8,5 @@ namespace Inventory_Order_Tracking.API.Dtos
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-
-        
-
     }
 }

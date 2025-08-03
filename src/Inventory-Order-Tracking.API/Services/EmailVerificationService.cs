@@ -1,5 +1,4 @@
 ﻿using FluentEmail.Core;
-using FluentEmail.Core.Models;
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
@@ -8,14 +7,13 @@ using Inventory_Order_Tracking.API.Services.Shared;
 namespace Inventory_Order_Tracking.API.Services
 {
     public class EmailVerificationService(
-        IFluentEmail emailService, 
+        IFluentEmail emailService,
         IEmailVerificationTokenRepository repository,
         IHttpContextAccessor httpContextAccessor,
         ILogger<EmailVerificationService> logger,
         LinkGenerator linkGenerator
         ) : IEmailVerificationService
     {
-
         public async Task<EmailVerificationServiceResult> SendVerificationEmail(User user)
         {
             try
@@ -34,13 +32,11 @@ namespace Inventory_Order_Tracking.API.Services
                     .Body($"Click on link to verify your email <a href='{link}'>Verification Link</a>", isHtml: true)
                     .SendAsync();
 
-                
                 if (!sendResult.Successful)
                 {
                     logger.LogError($"[VerificationEmailSending] Failed to send email: {string.Join(";", sendResult.ErrorMessages)}");
                     return EmailVerificationServiceResult.InternalServerError("Failed to sent verification email");
                 }
-
 
                 return EmailVerificationServiceResult.Ok();
             }
@@ -54,8 +50,8 @@ namespace Inventory_Order_Tracking.API.Services
                 logger.LogError(ex, "[UnhandledError] Unhandled error occurred");
                 return EmailVerificationServiceResult.InternalServerError("Unhandled error occurred");
             }
-
         }
+
         public async Task<EmailVerificationServiceResult> VerifyEmail(Guid tokenId)
         {
             try
@@ -86,19 +82,18 @@ namespace Inventory_Order_Tracking.API.Services
 
                 return EmailVerificationServiceResult.Ok();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 logger.LogError(ex, "[UnhandledError] Unhandled error occurred");
                 return EmailVerificationServiceResult.InternalServerError("Unhandled error occurred");
             }
-            
-            
         }
+
         private string? GenerateVerificationLink(EmailVerificationToken token)
         {
             HttpContext? httpContext = httpContextAccessor.HttpContext;
 
-            if(httpContext is null)
+            if (httpContext is null)
             {
                 logger.LogError("HttpContext null when trying to generate email verification link");
                 return $"https://localhost:7296/api/auth/user/verify/{token.Id}";
@@ -110,12 +105,13 @@ namespace Inventory_Order_Tracking.API.Services
                 controller: "Auth",
                 values: new { tokenId = token.Id }
                 );
-            
+
             if (uri is null)
                 logger.LogError("Failed to generate verification link");
 
             return uri;
         }
+
         private async Task<EmailVerificationToken?> GenerateAndStoreToken(Guid userId)
         {
             try
@@ -129,12 +125,11 @@ namespace Inventory_Order_Tracking.API.Services
 
                 return token;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 logger.LogError(ex, "Error when storing verification token for user {UserId}", userId);
                 return null;
             }
-            
         }
     }
 }

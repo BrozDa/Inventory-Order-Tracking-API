@@ -12,5 +12,4 @@ namespace Inventory_Order_Tracking.API.Repository.Interfaces
 
         Task SaveChangesAsync();
     }
-
 }
