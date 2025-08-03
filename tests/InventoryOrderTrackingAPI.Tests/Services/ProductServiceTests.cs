@@ -778,5 +778,83 @@ namespace InventoryManagement.API.Tests.Services
 
         }
 
+        [Fact]
+        public async Task DeleteAsync_NonExistingId_ReturnsNotFoundAndLogsWarning() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+           
+            _productRepositoryMock.Setup(r=>r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+            //act
+            var result = await _sut.DeleteAsync(id);
+            //assert
+
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()
+                    .Contains("[ProductService][DeleteAsync] Attempted deletion of non-existing product")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task DeleteAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsWarning()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+                .Throws(() => new DbUpdateException("Test exception"));
+            //act
+            var result = await _sut.DeleteAsync(id);
+            //assert
+
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()
+                    .Contains("[DeleteAsync] Unhandled Exception has occured")),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task DeleteAsync_ValidFlow_ReturnsNoContent()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+
+            var entity = new Product()
+            {
+                Id = Guid.NewGuid(),
+                Name = "Valid name",
+                Description = "Even more valid Description",
+                Price = 69m,
+                StockQuantity = 2
+            };
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(entity);
+            //act
+            var result = await _sut.DeleteAsync(id);
+            //assert
+
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+
+
+        }
+
     }
 }

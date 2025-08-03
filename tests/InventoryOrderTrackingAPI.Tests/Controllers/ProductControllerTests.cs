@@ -232,6 +232,36 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+        [Fact]
+        public async Task AdminsDelete_FailedRequest_ReturnsNonOK()
+        { 
+            //arrange
+            var id = Guid.NewGuid();
+
+            //act
+            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            _serviceMock.Setup(s => s.DeleteAsync(id)).ReturnsAsync(serviceResult);
+
+            var result = await _sut.AdminsDelete(id);
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+        }
+        [Fact]
+        public async Task AdminsDelete_SuccessfulRequest_ReturnsNoContent()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+
+            //act
+            var serviceResult = ProductServiceResult<ProductAdminDto>.NoContent();
+            _serviceMock.Setup(s => s.DeleteAsync(id)).ReturnsAsync(serviceResult);
+
+            var result = await _sut.AdminsDelete(id);
+
+            //assert
+            Assert.IsType<NoContentResult>(result);
+        }
     }
     
 }

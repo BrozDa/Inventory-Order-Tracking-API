@@ -197,7 +197,7 @@ namespace Inventory_Order_Tracking.API.Controllers
             var serviceResult = await service.DeleteAsync(id);
 
             return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
+                ? NoContent()
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
 
