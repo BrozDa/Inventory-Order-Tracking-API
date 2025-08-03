@@ -78,7 +78,11 @@ namespace Inventory_Order_Tracking.API.Services
         {
             var entity = await repository.GetByIdAsync(id);
             if (entity is null)
+            {
+                logger.LogWarning("[ProductService][UpdateNameAsync] Attempted name change for non-existing product");
                 return ProductServiceResult<ProductAdminDto>.NotFound();
+            }
+                
 
             entity.Name = newName;
 
@@ -90,7 +94,10 @@ namespace Inventory_Order_Tracking.API.Services
         {
             var entity = await repository.GetByIdAsync(id);
             if (entity is null)
+            {
+                logger.LogWarning("[ProductService][UpdateDescriptionAsync] Attempted description change for non-existing product");
                 return ProductServiceResult<ProductAdminDto>.NotFound();
+            }
 
             entity.Description = newDescription;
 
@@ -102,7 +109,10 @@ namespace Inventory_Order_Tracking.API.Services
         {
             var entity = await repository.GetByIdAsync(id);
             if (entity is null)
+            {
+                logger.LogWarning("[ProductService][UpdatePriceAsync] Attempted price change for non-existing product");
                 return ProductServiceResult<ProductAdminDto>.NotFound();
+            }
 
             entity.Price = newPrice;
 
@@ -114,7 +124,10 @@ namespace Inventory_Order_Tracking.API.Services
         {
             var entity = await repository.GetByIdAsync(id);
             if (entity is null)
+            {
+                logger.LogWarning("[ProductService][UpdateStockQuantityAsync] Attempted stock change for non-existing product");
                 return ProductServiceResult<ProductAdminDto>.NotFound();
+            }
 
             entity.StockQuantity = newStockQuantity;
 

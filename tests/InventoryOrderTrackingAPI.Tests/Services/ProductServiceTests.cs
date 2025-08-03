@@ -97,7 +97,6 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
 
         }
-
         [Fact]
         public async Task CustomersGetSingleAsync_ExistingProduct_ReturnsOkWithProduct() 
         {
@@ -155,7 +154,6 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
-
         [Fact]
         public async Task AdminsGetAllAsync_ExistingProducts_ReturnsOkWithAList() 
         {
@@ -230,7 +228,6 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
-
         [Fact]
         public async Task AdminsGetSingleAsync_ExistingProduct_ReturnsOkWithProduct() 
         {
@@ -288,6 +285,209 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
         }
 
-        
+        [Fact]
+        public async Task UpdateNameAsync_ExistingEntity_ReturnsOk() 
+        { 
+            //arrange
+            var id = Guid.NewGuid();
+            var existing = new Product { 
+                Id = id, 
+                Name = "Test name", 
+                Description="Test description",  
+                Price =  12m,
+                StockQuantity = 3
+            };
+            var newName = "Test name changed";
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existing);
+
+            //act
+            var result = await _sut.UpdateNameAsync(id, newName);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(newName, existing.Name);
+        }
+        [Fact]
+        public async Task UpdateNameAsync_NonExistingEntity_ReturnsNotFoundAndLogs() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var newName = "Test description changed";
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+
+            //act
+            var result = await _sut.UpdateNameAsync(id, newName);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()
+                    .Contains("[ProductService][UpdateNameAsync] Attempted name change for non-existing product")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+        [Fact]
+        public async Task UpdateDescriptionAsync_ExistingEntity_ReturnsOk() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var existing = new Product
+            {
+                Id = id,
+                Name = "Test name",
+                Description = "Test description",
+                Price = 12m,
+                StockQuantity = 3
+            };
+            var newDescription = "Test description changed";
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existing);
+
+            //act
+            var result = await _sut.UpdateDescriptionAsync(id, newDescription);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(newDescription, existing.Description);
+        }
+        [Fact]
+        public async Task UpdateDescriptionAsync_NonExistingEntity_ReturnsNotFoundAndLogs() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var newDescription = "Test description changed";
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+
+            //act
+            var result = await _sut.UpdateDescriptionAsync(id, newDescription);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()
+                    .Contains("[ProductService][UpdateDescriptionAsync] Attempted description change for non-existing product")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+        [Fact]
+        public async Task UpdatePriceAsync_ExistingEntity_ReturnsOk() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var existing = new Product
+            {
+                Id = id,
+                Name = "Test name",
+                Description = "Test description",
+                Price = 12m,
+                StockQuantity = 3
+            };
+            var newPrice = 17m;
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existing);
+
+            //act
+            var result = await _sut.UpdatePriceAsync(id, newPrice);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(newPrice, existing.Price);
+        }
+        [Fact]
+        public async Task UpdatePriceAsync_NonExistingEntity_ReturnsNotFoundAndLogs() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var newPrice = 12m;
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+
+            //act
+            var result = await _sut.UpdatePriceAsync(id, newPrice);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()
+                    .Contains("[ProductService][UpdatePriceAsync] Attempted price change for non-existing product")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+        [Fact]
+        public async Task UpdateStockQuantityAsync_ExistingEntity_ReturnsOk() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var existing = new Product
+            {
+                Id = id,
+                Name = "Test name",
+                Description = "Test description",
+                Price = 12m,
+                StockQuantity = 3
+            };
+            var newStockSquantity = 15;
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existing);
+
+            //act
+            var result = await _sut.UpdateStockQuantityAsync(id, newStockSquantity);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(newStockSquantity, existing.StockQuantity);
+        }
+        [Fact]
+        public async Task UpdateStockQuantityAsync_NonExistingEntity_ReturnsNotFoundAndLogs() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var newQuantity = 18;
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+
+            //act
+            var result = await _sut.UpdateStockQuantityAsync(id, newQuantity);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()
+                    .Contains("[ProductService][UpdateStockQuantityAsync] Attempted stock change for non-existing product")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+
     }
 }
