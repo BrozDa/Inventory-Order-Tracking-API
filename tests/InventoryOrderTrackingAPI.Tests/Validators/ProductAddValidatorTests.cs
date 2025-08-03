@@ -1,20 +1,14 @@
 ﻿using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Validators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventoryManagement.API.Tests.Validators
 {
-    
     public class ProductAddValidatorTests
     {
         private readonly ProductAddValidator _sut = new();
 
         [Fact]
-        public async Task Validate_NameEmpty_ReturnsFalse() 
+        public async Task Validate_NameEmpty_ReturnsFalse()
         {
             //arrange
             var dto = new ProductAddDto()
@@ -29,6 +23,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public async Task Validate_NameWithSpecialChars_ReturnsFalse()
         {
@@ -45,7 +40,8 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
-        [Fact]  
+
+        [Fact]
         public async Task Validate_NameTooLong_ReturnsFalse()
         {
             //arrange
@@ -61,6 +57,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public async Task Validate_DescriptionEmpty_ReturnsFalse()
         {
@@ -77,6 +74,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public async Task Validate_DescriptionWithSpecialChars_ReturnsFalse()
         {
@@ -93,6 +91,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public async Task Validate_DescriptionTooLong_ReturnsFalse()
         {
@@ -109,6 +108,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public async Task Validate_PriceNegative_ReturnsFalse()
         {
@@ -116,7 +116,7 @@ namespace InventoryManagement.API.Tests.Validators
             var dto = new ProductAddDto()
             {
                 Name = "Valid name",
-                Description ="Valid description",
+                Description = "Valid description",
                 Price = -110m,
                 StockQuantity = 5
             };
@@ -125,6 +125,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public async Task Validate_StockQuantityNegative_ReturnsFalse()
         {
@@ -141,6 +142,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public async Task Validate_ValidInputStockNull_ReturnsTrue()
         {
@@ -157,6 +159,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.True(result.IsValid);
         }
+
         [Fact]
         public async Task Validate_ValidInputStockPositive_ReturnsTrue()
         {

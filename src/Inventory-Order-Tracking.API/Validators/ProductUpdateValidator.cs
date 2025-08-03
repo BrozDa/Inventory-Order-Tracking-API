@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
 
 namespace Inventory_Order_Tracking.API.Validators
@@ -29,7 +28,6 @@ namespace Inventory_Order_Tracking.API.Validators
                 .Must(val => val > 0)
                 .WithMessage("Stock must be  positive number")
                 .When(x => x.StockQuantity is not null);
-
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿using Azure.Core;
-using FluentValidation;
-using Inventory_Order_Tracking.API.Domain;
+﻿using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Services.Interfaces;
-using Inventory_Order_Tracking.API.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,24 +8,22 @@ namespace Inventory_Order_Tracking.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class ProductsController(
         IProductService service,
         ILogger<ProductsController> logger) : ControllerBase
     {
-
         [HttpGet("customer")]
         [Authorize(Policy = "customer")]
         public async Task<IActionResult> CustomerGetAll()
         {
             var serviceResult = await service.CustomersGetAllAsync();
 
-            if(!serviceResult.IsSuccessful)
+            if (!serviceResult.IsSuccessful)
                 return StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
 
             return Ok(serviceResult.Data);
-
         }
+
         [HttpGet("customer/{id:guid}")]
         [Authorize(Policy = "customer")]
         public async Task<IActionResult> CustomerGetSingle(Guid id)
@@ -40,6 +35,7 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             return Ok(serviceResult.Data);
         }
+
         [HttpGet("admin")]
         [Authorize(Policy = "admin")]
         public async Task<IActionResult> AdminsGetAll()
@@ -51,6 +47,7 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             return Ok(serviceResult.Data);
         }
+
         [HttpGet("admin/{id:guid}")]
         [Authorize(Policy = "admin")]
         public async Task<IActionResult> AdminsGetSingle(Guid id)
@@ -83,9 +80,8 @@ namespace Inventory_Order_Tracking.API.Controllers
             return serviceResult.IsSuccessful
                 ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
-
-
         }
+
         [HttpPatch("admin/update-description/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsUpdateDescription([FromQuery] Guid id, ProductUpdateDescriptionDto dto)
@@ -107,6 +103,7 @@ namespace Inventory_Order_Tracking.API.Controllers
                 ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
+
         [HttpPatch("admin/update-price/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsUpdatePrice([FromQuery] Guid id, ProductUpdatePriceDto dto)
@@ -126,6 +123,7 @@ namespace Inventory_Order_Tracking.API.Controllers
                 ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
+
         [HttpPatch("admin/update-stock/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateStock([FromQuery] Guid id, ProductUpdateStockDto dto)
@@ -145,6 +143,7 @@ namespace Inventory_Order_Tracking.API.Controllers
                 ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
+
         [HttpPut("admin/update/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsUpdate([FromQuery] Guid id, ProductUpdateDto dto)
@@ -187,8 +186,8 @@ namespace Inventory_Order_Tracking.API.Controllers
             return serviceResult.IsSuccessful
                 ? Created()
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
-
         }
+
         [HttpPut("admin/delete/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsDelete([FromQuery] Guid id)
@@ -199,7 +198,5 @@ namespace Inventory_Order_Tracking.API.Controllers
                 ? NoContent()
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
-
-
     }
 }

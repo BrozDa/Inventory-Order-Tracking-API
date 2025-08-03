@@ -1,6 +1,4 @@
-﻿using Inventory_Order_Tracking.API.Domain;
-
-namespace Inventory_Order_Tracking.API.Dtos
+﻿namespace Inventory_Order_Tracking.API.Dtos
 {
     public class ProductAdminDto
     {

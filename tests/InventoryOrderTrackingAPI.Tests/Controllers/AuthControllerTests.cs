@@ -1,6 +1,5 @@
 using Inventory_Order_Tracking.API.Controllers;
 using Inventory_Order_Tracking.API.Dtos;
-using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Inventory_Order_Tracking.API.Utils;
@@ -18,6 +17,7 @@ public class AuthControllerTests
     private readonly Mock<IAuthService> _authServiceMock = new();
     private readonly Mock<ILogger<AuthController>> _loggerMock = new();
     private readonly Mock<IEmailVerificationService> _emailVerificationServiceMock = new();
+
     public AuthControllerTests()
     {
         _sut = new AuthController(_validator, _authServiceMock.Object, _emailVerificationServiceMock.Object, _loggerMock.Object);
@@ -43,6 +43,7 @@ public class AuthControllerTests
         //assert
         Assert.IsType<BadRequestObjectResult>(result);
     }
+
     [Fact]
     public async Task Register_ValidInput_ReturnsOk()
     {
@@ -63,6 +64,7 @@ public class AuthControllerTests
         //assert
         var okResult = Assert.IsType<OkObjectResult>(result);
     }
+
     [Fact]
     public async Task Login_InvalidInput_ReturnsBadRequest()
     {
@@ -82,6 +84,7 @@ public class AuthControllerTests
         var badResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(badResult.StatusCode, 400);
     }
+
     [Fact]
     public async Task Login_ValidInput_ReturnsOk()
     {
@@ -95,21 +98,22 @@ public class AuthControllerTests
         _authServiceMock.Setup(
             s => s.LoginAsync(request))
             .ReturnsAsync(AuthServiceResult<TokenResponseDto>
-            .Ok(new TokenResponseDto 
-                { 
-                    AccessToken="Sample Token",
-                    RefreshToken="Refresh token"
-                }
+            .Ok(new TokenResponseDto
+            {
+                AccessToken = "Sample Token",
+                RefreshToken = "Refresh token"
+            }
             ));
         //act
         var result = await _sut.Login(request);
         //assert
         var okResult = Assert.IsType<OkObjectResult>(result);
     }
+
     [Fact]
-    public async Task Verify_InvalidInput_ReturnsOtherThanOk() 
+    public async Task Verify_InvalidInput_ReturnsOtherThanOk()
     {
-        //arrange 
+        //arrange
         var serviceResult = new EmailVerificationServiceResult
         {
             IsSuccessful = true,
@@ -123,14 +127,14 @@ public class AuthControllerTests
 
         //assert
         Assert.IsType<OkResult>(result);
-
     }
+
     [Fact]
-    public async Task Verify_ValidInput_ReturnsOk() 
+    public async Task Verify_ValidInput_ReturnsOk()
     {
-        //arrange 
+        //arrange
         var serviceResult = new EmailVerificationServiceResult
-        { 
+        {
             IsSuccessful = false,
             ErrorMessage = "This is test generated error",
             StatusCode = HttpStatusCode.Unauthorized
@@ -143,7 +147,5 @@ public class AuthControllerTests
 
         //assert
         Assert.IsNotType<OkResult>(result);
-
     }
-
 }

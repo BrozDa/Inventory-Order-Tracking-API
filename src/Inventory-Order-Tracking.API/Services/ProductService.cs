@@ -3,7 +3,6 @@ using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
-using Inventory_Order_Tracking.API.Validators;
 
 namespace Inventory_Order_Tracking.API.Services
 {
@@ -27,6 +26,7 @@ namespace Inventory_Order_Tracking.API.Services
                 return ProductServiceResult<List<ProductCustomerDto>>.InternalServerError("Failed to fetch products from database");
             }
         }
+
         public async Task<ProductServiceResult<ProductCustomerDto>> CustomersGetSingleAsync(Guid id)
         {
             try
@@ -43,6 +43,7 @@ namespace Inventory_Order_Tracking.API.Services
                 return ProductServiceResult<ProductCustomerDto>.InternalServerError("Failed to fetch product from database");
             }
         }
+
         public async Task<ProductServiceResult<List<ProductAdminDto>>> AdminsGetAllAsync()
         {
             try
@@ -58,6 +59,7 @@ namespace Inventory_Order_Tracking.API.Services
                 return ProductServiceResult<List<ProductAdminDto>>.InternalServerError("Failed to fetch products from database");
             }
         }
+
         public async Task<ProductServiceResult<ProductAdminDto>> AdminsGetSingleAsync(Guid id)
         {
             try
@@ -74,6 +76,7 @@ namespace Inventory_Order_Tracking.API.Services
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to fetch product from database");
             }
         }
+
         public async Task<ProductServiceResult<ProductAdminDto>> AddAsync(ProductAddDto dto)
         {
             try
@@ -93,9 +96,8 @@ namespace Inventory_Order_Tracking.API.Services
                 logger.LogError(ex, "[AddAsync] Unhandled Exception has occured");
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to create new product");
             }
-
-
         }
+
         public async Task<ProductServiceResult<ProductAdminDto>> UpdateNameAsync(Guid id, string newName)
         {
             try
@@ -106,7 +108,6 @@ namespace Inventory_Order_Tracking.API.Services
                     logger.LogWarning("[ProductService][UpdateNameAsync] Attempted name change for non-existing product");
                     return ProductServiceResult<ProductAdminDto>.NotFound();
                 }
-                    
 
                 entity.Name = newName;
 
@@ -120,6 +121,7 @@ namespace Inventory_Order_Tracking.API.Services
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to update name");
             }
         }
+
         public async Task<ProductServiceResult<ProductAdminDto>> UpdateDescriptionAsync(Guid id, string newDescription)
         {
             try
@@ -142,8 +144,8 @@ namespace Inventory_Order_Tracking.API.Services
                 logger.LogError(ex, "[UpdateDescriptionAsync] Unhandled Exception has occured");
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to update description");
             }
-            
         }
+
         public async Task<ProductServiceResult<ProductAdminDto>> UpdatePriceAsync(Guid id, decimal newPrice)
         {
             try
@@ -165,8 +167,9 @@ namespace Inventory_Order_Tracking.API.Services
             {
                 logger.LogError(ex, "[UpdatePriceAsync] Unhandled Exception has occured");
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to update price");
-            }  
+            }
         }
+
         public async Task<ProductServiceResult<ProductAdminDto>> UpdateStockQuantityAsync(Guid id, int newStockQuantity)
         {
             try
@@ -189,8 +192,8 @@ namespace Inventory_Order_Tracking.API.Services
                 logger.LogError(ex, "[UpdateStockQuantityAsync] Unhandled Exception has occured");
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to update stock quantity");
             }
-            
         }
+
         public async Task<ProductServiceResult<ProductAdminDto>> UpdateAsync(Guid id, ProductUpdateDto dto)
         {
             try
@@ -217,8 +220,8 @@ namespace Inventory_Order_Tracking.API.Services
                 logger.LogError(ex, "[UpdateAsync] Unhandled Exception has occured");
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to update product");
             }
-            
         }
+
         public async Task<ProductServiceResult<ProductAdminDto>> DeleteAsync(Guid id)
         {
             try
@@ -234,7 +237,6 @@ namespace Inventory_Order_Tracking.API.Services
                 await repository.DeleteAsync(entity);
 
                 return ProductServiceResult<ProductAdminDto>.NoContent();
-
             }
             catch (Exception ex)
             {

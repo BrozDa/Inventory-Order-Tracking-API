@@ -15,12 +15,14 @@ namespace InventoryManagement.API.Tests.Services
 
         private readonly Mock<IProductRepository> _productRepositoryMock = new();
         private readonly Mock<ILogger<ProductService>> _loggerMock = new();
+
         public ProductServiceTests()
         {
             _sut = new(_productRepositoryMock.Object, _loggerMock.Object);
         }
+
         [Fact]
-        public async Task CustomersGetAllAsync_ExistingProducts_ReturnsOkWithAList() 
+        public async Task CustomersGetAllAsync_ExistingProducts_ReturnsOkWithAList()
         {
             //arrange
             var products = new List<Product>()
@@ -53,8 +55,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.NotEmpty(result.Data);
         }
+
         [Fact]
-        public async Task CustomersGetAllAsync_NoExistingProducts_ReturnsOkWithEmptyList() 
+        public async Task CustomersGetAllAsync_NoExistingProducts_ReturnsOkWithEmptyList()
         {
             //arrange
             var products = new List<Product>();
@@ -69,8 +72,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Empty(result.Data);
         }
+
         [Fact]
-        public async Task CustomersGetAllAsync_ThrowsAnException_ReturnsInternalServerErrorAndLogs() 
+        public async Task CustomersGetAllAsync_ThrowsAnException_ReturnsInternalServerErrorAndLogs()
         {
             //arrange
 
@@ -93,16 +97,14 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
-
         }
 
-
         [Fact]
-        public async Task CustomersGetSingleAsync_ExistingProduct_ReturnsOkWithProduct() 
+        public async Task CustomersGetSingleAsync_ExistingProduct_ReturnsOkWithProduct()
         {
             //arrange
             var productId = Guid.NewGuid();
-            var product = new Product() { Id=productId, Name="Test product name" };
+            var product = new Product() { Id = productId, Name = "Test product name" };
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(product);
 
             //act
@@ -111,10 +113,10 @@ namespace InventoryManagement.API.Tests.Services
             //assert
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-
         }
+
         [Fact]
-        public async Task CustomersGetSingleAsync_NoExistingProducts_ReturnsNotFound() 
+        public async Task CustomersGetSingleAsync_NoExistingProducts_ReturnsNotFound()
         {
             //arrange
             var productId = Guid.NewGuid();
@@ -128,8 +130,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.False(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
+
         [Fact]
-        public async Task CustomersGetSingleAsync_ThrowsAnException_ReturnsInternalServerErrorAndLogs() 
+        public async Task CustomersGetSingleAsync_ThrowsAnException_ReturnsInternalServerErrorAndLogs()
         {
             //arrange
             var productId = Guid.NewGuid();
@@ -155,9 +158,8 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
         }
 
-
         [Fact]
-        public async Task AdminsGetAllAsync_ExistingProducts_ReturnsOkWithAList() 
+        public async Task AdminsGetAllAsync_ExistingProducts_ReturnsOkWithAList()
         {
             var products = new List<Product>()
             {
@@ -189,8 +191,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.NotEmpty(result.Data);
         }
+
         [Fact]
-        public async Task AdminsGetAllAsync_NoExistingProducts_ReturnsOkWithEmptyList() 
+        public async Task AdminsGetAllAsync_NoExistingProducts_ReturnsOkWithEmptyList()
         {
             //arrange
             var products = new List<Product>();
@@ -205,8 +208,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Empty(result.Data);
         }
+
         [Fact]
-        public async Task AdminsGetAllAsync_ThrowsAnException_ReturnsInternalServerErrorAndLogs() 
+        public async Task AdminsGetAllAsync_ThrowsAnException_ReturnsInternalServerErrorAndLogs()
         {
             //arrange
 
@@ -231,9 +235,8 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
         }
 
-
         [Fact]
-        public async Task AdminsGetSingleAsync_ExistingProduct_ReturnsOkWithProduct() 
+        public async Task AdminsGetSingleAsync_ExistingProduct_ReturnsOkWithProduct()
         {
             //arrange
             var productId = Guid.NewGuid();
@@ -247,8 +250,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
+
         [Fact]
-        public async Task AdminsGetSingleAsync_NoExistingProducts_ReturnsNotFound() 
+        public async Task AdminsGetSingleAsync_NoExistingProducts_ReturnsNotFound()
         {
             //arrange
             var productId = Guid.NewGuid();
@@ -262,8 +266,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.False(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
+
         [Fact]
-        public async Task AdminsGetSingleAsync_ThrowsAnException_ReturnsInternalServerErrorAndLogs() 
+        public async Task AdminsGetSingleAsync_ThrowsAnException_ReturnsInternalServerErrorAndLogs()
         {
             //arrange
             var productId = Guid.NewGuid();
@@ -290,15 +295,16 @@ namespace InventoryManagement.API.Tests.Services
         }
 
         [Fact]
-        public async Task UpdateNameAsync_ExistingEntity_ReturnsOk() 
-        { 
+        public async Task UpdateNameAsync_ExistingEntity_ReturnsOk()
+        {
             //arrange
             var id = Guid.NewGuid();
-            var existing = new Product { 
-                Id = id, 
-                Name = "Test name", 
-                Description="Test description",  
-                Price =  12m,
+            var existing = new Product
+            {
+                Id = id,
+                Name = "Test name",
+                Description = "Test description",
+                Price = 12m,
                 StockQuantity = 3
             };
             var newName = "Test name changed";
@@ -313,8 +319,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(newName, existing.Name);
         }
+
         [Fact]
-        public async Task UpdateNameAsync_NonExistingEntity_ReturnsNotFoundAndLogs() 
+        public async Task UpdateNameAsync_NonExistingEntity_ReturnsNotFoundAndLogs()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -339,6 +346,7 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task UpdateNameAsync_ThrowsAnError_ReturnsInternalServerErrorAndLogs()
         {
@@ -367,9 +375,8 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
         }
 
-
         [Fact]
-        public async Task UpdateDescriptionAsync_ExistingEntity_ReturnsOk() 
+        public async Task UpdateDescriptionAsync_ExistingEntity_ReturnsOk()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -393,8 +400,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(newDescription, existing.Description);
         }
+
         [Fact]
-        public async Task UpdateDescriptionAsync_NonExistingEntity_ReturnsNotFoundAndLogs() 
+        public async Task UpdateDescriptionAsync_NonExistingEntity_ReturnsNotFoundAndLogs()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -419,6 +427,7 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task UpdateDescriptionAsync_ThrowsAnError_ReturnsInternalServerErrorAndLogs()
         {
@@ -447,9 +456,8 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
         }
 
-
         [Fact]
-        public async Task UpdatePriceAsync_ExistingEntity_ReturnsOk() 
+        public async Task UpdatePriceAsync_ExistingEntity_ReturnsOk()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -473,8 +481,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(newPrice, existing.Price);
         }
+
         [Fact]
-        public async Task UpdatePriceAsync_NonExistingEntity_ReturnsNotFoundAndLogs() 
+        public async Task UpdatePriceAsync_NonExistingEntity_ReturnsNotFoundAndLogs()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -499,6 +508,7 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task UpdatePriceAsync_ThrowsAnError_ReturnsInternalServerErrorAndLogs()
         {
@@ -527,10 +537,8 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
         }
 
-
-
         [Fact]
-        public async Task UpdateStockQuantityAsync_ExistingEntity_ReturnsOk() 
+        public async Task UpdateStockQuantityAsync_ExistingEntity_ReturnsOk()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -554,8 +562,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(newStockSquantity, existing.StockQuantity);
         }
+
         [Fact]
-        public async Task UpdateStockQuantityAsync_NonExistingEntity_ReturnsNotFoundAndLogs() 
+        public async Task UpdateStockQuantityAsync_NonExistingEntity_ReturnsNotFoundAndLogs()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -580,6 +589,7 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task UpdateStockQuantityAsync_ThrowsAnError_ReturnsInternalServerErrorAndLogs()
         {
@@ -608,9 +618,8 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
         }
 
-
         [Fact]
-        public async Task AddAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsError() 
+        public async Task AddAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsError()
         {
             //arrange
 
@@ -642,6 +651,7 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task AddAsync_SuccessfulFlow_ReturnsCreated()
         {
@@ -662,7 +672,6 @@ namespace InventoryManagement.API.Tests.Services
                 StockQuantity = 2
             };
 
-
             _productRepositoryMock.Setup(r => r.AddAsync(It.IsAny<Product>())).ReturnsAsync(addedProduct);
 
             //act
@@ -674,7 +683,7 @@ namespace InventoryManagement.API.Tests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_NonExistingId_ReturnsNotFoundAndLogsWarning() 
+        public async Task UpdateAsync_NonExistingId_ReturnsNotFoundAndLogsWarning()
         {
             //arrange
             var id = Guid.NewGuid();
@@ -704,8 +713,8 @@ namespace InventoryManagement.API.Tests.Services
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
-
         }
+
         [Fact]
         public async Task UpdateAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsError()
         {
@@ -739,8 +748,8 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
-
         }
+
         [Fact]
         public async Task UpdateAsync_ValidEntity_ReturnsOk()
         {
@@ -772,16 +781,15 @@ namespace InventoryManagement.API.Tests.Services
             //assert
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-
         }
 
         [Fact]
-        public async Task DeleteAsync_NonExistingId_ReturnsNotFoundAndLogsWarning() 
+        public async Task DeleteAsync_NonExistingId_ReturnsNotFoundAndLogsWarning()
         {
             //arrange
             var id = Guid.NewGuid();
-           
-            _productRepositoryMock.Setup(r=>r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
             //act
             var result = await _sut.DeleteAsync(id);
             //assert
@@ -798,8 +806,8 @@ namespace InventoryManagement.API.Tests.Services
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
-
         }
+
         [Fact]
         public async Task DeleteAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsWarning()
         {
@@ -824,8 +832,8 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
-
         }
+
         [Fact]
         public async Task DeleteAsync_ValidFlow_ReturnsNoContent()
         {
@@ -849,9 +857,6 @@ namespace InventoryManagement.API.Tests.Services
 
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
-
-
         }
-
     }
 }

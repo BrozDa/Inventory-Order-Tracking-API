@@ -24,7 +24,6 @@ namespace Inventory_Order_Tracking.API.Validators
             RuleFor(x => x.StockQuantity)
                 .Must(val => val is null || val > 0)
                 .WithMessage("Stock must be  positive number");
-
         }
     }
 }

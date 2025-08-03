@@ -1,5 +1,4 @@
 ﻿using Inventory_Order_Tracking.API.Domain;
-using Inventory_Order_Tracking.API.Models;
 
 namespace Inventory_Order_Tracking.API.Dtos
 {
@@ -14,8 +13,5 @@ namespace Inventory_Order_Tracking.API.Dtos
         public StockStatus StockStatus { get; set; }
 
         public decimal Price { get; set; }
-
     }
-
-
 }

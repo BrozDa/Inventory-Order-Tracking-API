@@ -1,18 +1,17 @@
-
 using Inventory_Order_Tracking.API.Configuration;
 using Inventory_Order_Tracking.API.Context;
+using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Repository;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Utils;
+using Inventory_Order_Tracking.API.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
-using Inventory_Order_Tracking.API.Validators;
-using Inventory_Order_Tracking.API.Domain;
 
 namespace Inventory_Order_Tracking.API
 {
@@ -20,18 +19,16 @@ namespace Inventory_Order_Tracking.API
     {
         public static async Task Main(string[] args)
         {
-
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File(
-                    "logs/log.txt", 
+                    "logs/log.txt",
                     rollingInterval: RollingInterval.Day,
                     outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .MinimumLevel.Information()
                 .CreateLogger();
-           
+
             try
             {
-
                 var builder = WebApplication.CreateBuilder(args);
 
                 builder.Host.UseSerilog();
@@ -49,10 +46,9 @@ namespace Inventory_Order_Tracking.API
                 var validator = new JwtSettingValidator();
 
                 var result = validator.Validate(jwtSettings);
-                
+
                 if (!result.IsValid)
                 {
-  
                     var errors = string.Join("; ", result.Errors.Select(e => e.ErrorMessage));
                     throw new ArgumentException(errors);
                 }
@@ -64,7 +60,6 @@ namespace Inventory_Order_Tracking.API
 
                 if (emailSettings is null)
                     throw new ArgumentNullException("Missing EmailSettings in Appconfig.js");
-
 
                 var emailSettingsValidator = new EmailSettingsValidator();
 
@@ -80,18 +75,17 @@ namespace Inventory_Order_Tracking.API
                 builder.Services.AddSingleton(jwtSettings);
                 builder.Services.AddSingleton(emailSettings);
 
-
                 /////////////////////////////////////////////////////////////////////////////////////// Rest of services
                 builder.Services
                     .AddFluentEmail(emailSettings.SenderEmail, emailSettings.Sender)
-                    .AddSmtpSender(emailSettings.Host,  emailSettings.Port);
+                    .AddSmtpSender(emailSettings.Host, emailSettings.Port);
 
                 builder.Services.AddHttpContextAccessor();
 
                 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
                 builder.Services.AddScoped<IProductService, ProductService>();
                 builder.Services.AddScoped<IAuthService, AuthService>();
-                
+
                 builder.Services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
                 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -105,7 +99,7 @@ namespace Inventory_Order_Tracking.API
                 builder.Services.AddDbContext<InventoryManagementContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
- 
+
                 builder.Services.AddControllers();
 
                 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -132,7 +126,7 @@ namespace Inventory_Order_Tracking.API
                 });
 
                 var app = builder.Build();
-                
+
                 using var scope = app.Services.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<InventoryManagementContext>();
                 await context.Database.MigrateAsync();
@@ -147,11 +141,10 @@ namespace Inventory_Order_Tracking.API
 
                 app.UseAuthorization();
 
-
                 app.MapControllers();
                 app.Run();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Log.Fatal(ex, "Application failed to start");
             }
@@ -159,7 +152,6 @@ namespace Inventory_Order_Tracking.API
             {
                 Log.CloseAndFlush();
             }
-            
         }
     }
 }

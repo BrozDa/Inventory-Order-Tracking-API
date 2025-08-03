@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-
 namespace InventoryManagement.API.Tests.Controllers
 {
     public class ProductControllerTests
@@ -19,10 +18,10 @@ namespace InventoryManagement.API.Tests.Controllers
         {
             _sut = new ProductsController(_serviceMock.Object, _loggerMock.Object);
         }
+
         [Fact]
         public async Task CustomerGetAll_SuccessfulRequest_ReturnsOk()
         {
-
             var data = new List<ProductCustomerDto>();
             var serviceResult = ProductServiceResult<List<ProductCustomerDto>>.Ok(data);
 
@@ -31,12 +30,11 @@ namespace InventoryManagement.API.Tests.Controllers
             var result = await _sut.CustomerGetAll();
 
             Assert.IsType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task CustomerGetAll_FailedRequest_ReturnsOtherThanOk()
         {
-
             var data = new List<ProductCustomerDto>();
             var serviceResult = ProductServiceResult<List<ProductCustomerDto>>.InternalServerError("Test result");
 
@@ -45,8 +43,8 @@ namespace InventoryManagement.API.Tests.Controllers
             var result = await _sut.CustomerGetAll();
 
             Assert.IsNotType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task CustomerGetSingle_SuccessfulRequest_ReturnsOk()
         {
@@ -54,20 +52,19 @@ namespace InventoryManagement.API.Tests.Controllers
             var data = new ProductCustomerDto() { Id = id };
             var serviceResult = ProductServiceResult<ProductCustomerDto>.Ok(data);
 
-
             _serviceMock.Setup(s => s.CustomersGetSingleAsync(id)).ReturnsAsync(serviceResult);
 
             var result = await _sut.CustomerGetSingle(id);
 
             Assert.IsType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task CustomerGetSingle_FailedRequest_ReturnsOk()
         {
             var id = Guid.NewGuid();
             var data = new ProductCustomerDto() { Id = id };
             var serviceResult = ProductServiceResult<ProductCustomerDto>.NotFound();
-
 
             _serviceMock.Setup(s => s.CustomersGetSingleAsync(id)).ReturnsAsync(serviceResult);
 
@@ -80,7 +77,6 @@ namespace InventoryManagement.API.Tests.Controllers
         [Fact]
         public async Task AdminsGetAll_SuccessfulRequest_ReturnsOk()
         {
-
             var data = new List<ProductAdminDto>();
             var serviceResult = ProductServiceResult<List<ProductAdminDto>>.Ok(data);
 
@@ -89,12 +85,11 @@ namespace InventoryManagement.API.Tests.Controllers
             var result = await _sut.AdminsGetAll();
 
             Assert.IsType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task AdminsGetAll_FailedRequest_ReturnsOtherThanOk()
         {
-
             var data = new List<ProductAdminDto>();
             var serviceResult = ProductServiceResult<List<ProductAdminDto>>.InternalServerError("Test result");
 
@@ -103,8 +98,8 @@ namespace InventoryManagement.API.Tests.Controllers
             var result = await _sut.AdminsGetAll();
 
             Assert.IsNotType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task AdminsGetSingle_SuccessfulRequest_ReturnsOk()
         {
@@ -112,20 +107,19 @@ namespace InventoryManagement.API.Tests.Controllers
             var data = new ProductAdminDto() { Id = id };
             var serviceResult = ProductServiceResult<ProductAdminDto>.Ok(data);
 
-
             _serviceMock.Setup(s => s.AdminsGetSingleAsync(id)).ReturnsAsync(serviceResult);
 
             var result = await _sut.AdminsGetSingle(id);
 
             Assert.IsType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task AdminsGetSingle_FailedRequest_ReturnsOk()
         {
             var id = Guid.NewGuid();
             var data = new ProductAdminDto() { Id = id };
             var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
-
 
             _serviceMock.Setup(s => s.AdminsGetSingleAsync(id)).ReturnsAsync(serviceResult);
 
@@ -136,7 +130,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         [Fact]
-        public async Task AdminsAddStock_SuccessfulRequest_ReturnsOk()
+        public async Task AdminsAdd_SuccessfulRequest_ReturnsOk()
         {
             //arrange
             var model = new ProductAddDto()
@@ -156,8 +150,9 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<OkObjectResult>(result);
         }
+
         [Fact]
-        public async Task AdminsAddStock_FailedRequest_ReturnsOtherThanOk()
+        public async Task AdminsAdd_FailedRequest_ReturnsOtherThanOk()
         {
             //arrange
             var model = new ProductAddDto()
@@ -177,6 +172,22 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        public async Task AdminsUpdateName_FailedRequest_ReturnsOtherThanOk() 
+        { 
+
+        }
+        public async Task AdminsUpdateName_SuccessfulRequest_ReturnsOk() { }
+
+        public async Task AdminsUpdateDescription_FailedRequest_ReturnsOtherThanOk() { }
+        public async Task AdminsUpdateDescription_SuccessfulRequest_ReturnsOk() { }
+
+        public async Task AdminsUpdatePrice_FailedRequest_ReturnsOtherThanOk() { }
+        public async Task AdminsUpdatePrice_SuccessfulRequest_ReturnsOk() { }
+
+        public async Task UpdateStock_FailedRequest_ReturnsOtherThanOk() { }
+        public async Task UpdateStock_SuccessfulRequest_ReturnsOk() { }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         [Fact]
         public async Task AdminsUpdate_SuccessfulRequest_ReturnsOk()
@@ -187,7 +198,7 @@ namespace InventoryManagement.API.Tests.Controllers
             {
                 Name = "Updated Name",
                 Description = "Updated Description",
-                Price = 69m, 
+                Price = 69m,
                 StockQuantity = 15
             };
 
@@ -195,11 +206,12 @@ namespace InventoryManagement.API.Tests.Controllers
 
             _serviceMock.Setup(s => s.UpdateAsync(id, It.IsAny<ProductUpdateDto>())).ReturnsAsync(serviceResult);
             //act
-            var result = await _sut.AdminsUpdate(id,model);
+            var result = await _sut.AdminsUpdate(id, model);
 
             //assert
             Assert.IsType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task AdminsUpdate_FailedRequest_ReturnsOtherThanOk()
         {
@@ -222,9 +234,10 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task AdminsDelete_FailedRequest_ReturnsNonOK()
-        { 
+        {
             //arrange
             var id = Guid.NewGuid();
 
@@ -237,6 +250,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task AdminsDelete_SuccessfulRequest_ReturnsNoContent()
         {
@@ -253,5 +267,4 @@ namespace InventoryManagement.API.Tests.Controllers
             Assert.IsType<NoContentResult>(result);
         }
     }
-    
 }

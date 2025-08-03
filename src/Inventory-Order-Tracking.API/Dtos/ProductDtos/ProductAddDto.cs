@@ -1,6 +1,4 @@
-﻿using Inventory_Order_Tracking.API.Models;
-
-namespace Inventory_Order_Tracking.API.Dtos
+﻿namespace Inventory_Order_Tracking.API.Dtos
 {
     public class ProductAddDto
     {
@@ -8,6 +6,5 @@ namespace Inventory_Order_Tracking.API.Dtos
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public int? StockQuantity { get; set; }
-
     }
 }
