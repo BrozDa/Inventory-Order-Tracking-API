@@ -126,7 +126,7 @@ namespace Inventory_Order_Tracking.API.Controllers
 
         [HttpPatch("admin/update-stock/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> UpdateStock([FromQuery] Guid id, ProductUpdateStockDto dto)
+        public async Task<IActionResult> AdminsUpdateStock([FromQuery] Guid id, ProductUpdateStockDto dto)
         {
             if (dto.Stock < 0)
             {

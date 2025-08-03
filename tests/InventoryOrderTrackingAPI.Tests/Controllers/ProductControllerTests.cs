@@ -130,7 +130,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         [Fact]
-        public async Task AdminsAdd_SuccessfulRequest_ReturnsOk()
+        public async Task AdminsAdd_SuccessfulRequest_ReturnsCreated()
         {
             //arrange
             var model = new ProductAddDto()
@@ -148,7 +148,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var result = await _sut.AdminsAdd(model);
 
             //assert
-            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<CreatedResult>(result);
         }
 
         [Fact]
@@ -174,20 +174,158 @@ namespace InventoryManagement.API.Tests.Controllers
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [Fact]
         public async Task AdminsUpdateName_FailedRequest_ReturnsOtherThanOk() 
         { 
 
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdateNameDto { Name = "Changed Name" };
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+
+            _serviceMock.Setup(s => s.UpdateNameAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.AdminsUpdateName(id, dto);
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+
         }
-        public async Task AdminsUpdateName_SuccessfulRequest_ReturnsOk() { }
+        [Fact]
+        public async Task AdminsUpdateName_SuccessfulRequest_ReturnsOk()
+        {
 
-        public async Task AdminsUpdateDescription_FailedRequest_ReturnsOtherThanOk() { }
-        public async Task AdminsUpdateDescription_SuccessfulRequest_ReturnsOk() { }
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdateNameDto { Name = "Changed Name" };
 
-        public async Task AdminsUpdatePrice_FailedRequest_ReturnsOtherThanOk() { }
-        public async Task AdminsUpdatePrice_SuccessfulRequest_ReturnsOk() { }
+            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
 
-        public async Task UpdateStock_FailedRequest_ReturnsOtherThanOk() { }
-        public async Task UpdateStock_SuccessfulRequest_ReturnsOk() { }
+            _serviceMock.Setup(s => s.UpdateNameAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.AdminsUpdateName(id, dto);
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+
+        }
+        [Fact]
+        public async Task AdminsUpdateDescription_FailedRequest_ReturnsOtherThanOk()
+        {
+
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdateDescriptionDto { Description = "Changed Description" };
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+
+            _serviceMock.Setup(s => s.UpdateDescriptionAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.AdminsUpdateDescription(id, dto);
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+
+        }
+        [Fact]
+        public async Task AdminsUpdateDescription_SuccessfulRequest_ReturnsOk()
+        {
+
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdateDescriptionDto { Description = "Changed Description" };
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+
+            _serviceMock.Setup(s => s.UpdateDescriptionAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.AdminsUpdateDescription(id, dto);
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+
+        }
+        [Fact]
+        public async Task AdminsUpdatePrice_FailedRequest_ReturnsOtherThanOk()
+        {
+
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdatePriceDto { Price= 13.24m};
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+
+            _serviceMock.Setup(s => s.UpdatePriceAsync(It.IsAny<Guid>(), It.IsAny<decimal>())).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.AdminsUpdatePrice(id, dto);
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+
+        }
+        [Fact]
+        public async Task AdminsUpdatePrice_SuccessfulRequest_ReturnsOk()
+        {
+
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdatePriceDto { Price = 13.24m };
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+
+            _serviceMock.Setup(s => s.UpdatePriceAsync(It.IsAny<Guid>(), It.IsAny<decimal>())).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.AdminsUpdatePrice(id, dto);
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+
+        }
+        [Fact]
+        public async Task UpdateStock_FailedRequest_ReturnsOtherThanOk()
+        {
+
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdateStockDto { Stock = 13 };
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+
+            _serviceMock.Setup(s => s.UpdateStockQuantityAsync(It.IsAny<Guid>(), It.IsAny<int>())).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.AdminsUpdateStock(id, dto);
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+
+        }
+        [Fact]
+        public async Task UpdateStock_SuccessfulRequest_ReturnsOk()
+        {
+
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdateStockDto { Stock = 13 };
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+
+            _serviceMock.Setup(s => s.UpdateStockQuantityAsync(It.IsAny<Guid>(), It.IsAny<int>())).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.AdminsUpdateStock(id, dto);
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+
+        }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         [Fact]
         public async Task AdminsUpdate_SuccessfulRequest_ReturnsOk()
