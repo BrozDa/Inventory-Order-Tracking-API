@@ -646,7 +646,7 @@ namespace InventoryManagement.API.Tests.Services
                 Times.Once);
         }
         [Fact]
-        public async Task AddAsync_SuccessfulFlow_ReturnsCreated() 
+        public async Task AddAsync_SuccessfulFlow_ReturnsCreated()
         {
             //arrange
             var dto = new ProductAddDto()
@@ -674,6 +674,108 @@ namespace InventoryManagement.API.Tests.Services
             //assert
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_NonExistingId_ReturnsNotFoundAndLogsWarning() 
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdateDto
+            {
+                Name = "UpdatedName",
+                Description = null,
+                Price = 15m,
+                StockQuantity = 8
+            };
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+
+            //act
+            var result = await _sut.UpdateAsync(id, dto);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()
+                    .Contains("[ProductService][UpdateNameAsync] Attempted name change for non-existing product")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task UpdateAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsError()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var dto = new ProductUpdateDto
+            {
+                Name = "UpdatedName",
+                Description = null,
+                Price = 15m,
+                StockQuantity = 8
+            };
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+                .Throws(() => new DbUpdateException("Test exception"));
+
+            //act
+            var result = await _sut.UpdateAsync(id, dto);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+            Assert.Equal("Failed to update product", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()
+                    .Contains("[UpdateAsync] Unhandled Exception has occured")),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task UpdateAsync_ValidEntity_ReturnsOk()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var requestDto = new ProductUpdateDto
+            {
+                Name = "UpdatedName",
+                Description = null,
+                Price = 15m,
+                StockQuantity = 8
+            };
+
+            var entity = new Product
+            {
+                Id = id,
+                Name = "UpdatedName",
+                Description = null,
+                Price = 15m,
+                StockQuantity = 8
+            };
+
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(entity);
+
+            //act
+            var result = await _sut.UpdateAsync(id, requestDto);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+
         }
 
     }

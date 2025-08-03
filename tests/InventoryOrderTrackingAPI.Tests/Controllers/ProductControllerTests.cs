@@ -187,5 +187,51 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [Fact]
+        public async Task AdminsUpdate_SuccessfulRequest_ReturnsOk()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var model = new ProductUpdateDto()
+            {
+                Name = "Updated Name",
+                Description = "Updated Description",
+                Price = 69m, 
+                StockQuantity = 15
+            };
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+
+            _serviceMock.Setup(s => s.UpdateAsync(id, It.IsAny<ProductUpdateDto>())).ReturnsAsync(serviceResult);
+            //act
+            var result = await _sut.AdminsUpdate(id,model);
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+        [Fact]
+        public async Task AdminsUpdate_FailedRequest_ReturnsOtherThanOk()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var model = new ProductUpdateDto()
+            {
+                Name = "Updated Name",
+                Description = "Updated Description",
+                Price = 69m,
+                StockQuantity = 15
+            };
+
+            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+
+            _serviceMock.Setup(s => s.UpdateAsync(id, It.IsAny<ProductUpdateDto>())).ReturnsAsync(serviceResult);
+            //act
+            var result = await _sut.AdminsUpdate(id, model);
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+        }
     }
+    
 }
