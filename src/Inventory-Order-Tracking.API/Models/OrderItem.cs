@@ -1,4 +1,6 @@
-﻿namespace Inventory_Order_Tracking.API.Models
+﻿using Inventory_Order_Tracking.API.Dtos;
+
+namespace Inventory_Order_Tracking.API.Models
 {
     public class OrderItem
     {
@@ -10,5 +12,19 @@
         public Guid ProductId { get; set; }
         public Product Product { get; set; } //nav prop
         public int OrderedQuantity { get; set; }
+
+        public decimal UnitPrice { get; set; }
+
+        public OrderItemDto ToDto()
+        {
+            return new OrderItemDto
+            {
+                Id = Id,
+                ProductId = ProductId,
+                ProductName = Product.Name,
+                Quantity = OrderedQuantity,
+                UnitPrice = UnitPrice,
+            };
+        }
     }
 }
