@@ -214,5 +214,59 @@ namespace InventoryManagement.API.Tests.Controllers
             Assert.IsType<OkObjectResult>(result);
         }
 
+        [Fact]
+        public async Task GetOrderHistoryForUser_InvalidUser_ReturnsUnauthorized()
+        {
+            //arrange
+            Guid? userId = null;
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+
+            //act
+            var result = await _sut.GetOrderHistoryForUser();
+
+            //assert
+            Assert.IsType<UnauthorizedObjectResult>(result);
+        }
+        [Fact]
+        public async Task GetOrderHistoryForUser_FailedRequest_ReturnsOtherThanOk()
+        {
+            //arrange
+            Guid? userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+            
+            var serviceResult = ServiceResult<List<OrderDto>>.BadRequest("Test bad request");
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+
+            _orderServiceMock.Setup(os => os.GetAllOrdersForUser(userId.Value)).ReturnsAsync(serviceResult);
+            //act
+            var result = await _sut.GetOrderHistoryForUser();
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+        }
+        [Fact]
+        public async Task GetOrderHistoryForUser_SuccessfulRequest_ReturnsOk()
+        {
+            //arrange
+            Guid? userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var orderHistory = new List<OrderDto> { new OrderDto { Id = orderId } };
+
+            var serviceResult = ServiceResult<List<OrderDto>>.Ok(orderHistory);
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+
+            _orderServiceMock.Setup(os => os.GetAllOrdersForUser(userId.Value)).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.GetOrderHistoryForUser();
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
     }
 }

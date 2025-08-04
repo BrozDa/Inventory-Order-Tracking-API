@@ -5,6 +5,7 @@ using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Shared;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Serilog.Core;
@@ -292,5 +293,87 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(result.Data);
         }
+
+        [Fact]
+        public async Task GetAllOrdersForUser_NonExistingUser_ReturnsNotFoundAndLogsWarning()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(User));
+            //act
+
+            var result = await _sut.GetAllOrdersForUser(userId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal("Non existent user", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetAllOrdersForUser] Non existent user attempted to fetch order history")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task GetAllOrdersForUser_RepoThrowsException_ReturnsInternalServerErrorAndLogsError()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or => or.GetAllForUserAsync(userId)).Throws(() => new DbUpdateException("Test exception"));
+            //act
+
+            var result = await _sut.GetAllOrdersForUser(userId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+            Assert.Equal("Failed to fetch the order history", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetAllOrdersForUser] Unhandled Exception has occured")),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task GetAllOrdersForUser_ValidFlow_ReturnsOk()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+
+            var orderHistory = new List<Order> { 
+                new Order { Id = Guid.NewGuid() },
+                new Order { Id = Guid.NewGuid() }
+            };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or => or.GetAllForUserAsync(userId)).ReturnsAsync(orderHistory);
+            //act
+
+            var result = await _sut.GetAllOrdersForUser(userId);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(result.Data);
+
+        }
+
     }
 }

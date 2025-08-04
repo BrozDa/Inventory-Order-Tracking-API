@@ -107,7 +107,7 @@ namespace Inventory_Order_Tracking.API.Services
             catch (Exception ex)
             {
                 logger.LogError(ex, "[OrderService][GetAllOrdersForUser] Unhandled Exception has occured");
-                return ServiceResult<List<OrderDto>>.InternalServerError("Failed to fetch the order order");
+                return ServiceResult<List<OrderDto>>.InternalServerError("Failed to fetch the order history");
             }
 
         }
