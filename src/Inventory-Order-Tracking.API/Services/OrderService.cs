@@ -1,4 +1,5 @@
-﻿using Inventory_Order_Tracking.API.Dtos;
+﻿using Inventory_Order_Tracking.API.Domain;
+using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
@@ -74,7 +75,7 @@ namespace Inventory_Order_Tracking.API.Services
                 {
                     logger.LogWarning("[OrderService][GetOrderById] User tried to fetch order beloning to different user; requesting id {id}/ actual id {actual}"
                         , userId, order.UserId);
-                    return ServiceResult<OrderDto>.Unauthorized();
+                    return ServiceResult<OrderDto>.Forbidden();
                 }
 
                 return ServiceResult<OrderDto>.Ok(order.ToDto());
@@ -110,6 +111,51 @@ namespace Inventory_Order_Tracking.API.Services
                 return ServiceResult<List<OrderDto>>.InternalServerError("Failed to fetch the order history");
             }
 
+        }
+
+        public async Task<ServiceResult<OrderDto>> CancelOrder(Guid userId, Guid orderId)
+        {
+            try
+            {
+                var user = await userRepo.GetByIdAsync(userId);
+                if (user is null)
+                {
+                    logger.LogWarning("[OrderService][CancelOrder] Non existent user attempted to cancel order");
+                    return ServiceResult<OrderDto>.NotFound("Non existent user");
+                }
+
+                var order = await orderRepo.GetById(orderId);
+
+                if(order is null)
+                {
+                    logger.LogWarning("[OrderService][CancelOrder] Non existent order cancellation attempt");
+                    return ServiceResult<OrderDto>.NotFound("Non existent order");
+                }
+
+                if (order.UserId != userId)
+                {
+                    logger.LogWarning("[OrderService][CancelOrder] User tried to cancel order belonging to different user; requesting id {id}/ actual id {actual}"
+                        , userId, order.UserId);
+                    return ServiceResult<OrderDto>.Forbidden();
+                }
+
+                if(order.Status != OrderStatus.Submitted)
+                {
+                    logger.LogWarning("[OrderService][CancelOrder] User tried to cancel in other state than Submited; order id {id}"
+                        , order.Id);
+                    return ServiceResult<OrderDto>.BadRequest("Only orders in submitted state can be cancelled");
+                }
+
+                order.Status = OrderStatus.Cancelled;
+                await orderRepo.SaveChangesAsync();
+                return ServiceResult<OrderDto>.Ok(order.ToDto());
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "[OrderService][GetByIdAsync] Unhandled Exception has occured");
+                return ServiceResult<OrderDto>.InternalServerError("Failed to cancel the order");
+            }
         }
         private async Task<(List<(Product, int)> orderedProducts, List<string> errors)> ValidateAndFetchProducts(CreateOrderDto dto)
         {

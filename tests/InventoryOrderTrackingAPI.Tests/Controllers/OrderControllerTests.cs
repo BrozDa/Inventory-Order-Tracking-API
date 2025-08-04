@@ -4,6 +4,7 @@ using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 
 
@@ -267,6 +268,61 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async Task CancelOrder_InvalidUser_ReturnsUnauthorized()
+        {
+            //arrange
+            Guid? userId = null;
+            Guid orderId = Guid.NewGuid();
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+
+            //act
+            var result = await _sut.CancelOrder(orderId);
+
+            //assert
+            Assert.IsType<UnauthorizedObjectResult>(result);
+        }
+        [Fact]
+        public async Task CancelOrder_FailedRequest_ReturnsOtherThanOk()
+        {
+            //arrange
+            Guid? userId = Guid.NewGuid();
+            Guid orderId = Guid.NewGuid();
+
+            var serviceResult = ServiceResult<OrderDto>.BadRequest("Test bad request");
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+            _orderServiceMock.Setup(os => os.CancelOrder(userId.Value, orderId)).ReturnsAsync(serviceResult);
+            //act
+            var result = await _sut.CancelOrder(orderId);
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+        }
+        [Fact]
+        public async Task CancelOrder_SuccessfulRequest_ReturnsOk()
+        {
+            //arrange
+            Guid? userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var order = new OrderDto { Id = orderId };
+
+            var serviceResult = ServiceResult<OrderDto>.Ok(order);
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+
+            _orderServiceMock.Setup(os => os.CancelOrder(userId.Value, orderId)).ReturnsAsync(serviceResult);
+
+            //act
+            var result = await _sut.CancelOrder(orderId);
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
 
     }
 }

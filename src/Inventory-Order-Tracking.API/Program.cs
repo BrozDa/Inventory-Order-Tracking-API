@@ -63,7 +63,7 @@ namespace Inventory_Order_Tracking.API
 
                 var emailSettingsValidator = new EmailSettingsValidator();
 
-                var emailSettingsResult = validator.Validate(jwtSettings);
+                var emailSettingsResult = emailSettingsValidator.Validate(emailSettings);
 
                 if (!result.IsValid)
                 {
@@ -82,15 +82,17 @@ namespace Inventory_Order_Tracking.API
 
                 builder.Services.AddHttpContextAccessor();
 
-                builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
                 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
                 builder.Services.AddScoped<IProductService, ProductService>();
                 builder.Services.AddScoped<IAuthService, AuthService>();
+                builder.Services.AddScoped<IOrderService, OrderService>();
+                builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
                 builder.Services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
                 builder.Services.AddScoped<IProductRepository, ProductRepository>();
                 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+                
 
                 builder.Services.AddScoped<RegisterRequestValidator>();
                 builder.Services.AddScoped<ProductAddValidator>();
@@ -141,6 +143,7 @@ namespace Inventory_Order_Tracking.API
                 }
                 app.UseHttpsRedirection();
 
+                app.UseAuthentication();
                 app.UseAuthorization();
 
                 app.MapControllers();

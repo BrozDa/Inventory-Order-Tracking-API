@@ -7,10 +7,12 @@ using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.SqlServer.Server;
 using Moq;
 using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -372,6 +374,180 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(result.Data);
+
+        }
+
+        [Fact]
+        public async Task CancelOrder_NonExistingUser_ReturnsNotFoundAndLogsWarning()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(User));
+            //act
+
+            var result = await _sut.CancelOrder(userId, orderId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal("Non existent user", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrder] Non existent user attempted to cancel order")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task CancelOrder_NonExistingOrder_ReturnsNotFoundAndLogsWarning()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or=>or.GetById(orderId)).ReturnsAsync(default(Order));
+            //act
+
+            var result = await _sut.CancelOrder(userId, orderId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal("Non existent order", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrder] Non existent order cancellation attempt")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task CancelOrder_OrderBelonsToDifferentUser_ReturnsForbiddenAndLogsWarning()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+            var order = new Order { Id = orderId, UserId = Guid.NewGuid() }; 
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            //act
+
+            var result = await _sut.CancelOrder(userId, orderId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrder] User tried to cancel order belonging to different user")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task CancelOrder_OrderNotInSubmittedStatus_ReturnsBadRequestAndLogsWarning()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+            var order = new Order { Id = orderId, UserId = userId, Status = OrderStatus.Completed };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            //act
+
+            var result = await _sut.CancelOrder(userId, orderId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Only orders in submitted state can be cancelled", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrder] User tried to cancel in other state than Submited")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task CancelOrder_RepoThrowsAnException_ReturnsInternalServerErrorAndLogsError()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+            var order = new Order { Id = orderId, UserId = userId, Status = OrderStatus.Completed };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or => or.GetById(orderId)).Throws(() => new DbUpdateException("Test exception"));
+            //act
+
+            var result = await _sut.CancelOrder(userId, orderId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+            Assert.Equal("Failed to cancel the order", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetByIdAsync] Unhandled Exception has occured")),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task CancelOrder_ValidInput_ReturnsOk()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+            var order = new Order { Id = orderId, UserId = userId, Status = OrderStatus.Submitted };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            //act
+
+            var result = await _sut.CancelOrder(userId, orderId);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(result.Data);
+            Assert.Equal(OrderStatus.Cancelled, result.Data.Status);
+
 
         }
 

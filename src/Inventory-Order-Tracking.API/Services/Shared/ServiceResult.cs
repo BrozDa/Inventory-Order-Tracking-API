@@ -77,5 +77,14 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = "Unauthorized"
             };
         }
+        public static ServiceResult<T> Forbidden()
+        {
+            return new ServiceResult<T>
+            {
+                IsSuccessful = false,
+                StatusCode = HttpStatusCode.Forbidden,
+                ErrorMessage = "Unauthorized"
+            };
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize] // Users can view their own order history
+        [Authorize] 
         public async Task<IActionResult> GetOrderHistoryForUser()
         {
             var userId = userService.GetCurentUserId();
@@ -54,6 +54,22 @@ namespace Inventory_Order_Tracking.API.Controllers
             return serviceResult.IsSuccessful
             ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+        }
+
+        [HttpPut("{orderId:guid}/cancel")]
+        [Authorize] 
+        public async Task<IActionResult> CancelOrder(Guid orderId)
+        {
+            var userId = userService.GetCurentUserId();
+            if (userId is null)
+                return Unauthorized("User Id not found in the token");
+
+            var serviceResult = await orderService.CancelOrder(userId.Value, orderId);
+
+            return serviceResult.IsSuccessful
+            ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+
         }
 
     }

@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace Inventory_Order_Tracking.API.Services
 {
-    public class CurrentUserService(HttpContextAccessor contextAccessor) : ICurrentUserService
+    public class CurrentUserService(IHttpContextAccessor contextAccessor) : ICurrentUserService
     {
 
         public Guid? GetCurentUserId()
