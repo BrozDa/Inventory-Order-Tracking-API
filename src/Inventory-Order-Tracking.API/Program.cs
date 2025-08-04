@@ -82,6 +82,7 @@ namespace Inventory_Order_Tracking.API
 
                 builder.Services.AddHttpContextAccessor();
 
+                builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
                 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
                 builder.Services.AddScoped<IProductService, ProductService>();
                 builder.Services.AddScoped<IAuthService, AuthService>();

@@ -8,20 +8,30 @@ using System.Security.Claims;
 namespace Inventory_Order_Tracking.API.Controllers
 {
     public class OrderController(
-        IOrderService service,
-        ILogger<ProductsController> logger) :ControllerBase
+        ICurrentUserService userService,
+        IOrderService orderService) :ControllerBase
     {
         [HttpPost]
         [Authorize]
+
         public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderDto orderDto)
         {
-            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
+            var userId = userService.GetCurentUserId();
+            if (userId is null)
+                return Unauthorized("User Id not found in the token");
 
-            var serviceResult = await service.SubmitOrder(userId, orderDto);
+            var serviceResult = await orderService.SubmitOrder(userId.Value, orderDto);
 
             return serviceResult.IsSuccessful
-            ? Ok(serviceResult.Data)
+            ? CreatedAtAction(nameof(GetOrderById), new { id = serviceResult.Data!.Id }, serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+        }
+        [HttpGet]
+        [Authorize]
+        [HttpGet("{orderId:guid}")]
+        public async Task<IActionResult> GetOrderById([FromQuery] Guid id) 
+        {
+            throw new NotImplementedException();
         }
     }
 }

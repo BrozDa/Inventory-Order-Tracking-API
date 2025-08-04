@@ -37,12 +37,14 @@ namespace Inventory_Order_Tracking.API.Services
 
                 await orderRepo.SaveChangesAsync(); //this saves even products due to shared context
 
-                return ServiceResult<OrderDto>.Ok(order.ToDto());
+                var dtoo = order.ToDto();
+
+                return ServiceResult<OrderDto>.Created(order.ToDto());
             }
             catch (Exception ex) 
             {
                 logger.LogError(ex, "[OrderService][SubmitOrder] Unhandled Exception has occured");
-                return ServiceResult<OrderDto>.InternalServerError("Failed to update stock quantity");
+                return ServiceResult<OrderDto>.InternalServerError("Failed to submit order");
             }
             
         }
