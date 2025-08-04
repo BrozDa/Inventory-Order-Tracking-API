@@ -7,5 +7,6 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
     {
         Task<ServiceResult<OrderDto>> SubmitOrder(Guid userId, CreateOrderDto dto);
         Task<ServiceResult<OrderDto>> GetOrderById(Guid userId, Guid orderId);
+        Task<ServiceResult<List<OrderDto>>> GetAllOrdersForUser(Guid userId);
     }
 }

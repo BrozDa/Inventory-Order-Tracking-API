@@ -40,5 +40,21 @@ namespace Inventory_Order_Tracking.API.Controllers
             ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
+
+        [HttpGet("all")]
+        [Authorize] // Users can view their own order history
+        public async Task<IActionResult> GetOrderHistoryForUser()
+        {
+            var userId = userService.GetCurentUserId();
+            if (userId is null)
+                return Unauthorized("User Id not found in the token");
+
+            var serviceResult = await orderService.GetAllOrdersForUser(userId.Value);
+
+            return serviceResult.IsSuccessful
+            ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+        }
+
     }
 }

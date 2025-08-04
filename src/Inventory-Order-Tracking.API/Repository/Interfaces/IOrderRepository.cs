@@ -8,5 +8,6 @@ namespace Inventory_Order_Tracking.API.Repository.Interfaces
         Task<List<OrderItem>> AddOrderItems(List<OrderItem> items);
         Task SaveChangesAsync();
         Task<Order?> GetById(Guid orderId);
+        Task<List<Order>> GetAllForUserAsync(Guid userId);
     }
 }

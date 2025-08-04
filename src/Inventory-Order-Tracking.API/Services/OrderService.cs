@@ -3,6 +3,7 @@ using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
+using System.Collections.Generic;
 
 namespace Inventory_Order_Tracking.API.Services
 {
@@ -51,30 +52,63 @@ namespace Inventory_Order_Tracking.API.Services
 
         public async Task<ServiceResult<OrderDto>> GetOrderById(Guid userId, Guid orderId)
         {
-            var user = await userRepo.GetByIdAsync(userId);
-
-            if (user is null)
+            try
             {
-                logger.LogWarning("[OrderService][GetOrderById] Non existent user attempted to fetch order");
-                return ServiceResult<OrderDto>.NotFound("Non existent user");
+                var user = await userRepo.GetByIdAsync(userId);
+
+                if (user is null)
+                {
+                    logger.LogWarning("[OrderService][GetOrderById] Non existent user attempted to fetch order");
+                    return ServiceResult<OrderDto>.NotFound("Non existent user");
+                }
+
+                var order = await orderRepo.GetById(orderId);
+
+                if (order is null)
+                {
+                    logger.LogWarning("[OrderService][GetOrderById] Non existent order fetch attempt");
+                    return ServiceResult<OrderDto>.NotFound("Non existent order");
+                }
+
+                if (order.UserId != userId)
+                {
+                    logger.LogWarning("[OrderService][GetOrderById] User tried to fetch order beloning to different user; requesting id {id}/ actual id {actual}"
+                        , userId, order.UserId);
+                    return ServiceResult<OrderDto>.Unauthorized();
+                }
+
+                return ServiceResult<OrderDto>.Ok(order.ToDto());
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "[OrderService][GetOrderById] Unhandled Exception has occured");
+                return ServiceResult<OrderDto>.InternalServerError("Failed to fetch the order order");
             }
 
-            var order = await orderRepo.GetById(orderId);
-            
-            if(order is null)
-            {
-                logger.LogWarning("[OrderService][GetOrderById] Non existent order fetch attempt");
-                return ServiceResult<OrderDto>.NotFound("Non existent order");
-            }
 
-            if(order.UserId != userId)
-            {
-                logger.LogWarning("[OrderService][GetOrderById] User tried to fetch order beloning to different user; requesting id {id}/ actual id {actual}"
-                    ,userId, order.UserId);
-                return ServiceResult<OrderDto>.Unauthorized();
-            }
+        }
 
-            return ServiceResult<OrderDto>.Ok(order.ToDto());
+        public async Task<ServiceResult<List<OrderDto>>> GetAllOrdersForUser(Guid userId)
+        {
+            try
+            {
+                var user = await userRepo.GetByIdAsync(userId);
+
+                if (user is null)
+                {
+                    logger.LogWarning("[OrderService][GetAllOrdersForUser] Non existent user attempted to fetch order history");
+                    return ServiceResult<List<OrderDto>>.NotFound("Non existent user");
+                }
+
+                var orders = await orderRepo.GetAllForUserAsync(userId);
+
+                return ServiceResult<List<OrderDto>>.Ok(orders.Select(o => o.ToDto()).ToList());
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "[OrderService][GetAllOrdersForUser] Unhandled Exception has occured");
+                return ServiceResult<List<OrderDto>>.InternalServerError("Failed to fetch the order order");
+            }
 
         }
         private async Task<(List<(Product, int)> orderedProducts, List<string> errors)> ValidateAndFetchProducts(CreateOrderDto dto)
@@ -130,6 +164,8 @@ namespace Inventory_Order_Tracking.API.Services
 
             return order;
         }
+
+
 
 
     }

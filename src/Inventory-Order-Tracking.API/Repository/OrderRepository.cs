@@ -27,6 +27,10 @@ namespace Inventory_Order_Tracking.API.Repository
         {
             return await context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
         }
+        public async Task<List<Order>> GetAllForUserAsync(Guid userId)
+        {
+            return await context.Orders.Where(o => o.UserId == userId).ToListAsync();
+        }
         public async Task SaveChangesAsync()
         {
             await context.SaveChangesAsync();
