@@ -9,27 +9,42 @@ namespace Inventory_Order_Tracking.API.Services
     public class OrderService(
         IUserRepository userRepo,
         IProductRepository productRepo,
-        IOrderRepository orderRepo) : IOrderService
+        IOrderRepository orderRepo,
+        ILogger<OrderService> logger) : IOrderService
     {
         public async Task<ServiceResult<OrderDto>> SubmitOrder(Guid userId, CreateOrderDto dto)
         {
-            var user = await userRepo.GetByIdAsync(userId);
-            if(user is null)
-                return ServiceResult<OrderDto>.BadRequest("Non existent user");
+            try
+            {
+                var user = await userRepo.GetByIdAsync(userId);
 
+                if (user is null) //only as double check - user is already authorized in controller level
+                {
+                    logger.LogWarning("[OrderService][SubmitOrder] Non existent user attempted to submit order");
+                    return ServiceResult<OrderDto>.BadRequest("Non existent user");
+                }
+                var (orderedProducts, errors) = await ValidateAndFetchProducts(dto);
 
-            var (orderedProducts, errors) = await ValidateAndFetchProducts(dto);
+                if (errors.Count > 0)
+                {
+                    logger.LogWarning("[OrderService][SubmitOrder] Invalid products within an order by {user}, encountered errors:" +
+                        "{errors}", userId, errors);
 
-            if (errors.Count > 0)
-                return ServiceResult<OrderDto>.BadRequest(string.Join(";", errors));
+                    return ServiceResult<OrderDto>.BadRequest(string.Join(";", errors));
+                }
 
+                var order = await CreateOrder(userId, orderedProducts);
 
-            var order = await CreateOrder(userId, orderedProducts);
+                await orderRepo.SaveChangesAsync(); //this saves even products due to shared context
 
-            await orderRepo.SaveChangesAsync(); //this saves even products due to shared context
-
-
-            return ServiceResult<OrderDto>.Ok(order.ToDto());
+                return ServiceResult<OrderDto>.Ok(order.ToDto());
+            }
+            catch (Exception ex) 
+            {
+                logger.LogError(ex, "[OrderService][SubmitOrder] Unhandled Exception has occured");
+                return ServiceResult<OrderDto>.InternalServerError("Failed to update stock quantity");
+            }
+            
         }
         private async Task<(List<(Product, int)> orderedProducts, List<string> errors)> ValidateAndFetchProducts(CreateOrderDto dto)
         {

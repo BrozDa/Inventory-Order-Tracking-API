@@ -89,6 +89,7 @@ namespace Inventory_Order_Tracking.API
                 builder.Services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
                 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+                builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
                 builder.Services.AddScoped<RegisterRequestValidator>();
                 builder.Services.AddScoped<ProductAddValidator>();
