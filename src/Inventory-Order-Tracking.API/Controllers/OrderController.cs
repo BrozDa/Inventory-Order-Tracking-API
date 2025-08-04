@@ -13,7 +13,6 @@ namespace Inventory_Order_Tracking.API.Controllers
     {
         [HttpPost]
         [Authorize]
-
         public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderDto orderDto)
         {
             var userId = userService.GetCurentUserId();
@@ -26,12 +25,20 @@ namespace Inventory_Order_Tracking.API.Controllers
             ? CreatedAtAction(nameof(GetOrderById), new { id = serviceResult.Data!.Id }, serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
-        [HttpGet]
-        [Authorize]
+
         [HttpGet("{orderId:guid}")]
-        public async Task<IActionResult> GetOrderById([FromQuery] Guid id) 
+        [Authorize]
+        public async Task<IActionResult> GetOrderById(Guid orderId)
         {
-            throw new NotImplementedException();
+            var userId = userService.GetCurentUserId();
+            if (userId is null)
+                return Unauthorized("User Id not found in the token");
+
+            var serviceResult = await orderService.GetOrderById(userId.Value, orderId);
+
+            return serviceResult.IsSuccessful
+            ? Ok(serviceResult.Data)
+                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
     }
 }

@@ -1,16 +1,11 @@
-﻿using Castle.Core.Logging;
-using Inventory_Order_Tracking.API.Controllers;
+﻿using Inventory_Order_Tracking.API.Controllers;
 using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace InventoryManagement.API.Tests.Controllers
 {
@@ -165,5 +160,59 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<CreatedAtActionResult>(result);
         }
+        [Fact]
+        public async Task GetOrderById_InvalidUser_ReturnsUnauthorized()
+        {
+            //arrange
+            Guid? userId = null;
+            var orderId = Guid.NewGuid();
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+
+            //act
+            var result = await _sut.GetOrderById(orderId);
+
+            //assert
+            Assert.IsType<UnauthorizedObjectResult>(result);
+        }
+        [Fact]
+        public async Task GetOrderById_FailedRequest_ReturnsOtherThanOK()
+        {
+            //arrange
+            Guid? userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+            var order = new OrderDto { Id = orderId };
+
+            var serviceResult = ServiceResult<OrderDto>.NotFound();
+
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+            _orderServiceMock.Setup(os => os.GetOrderById(userId.Value,orderId)).ReturnsAsync(serviceResult);   
+            //act
+            var result = await _sut.GetOrderById(orderId);
+
+            //assert
+            Assert.IsNotType<OkObjectResult>(result);
+        }
+        [Fact]
+        public async Task GetOrderById_SuccessfulRequest_ReturnsOk() 
+        {
+            //arrange
+            Guid? userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+            var orderDto = new OrderDto { Id = orderId };
+
+            var serviceResult = ServiceResult<OrderDto>.Ok(orderDto);
+
+
+            _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
+            _orderServiceMock.Setup(os => os.GetOrderById(userId.Value, orderId)).ReturnsAsync(serviceResult);
+            //act
+            var result = await _sut.GetOrderById(orderId);
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
     }
 }

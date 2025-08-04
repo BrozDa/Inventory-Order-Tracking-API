@@ -18,7 +18,7 @@ namespace Inventory_Order_Tracking.API.Services
             {
                 var user = await userRepo.GetByIdAsync(userId);
 
-                if (user is null) //only as double check - user is already authorized in controller level
+                if (user is null)
                 {
                     logger.LogWarning("[OrderService][SubmitOrder] Non existent user attempted to submit order");
                     return ServiceResult<OrderDto>.BadRequest("Non existent user");
@@ -48,6 +48,35 @@ namespace Inventory_Order_Tracking.API.Services
             }
             
         }
+
+        public async Task<ServiceResult<OrderDto>> GetOrderById(Guid userId, Guid orderId)
+        {
+            var user = await userRepo.GetByIdAsync(userId);
+
+            if (user is null)
+            {
+                logger.LogWarning("[OrderService][GetOrderById] Non existent user attempted to fetch order");
+                return ServiceResult<OrderDto>.NotFound("Non existent user");
+            }
+
+            var order = await orderRepo.GetById(orderId);
+            
+            if(order is null)
+            {
+                logger.LogWarning("[OrderService][GetOrderById] Non existent order fetch attempt");
+                return ServiceResult<OrderDto>.NotFound("Non existent order");
+            }
+
+            if(order.UserId != userId)
+            {
+                logger.LogWarning("[OrderService][GetOrderById] User tried to fetch order beloning to different user; requesting id {id}/ actual id {actual}"
+                    ,userId, order.UserId);
+                return ServiceResult<OrderDto>.Unauthorized();
+            }
+
+            return ServiceResult<OrderDto>.Ok(order.ToDto());
+
+        }
         private async Task<(List<(Product, int)> orderedProducts, List<string> errors)> ValidateAndFetchProducts(CreateOrderDto dto)
         {
             var errors = new List<string>();
@@ -73,7 +102,6 @@ namespace Inventory_Order_Tracking.API.Services
 
             return(orderedProducts, errors);
         }
-
         private async Task<Order> CreateOrder(Guid userId, List<(Product product, int quantity)> orderedProducts) 
         {
             var order = await orderRepo.CreateNewOrder(userId);
@@ -102,5 +130,7 @@ namespace Inventory_Order_Tracking.API.Services
 
             return order;
         }
+
+
     }
 }

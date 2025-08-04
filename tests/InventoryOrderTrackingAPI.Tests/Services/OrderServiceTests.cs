@@ -185,5 +185,112 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.Created, result.StatusCode);
             Assert.NotNull(result.Data);
         }
+
+        [Fact]
+        public async Task GetOrderById_NonExistingUser_ReturnsNotFoundAndLogsWarning()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(User));
+            //act
+
+            var result = await _sut.GetOrderById(userId, orderId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal("Non existent user", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderById] Non existent user attempted to fetch order")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+
+        }
+        [Fact]
+        public async Task GetOrderById_NonExistingOrder_ReturnsNotFoundAndLogsWarning() 
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(userId)).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or=> or.GetById(orderId)).ReturnsAsync(default(Order)); 
+            //act
+
+            var result = await _sut.GetOrderById(userId, orderId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal("Non existent order", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderById] Non existent order fetch attempt")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+        [Fact]
+        public async Task GetOrderById_RequestingUserAndOrderUserMismatch_ReturnsUnauthorizedAndLogsWarning() 
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+            var order = new Order { Id = orderId, UserId = Guid.NewGuid() };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(userId)).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            //act
+
+            var result = await _sut.GetOrderById(userId, orderId);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderById] User tried to fetch order beloning to different user")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+        [Fact]
+        public async Task GetOrderById_ValidFlow_ReturnsOk()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+            var orderId = Guid.NewGuid();
+
+            var user = new User { Id = userId };
+            var order = new Order { Id = orderId, UserId = user.Id };
+
+            _userRepositoryMock.Setup(ur => ur.GetByIdAsync(userId)).ReturnsAsync(user);
+            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            //act
+
+            var result = await _sut.GetOrderById(userId, orderId);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(result.Data);
+        }
     }
 }
