@@ -7,6 +7,8 @@ using System.Security.Claims;
 
 namespace Inventory_Order_Tracking.API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class OrderController(
         ICurrentUserService userService,
         IOrderService orderService) :ControllerBase
