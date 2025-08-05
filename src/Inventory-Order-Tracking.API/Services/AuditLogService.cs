@@ -34,7 +34,7 @@ namespace Inventory_Order_Tracking.API.Services
         {
             try
             {
-                if (date > DateTime.Now) 
+                if (date > DateTime.UtcNow) 
                 {
                     logger.LogWarning("[AuditService][GetAllForDateAsync] Attempt to gather logs for future date");
                     return ServiceResult<List<AuditLogDto>>.BadRequest("Cannot get logs for future date");
