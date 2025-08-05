@@ -27,7 +27,7 @@ public class AuthServiceTests
     private readonly Mock<IUserRepository> _userRepoMock = new();
     private readonly Mock<ILogger<AuthService>> _loggerMock = new();
     private readonly Mock<IEmailVerificationService> _emailServiceMock = new();
-    private readonly Mock<IAuditService> _auditServiceMock = new();
+    private readonly Mock<IAuditLogService> _auditServiceMock = new();
 
     public AuthServiceTests()
     {

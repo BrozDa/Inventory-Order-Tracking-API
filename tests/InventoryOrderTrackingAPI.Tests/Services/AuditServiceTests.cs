@@ -16,10 +16,10 @@ namespace InventoryManagement.API.Tests.Services
 {
     public class AuditServiceTests
     {
-        private readonly AuditService _sut;
+        private readonly AuditLogService _sut;
         private readonly Mock<IAuditLogRepository> _auditLogRepository = new();
         private readonly Mock<IUserRepository> _userRepository = new();
-        private readonly Mock<ILogger<AuditService>> _loggerMock = new();
+        private readonly Mock<ILogger<AuditLogService>> _loggerMock = new();
         public AuditServiceTests()
         {
             _sut = new(_auditLogRepository.Object, _userRepository.Object, _loggerMock.Object);

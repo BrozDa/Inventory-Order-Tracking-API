@@ -8,11 +8,11 @@ namespace Inventory_Order_Tracking.API.Services
 {
 
     //NOTE: Results are fire and forget -> not refactoring to void Tasks for now as the result might be handy in future
-    public class AuditService(
+    public class AuditLogService(
         IAuditLogRepository auditLogRepo,
         IUserRepository userRepository,
-        ILogger<AuditService> logger
-        ) : IAuditService
+        ILogger<AuditLogService> logger
+        ) : IAuditLogService
     {
         public async Task<ServiceResult<List<AuditLogDto>>> GetAllAsync()
         {

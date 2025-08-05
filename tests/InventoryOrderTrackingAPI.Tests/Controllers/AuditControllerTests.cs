@@ -15,7 +15,7 @@ namespace InventoryManagement.API.Tests.Controllers
     public class AuditControllerTests
     {
         private readonly AuditController _sut;
-        private readonly Mock<IAuditService> _auditServiceMock = new();
+        private readonly Mock<IAuditLogService> _auditServiceMock = new();
         public AuditControllerTests()
         {
             _sut = new AuditController(_auditServiceMock.Object);

@@ -8,7 +8,7 @@ namespace Inventory_Order_Tracking.API.Services
 {
     public class ProductService(
         ICurrentUserService currentUserService,
-        IAuditService auditService,
+        IAuditLogService auditService,
         IProductRepository repository,
         ILogger<ProductService> logger
         ) : IProductService

@@ -9,7 +9,7 @@ namespace Inventory_Order_Tracking.API.Controllers
     [ApiController]
     [Authorize(Roles = UserRoles.Admin)]
     public class AuditController(
-        IAuditService auditService) : ControllerBase
+        IAuditLogService auditService) : ControllerBase
     {
         [HttpGet("all")]
         public async Task<IActionResult> GetAllLogs()

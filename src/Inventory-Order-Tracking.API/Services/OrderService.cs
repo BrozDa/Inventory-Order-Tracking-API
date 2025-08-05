@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace Inventory_Order_Tracking.API.Services
 {
     public class OrderService(
-        IAuditService auditService,
+        IAuditLogService auditService,
         IUserRepository userRepo,
         IProductRepository productRepo,
         IOrderRepository orderRepo,

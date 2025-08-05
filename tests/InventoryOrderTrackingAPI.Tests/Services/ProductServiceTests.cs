@@ -16,7 +16,7 @@ namespace InventoryManagement.API.Tests.Services
         private readonly ProductService _sut;
 
         private readonly Mock<ICurrentUserService> _curentUserServiceMock = new();
-        private readonly Mock<IAuditService> _auditServiceMock = new();
+        private readonly Mock<IAuditLogService> _auditServiceMock = new();
         private readonly Mock<IProductRepository> _productRepositoryMock = new();
         private readonly Mock<ILogger<ProductService>> _loggerMock = new();
 

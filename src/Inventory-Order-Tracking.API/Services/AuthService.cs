@@ -18,7 +18,7 @@ namespace Inventory_Order_Tracking.API.Services
     public class AuthService(
         IUserRepository repository, 
         IEmailVerificationService emailService,
-        IAuditService auditService,
+        IAuditLogService auditService,
         ILogger<AuthService> logger, 
         JwtSettings jwtSettings)
         : IAuthService

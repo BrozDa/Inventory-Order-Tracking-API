@@ -26,7 +26,7 @@ namespace InventoryManagement.API.Tests.Services
     public class OrderServiceTests
     {
         public readonly OrderService _sut;
-        public readonly Mock<IAuditService> _auditServiceMock = new();
+        public readonly Mock<IAuditLogService> _auditServiceMock = new();
         public readonly Mock<IUserRepository> _userRepositoryMock = new();
         public readonly Mock<IOrderRepository> _orderRepositoryMock = new();
         public readonly Mock<IProductRepository> _productRepositoryMock = new();

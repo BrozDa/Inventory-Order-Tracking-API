@@ -3,7 +3,7 @@ using Inventory_Order_Tracking.API.Services.Shared;
 
 namespace Inventory_Order_Tracking.API.Services.Interfaces
 {
-    public interface IAuditService
+    public interface IAuditLogService
     {
         Task<ServiceResult<List<AuditLogDto>>> GetAllAsync();
         Task<ServiceResult<List<AuditLogDto>>> GetAllForUserAsync(Guid userId);
