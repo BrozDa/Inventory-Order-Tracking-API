@@ -4,6 +4,7 @@ using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
+using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -25,6 +26,7 @@ namespace InventoryManagement.API.Tests.Services
     public class OrderServiceTests
     {
         public readonly OrderService _sut;
+        public readonly Mock<IAuditService> _auditServiceMock = new();
         public readonly Mock<IUserRepository> _userRepositoryMock = new();
         public readonly Mock<IOrderRepository> _orderRepositoryMock = new();
         public readonly Mock<IProductRepository> _productRepositoryMock = new();
@@ -33,7 +35,8 @@ namespace InventoryManagement.API.Tests.Services
 
         public OrderServiceTests()
         {
-            _sut = new(_userRepositoryMock.Object,
+            _sut = new(_auditServiceMock.Object,
+                _userRepositoryMock.Object,
                 _productRepositoryMock.Object,
                 _orderRepositoryMock.Object,
                 _loggerMock.Object);
@@ -74,6 +77,10 @@ namespace InventoryManagement.API.Tests.Services
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
 
         }
         [Fact]
@@ -116,6 +123,9 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
 
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
         [Fact]
         public async Task SubmitOrder_ValidFlow_ReturnsCreated()
@@ -187,6 +197,10 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.Created, result.StatusCode);
             Assert.NotNull(result.Data);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
         }
 
         [Fact]
@@ -263,7 +277,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -403,6 +417,10 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
 
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
+
         }
         [Fact]
         public async Task CancelOrder_NonExistingOrder_ReturnsNotFoundAndLogsWarning()
@@ -433,6 +451,10 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
 
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
+
         }
         [Fact]
         public async Task CancelOrder_OrderBelonsToDifferentUser_ReturnsForbiddenAndLogsWarning()
@@ -462,6 +484,10 @@ namespace InventoryManagement.API.Tests.Services
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
 
         }
         [Fact]
@@ -494,6 +520,10 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
 
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
+
         }
         [Fact]
         public async Task CancelOrder_RepoThrowsAnException_ReturnsInternalServerErrorAndLogsError()
@@ -525,6 +555,10 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
 
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
+
         }
         [Fact]
         public async Task CancelOrder_ValidInput_ReturnsOk()
@@ -548,6 +582,9 @@ namespace InventoryManagement.API.Tests.Services
             Assert.NotNull(result.Data);
             Assert.Equal(OrderStatus.Cancelled, result.Data.Status);
 
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
 
         }
 
