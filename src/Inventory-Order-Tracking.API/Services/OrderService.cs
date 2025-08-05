@@ -9,6 +9,7 @@ using System.Collections.Generic;
 namespace Inventory_Order_Tracking.API.Services
 {
     public class OrderService(
+        IAuditService auditService,
         IUserRepository userRepo,
         IProductRepository productRepo,
         IOrderRepository orderRepo,
@@ -37,9 +38,14 @@ namespace Inventory_Order_Tracking.API.Services
 
                 var order = await CreateOrder(userId, orderedProducts);
 
-                await orderRepo.SaveChangesAsync(); //this saves even products due to shared context
+                await orderRepo.SaveChangesAsync(); // saves even products due to shared context
 
-                var dtoo = order.ToDto();
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto
+                    {
+                        UserId = userId,
+                        Action = $"Placed order {order.Id}"
+                    });
 
                 return ServiceResult<OrderDto>.Created(order.ToDto());
             }
@@ -148,6 +154,14 @@ namespace Inventory_Order_Tracking.API.Services
 
                 order.Status = OrderStatus.Cancelled;
                 await orderRepo.SaveChangesAsync();
+
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto
+                    {
+                        UserId = userId,
+                        Action = $"Cancelled order {order.Id}"
+                    });
+
                 return ServiceResult<OrderDto>.Ok(order.ToDto());
 
             }
