@@ -62,7 +62,7 @@ namespace InventoryManagement.API.Tests.Services
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(User));
             //act
 
-            var result = await _sut.SubmitOrder(userId, request);
+            var result = await _sut.SubmitOrderAsync(userId, request);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -107,7 +107,7 @@ namespace InventoryManagement.API.Tests.Services
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).Throws(() => new Exception("Test exception"));
             //act
 
-            var result = await _sut.SubmitOrder(userId, request);
+            var result = await _sut.SubmitOrderAsync(userId, request);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -180,8 +180,8 @@ namespace InventoryManagement.API.Tests.Services
 
             _userRepositoryMock.Setup(r => r.GetByIdAsync(userId)).ReturnsAsync(user);
             _productRepositoryMock.Setup(r => r.GetByIdAsync(productId)).ReturnsAsync(product);
-            _orderRepositoryMock.Setup(r => r.CreateNewOrder(userId)).ReturnsAsync(order);
-            _orderRepositoryMock.Setup(r => r.AddOrderItems(It.IsAny<List<OrderItem>>()))
+            _orderRepositoryMock.Setup(r => r.CreateNewOrderAsync(userId)).ReturnsAsync(order);
+            _orderRepositoryMock.Setup(r => r.AddOrderItemsAsync(It.IsAny<List<OrderItem>>()))
                 .ReturnsAsync((List<OrderItem> items) =>
                 {
                     foreach (var item in items)
@@ -191,7 +191,7 @@ namespace InventoryManagement.API.Tests.Services
             _orderRepositoryMock.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _sut.SubmitOrder(userId, request);
+            var result = await _sut.SubmitOrderAsync(userId, request);
 
             // Assert
             Assert.True(result.IsSuccessful);
@@ -213,7 +213,7 @@ namespace InventoryManagement.API.Tests.Services
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(User));
             //act
 
-            var result = await _sut.GetOrderById(userId, orderId);
+            var result = await _sut.GetOrderByIdAsync(userId, orderId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -240,10 +240,10 @@ namespace InventoryManagement.API.Tests.Services
             var user = new User { Id = userId };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(userId)).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or=> or.GetById(orderId)).ReturnsAsync(default(Order)); 
+            _orderRepositoryMock.Setup(or=> or.GetByIdAsync(orderId)).ReturnsAsync(default(Order)); 
             //act
 
-            var result = await _sut.GetOrderById(userId, orderId);
+            var result = await _sut.GetOrderByIdAsync(userId, orderId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -270,10 +270,10 @@ namespace InventoryManagement.API.Tests.Services
             var order = new Order { Id = orderId, UserId = Guid.NewGuid() };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(userId)).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).ReturnsAsync(order);
             //act
 
-            var result = await _sut.GetOrderById(userId, orderId);
+            var result = await _sut.GetOrderByIdAsync(userId, orderId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -299,10 +299,10 @@ namespace InventoryManagement.API.Tests.Services
             var order = new Order { Id = orderId, UserId = user.Id };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(userId)).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).ReturnsAsync(order);
             //act
 
-            var result = await _sut.GetOrderById(userId, orderId);
+            var result = await _sut.GetOrderByIdAsync(userId, orderId);
 
             //assert
             Assert.True(result.IsSuccessful);
@@ -319,7 +319,7 @@ namespace InventoryManagement.API.Tests.Services
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(User));
             //act
 
-            var result = await _sut.GetAllOrdersForUser(userId);
+            var result = await _sut.GetAllOrdersForUserAsync(userId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -348,7 +348,7 @@ namespace InventoryManagement.API.Tests.Services
             _orderRepositoryMock.Setup(or => or.GetAllForUserAsync(userId)).Throws(() => new DbUpdateException("Test exception"));
             //act
 
-            var result = await _sut.GetAllOrdersForUser(userId);
+            var result = await _sut.GetAllOrdersForUserAsync(userId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -382,7 +382,7 @@ namespace InventoryManagement.API.Tests.Services
             _orderRepositoryMock.Setup(or => or.GetAllForUserAsync(userId)).ReturnsAsync(orderHistory);
             //act
 
-            var result = await _sut.GetAllOrdersForUser(userId);
+            var result = await _sut.GetAllOrdersForUserAsync(userId);
 
             //assert
             Assert.True(result.IsSuccessful);
@@ -401,7 +401,7 @@ namespace InventoryManagement.API.Tests.Services
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(User));
             //act
 
-            var result = await _sut.CancelOrder(userId, orderId);
+            var result = await _sut.CancelOrderAsync(userId, orderId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -432,10 +432,10 @@ namespace InventoryManagement.API.Tests.Services
             var user = new User { Id = userId };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or=>or.GetById(orderId)).ReturnsAsync(default(Order));
+            _orderRepositoryMock.Setup(or=>or.GetByIdAsync(orderId)).ReturnsAsync(default(Order));
             //act
 
-            var result = await _sut.CancelOrder(userId, orderId);
+            var result = await _sut.CancelOrderAsync(userId, orderId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -467,10 +467,10 @@ namespace InventoryManagement.API.Tests.Services
             var order = new Order { Id = orderId, UserId = Guid.NewGuid() }; 
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).ReturnsAsync(order);
             //act
 
-            var result = await _sut.CancelOrder(userId, orderId);
+            var result = await _sut.CancelOrderAsync(userId, orderId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -501,10 +501,10 @@ namespace InventoryManagement.API.Tests.Services
             var order = new Order { Id = orderId, UserId = userId, Status = OrderStatus.Completed };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).ReturnsAsync(order);
             //act
 
-            var result = await _sut.CancelOrder(userId, orderId);
+            var result = await _sut.CancelOrderAsync(userId, orderId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -536,10 +536,10 @@ namespace InventoryManagement.API.Tests.Services
             var order = new Order { Id = orderId, UserId = userId, Status = OrderStatus.Completed };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or => or.GetById(orderId)).Throws(() => new DbUpdateException("Test exception"));
+            _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).Throws(() => new DbUpdateException("Test exception"));
             //act
 
-            var result = await _sut.CancelOrder(userId, orderId);
+            var result = await _sut.CancelOrderAsync(userId, orderId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -571,10 +571,10 @@ namespace InventoryManagement.API.Tests.Services
             var order = new Order { Id = orderId, UserId = userId, Status = OrderStatus.Submitted };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or => or.GetById(orderId)).ReturnsAsync(order);
+            _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).ReturnsAsync(order);
             //act
 
-            var result = await _sut.CancelOrder(userId, orderId);
+            var result = await _sut.CancelOrderAsync(userId, orderId);
 
             //assert
             Assert.True(result.IsSuccessful);

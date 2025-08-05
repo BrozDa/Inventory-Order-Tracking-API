@@ -30,7 +30,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
-        public async Task<ServiceResult<List<AuditLogDto>>> GetAllForDate(DateTime date)
+        public async Task<ServiceResult<List<AuditLogDto>>> GetAllForDateAsync(DateTime date)
         {
             try
             {
@@ -51,11 +51,11 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
-        public async Task<ServiceResult<List<AuditLogDto>>> GetAllForUser(Guid userId)
+        public async Task<ServiceResult<List<AuditLogDto>>> GetAllForUserAsync(Guid userId)
         {
             try
             {
-                if(! await userRepository.IdExists(userId))
+                if(! await userRepository.IdExistsAsync(userId))
                 {
                     logger.LogWarning("[AuditService][GetAllForUser] Attempt to gather logs for non existing user");
                     return ServiceResult<List<AuditLogDto>>.BadRequest("User with provided Id does not exist");
@@ -77,7 +77,7 @@ namespace Inventory_Order_Tracking.API.Services
         {
             try
             {
-                if (!await userRepository.IdExists(log.UserId))
+                if (!await userRepository.IdExistsAsync(log.UserId))
                 {
                     logger.LogWarning("[AuditService][AddNewLogAsync] Attempt to add log for non existent user");
                     return ServiceResult<AuditLogDto>.BadRequest("Cannot add logs for non existent user");

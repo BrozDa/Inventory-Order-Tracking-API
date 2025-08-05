@@ -6,8 +6,8 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
     public interface IAuditService
     {
         Task<ServiceResult<List<AuditLogDto>>> GetAllAsync();
-        Task<ServiceResult<List<AuditLogDto>>> GetAllForUser(Guid userId);
-        Task<ServiceResult<List<AuditLogDto>>> GetAllForDate(DateTime date);
+        Task<ServiceResult<List<AuditLogDto>>> GetAllForUserAsync(Guid userId);
+        Task<ServiceResult<List<AuditLogDto>>> GetAllForDateAsync(DateTime date);
         
         Task<ServiceResult<AuditLogDto>> AddNewLogAsync(AuditLogAddDto log);
     }

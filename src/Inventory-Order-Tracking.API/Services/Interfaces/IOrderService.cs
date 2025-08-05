@@ -6,9 +6,9 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task<ServiceResult<OrderDto>> SubmitOrder(Guid userId, CreateOrderDto dto);
-        Task<ServiceResult<OrderDto>> GetOrderById(Guid userId, Guid orderId);
-        Task<ServiceResult<List<OrderDto>>> GetAllOrdersForUser(Guid userId);
-        Task<ServiceResult<OrderDto>> CancelOrder(Guid userId, Guid orderId);
+        Task<ServiceResult<OrderDto>> SubmitOrderAsync(Guid userId, CreateOrderDto dto);
+        Task<ServiceResult<OrderDto>> GetOrderByIdAsync(Guid userId, Guid orderId);
+        Task<ServiceResult<List<OrderDto>>> GetAllOrdersForUserAsync(Guid userId);
+        Task<ServiceResult<OrderDto>> CancelOrderAsync(Guid userId, Guid orderId);
     }
 }

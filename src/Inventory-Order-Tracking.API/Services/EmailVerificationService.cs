@@ -14,7 +14,7 @@ namespace Inventory_Order_Tracking.API.Services
         LinkGenerator linkGenerator
         ) : IEmailVerificationService
     {
-        public async Task<ServiceResult<object>> SendVerificationEmail(User user)
+        public async Task<ServiceResult<object>> SendVerificationEmailAsync(User user)
         {
             try
             {
@@ -52,11 +52,11 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
-        public async Task<ServiceResult<object>> VerifyEmail(Guid tokenId)
+        public async Task<ServiceResult<object>> VerifyEmailAsync(Guid tokenId)
         {
             try
             {
-                var storedToken = await repository.GetById(tokenId);
+                var storedToken = await repository.GetByIdAsync(tokenId);
 
                 if (storedToken is null)
                 {
@@ -116,7 +116,7 @@ namespace Inventory_Order_Tracking.API.Services
         {
             try
             {
-                var token = await repository.AddToken(new EmailVerificationToken()
+                var token = await repository.AddTokenAsync(new EmailVerificationToken()
                 {
                     UserId = userId,
                     CreatedOn = DateTime.UtcNow,

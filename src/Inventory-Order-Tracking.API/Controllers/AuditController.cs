@@ -23,7 +23,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         [HttpGet("by-user")]
         public async Task<IActionResult> GetAllForUser([FromQuery] Guid userId)
         {
-            var serviceResult = await auditService.GetAllForUser(userId);
+            var serviceResult = await auditService.GetAllForUserAsync(userId);
 
             return serviceResult.IsSuccessful
             ? Ok(serviceResult.Data)
@@ -32,7 +32,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         [HttpGet("by-date")]
         public async Task<IActionResult> GetAllForDate([FromQuery] DateTime date)
         {
-            var serviceResult = await auditService.GetAllForDate(date);
+            var serviceResult = await auditService.GetAllForDateAsync(date);
 
             return serviceResult.IsSuccessful
             ? Ok(serviceResult.Data)

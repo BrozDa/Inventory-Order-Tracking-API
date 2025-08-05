@@ -12,7 +12,7 @@ namespace Inventory_Order_Tracking.API.Repository
             return await context.Users.AnyAsync(u => u.Username == username);
         }
 
-        public async Task<bool> IdExists(Guid id)
+        public async Task<bool> IdExistsAsync(Guid id)
         {
             return await context.Users.AnyAsync(x => x.Id == id);
         }

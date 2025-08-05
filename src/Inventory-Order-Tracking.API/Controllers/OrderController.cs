@@ -21,7 +21,7 @@ namespace Inventory_Order_Tracking.API.Controllers
             if (userId is null)
                 return Unauthorized("User Id not found in the token");
 
-            var serviceResult = await orderService.SubmitOrder(userId.Value, orderDto);
+            var serviceResult = await orderService.SubmitOrderAsync(userId.Value, orderDto);
 
             return serviceResult.IsSuccessful
             ? CreatedAtAction(nameof(GetOrderById), new { id = serviceResult.Data!.Id }, serviceResult.Data)
@@ -36,7 +36,7 @@ namespace Inventory_Order_Tracking.API.Controllers
             if (userId is null)
                 return Unauthorized("User Id not found in the token");
 
-            var serviceResult = await orderService.GetOrderById(userId.Value, orderId);
+            var serviceResult = await orderService.GetOrderByIdAsync(userId.Value, orderId);
 
             return serviceResult.IsSuccessful
             ? Ok(serviceResult.Data)
@@ -51,7 +51,7 @@ namespace Inventory_Order_Tracking.API.Controllers
             if (userId is null)
                 return Unauthorized("User Id not found in the token");
 
-            var serviceResult = await orderService.GetAllOrdersForUser(userId.Value);
+            var serviceResult = await orderService.GetAllOrdersForUserAsync(userId.Value);
 
             return serviceResult.IsSuccessful
             ? Ok(serviceResult.Data)
@@ -66,7 +66,7 @@ namespace Inventory_Order_Tracking.API.Controllers
             if (userId is null)
                 return Unauthorized("User Id not found in the token");
 
-            var serviceResult = await orderService.CancelOrder(userId.Value, orderId);
+            var serviceResult = await orderService.CancelOrderAsync(userId.Value, orderId);
 
             return serviceResult.IsSuccessful
             ? Ok(serviceResult.Data)

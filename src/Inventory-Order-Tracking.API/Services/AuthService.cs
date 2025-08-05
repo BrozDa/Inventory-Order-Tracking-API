@@ -46,7 +46,7 @@ namespace Inventory_Order_Tracking.API.Services
                     IsVerified = false,
                 });
 
-                await emailService.SendVerificationEmail(user);
+                await emailService.SendVerificationEmailAsync(user);
 
                 await auditService.AddNewLogAsync(new AuditLogAddDto { UserId = user.Id, Action = "Registered new user" });
 

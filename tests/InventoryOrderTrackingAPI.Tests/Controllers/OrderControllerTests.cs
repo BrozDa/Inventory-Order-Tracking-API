@@ -86,7 +86,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
-            _orderServiceMock.Setup(s => s.SubmitOrder(It.IsAny<Guid>(), It.IsAny<CreateOrderDto>()))
+            _orderServiceMock.Setup(s => s.SubmitOrderAsync(It.IsAny<Guid>(), It.IsAny<CreateOrderDto>()))
                 .ReturnsAsync(serviceResult);
             //act
             var result = await _sut.PlaceOrder(request);
@@ -153,7 +153,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
-            _orderServiceMock.Setup(s => s.SubmitOrder(It.IsAny<Guid>(), It.IsAny<CreateOrderDto>()))
+            _orderServiceMock.Setup(s => s.SubmitOrderAsync(It.IsAny<Guid>(), It.IsAny<CreateOrderDto>()))
                 .ReturnsAsync(serviceResult);
             //act
 
@@ -188,7 +188,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
-            _orderServiceMock.Setup(os => os.GetOrderById(userId.Value,orderId)).ReturnsAsync(serviceResult);   
+            _orderServiceMock.Setup(os => os.GetOrderByIdAsync(userId.Value,orderId)).ReturnsAsync(serviceResult);   
             //act
             var result = await _sut.GetOrderById(orderId);
 
@@ -207,7 +207,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
-            _orderServiceMock.Setup(os => os.GetOrderById(userId.Value, orderId)).ReturnsAsync(serviceResult);
+            _orderServiceMock.Setup(os => os.GetOrderByIdAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
             //act
             var result = await _sut.GetOrderById(orderId);
 
@@ -240,7 +240,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
-            _orderServiceMock.Setup(os => os.GetAllOrdersForUser(userId.Value)).ReturnsAsync(serviceResult);
+            _orderServiceMock.Setup(os => os.GetAllOrdersForUserAsync(userId.Value)).ReturnsAsync(serviceResult);
             //act
             var result = await _sut.GetOrderHistoryForUser();
 
@@ -260,7 +260,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
-            _orderServiceMock.Setup(os => os.GetAllOrdersForUser(userId.Value)).ReturnsAsync(serviceResult);
+            _orderServiceMock.Setup(os => os.GetAllOrdersForUserAsync(userId.Value)).ReturnsAsync(serviceResult);
 
             //act
             var result = await _sut.GetOrderHistoryForUser();
@@ -294,7 +294,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var serviceResult = ServiceResult<OrderDto>.BadRequest("Test bad request");
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
-            _orderServiceMock.Setup(os => os.CancelOrder(userId.Value, orderId)).ReturnsAsync(serviceResult);
+            _orderServiceMock.Setup(os => os.CancelOrderAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
             //act
             var result = await _sut.CancelOrder(orderId);
 
@@ -314,7 +314,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
-            _orderServiceMock.Setup(os => os.CancelOrder(userId.Value, orderId)).ReturnsAsync(serviceResult);
+            _orderServiceMock.Setup(os => os.CancelOrderAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
 
             //act
             var result = await _sut.CancelOrder(orderId);

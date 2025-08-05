@@ -15,7 +15,7 @@ namespace Inventory_Order_Tracking.API.Services
         IOrderRepository orderRepo,
         ILogger<OrderService> logger) : IOrderService
     {
-        public async Task<ServiceResult<OrderDto>> SubmitOrder(Guid userId, CreateOrderDto dto)
+        public async Task<ServiceResult<OrderDto>> SubmitOrderAsync(Guid userId, CreateOrderDto dto)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Inventory_Order_Tracking.API.Services
             
         }
 
-        public async Task<ServiceResult<OrderDto>> GetOrderById(Guid userId, Guid orderId)
+        public async Task<ServiceResult<OrderDto>> GetOrderByIdAsync(Guid userId, Guid orderId)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace Inventory_Order_Tracking.API.Services
                     return ServiceResult<OrderDto>.NotFound("Non existent user");
                 }
 
-                var order = await orderRepo.GetById(orderId);
+                var order = await orderRepo.GetByIdAsync(orderId);
 
                 if (order is null)
                 {
@@ -95,7 +95,7 @@ namespace Inventory_Order_Tracking.API.Services
 
         }
 
-        public async Task<ServiceResult<List<OrderDto>>> GetAllOrdersForUser(Guid userId)
+        public async Task<ServiceResult<List<OrderDto>>> GetAllOrdersForUserAsync(Guid userId)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace Inventory_Order_Tracking.API.Services
 
         }
 
-        public async Task<ServiceResult<OrderDto>> CancelOrder(Guid userId, Guid orderId)
+        public async Task<ServiceResult<OrderDto>> CancelOrderAsync(Guid userId, Guid orderId)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace Inventory_Order_Tracking.API.Services
                     return ServiceResult<OrderDto>.NotFound("Non existent user");
                 }
 
-                var order = await orderRepo.GetById(orderId);
+                var order = await orderRepo.GetByIdAsync(orderId);
 
                 if(order is null)
                 {
@@ -198,7 +198,7 @@ namespace Inventory_Order_Tracking.API.Services
         }
         private async Task<Order> CreateOrder(Guid userId, List<(Product product, int quantity)> orderedProducts) 
         {
-            var order = await orderRepo.CreateNewOrder(userId);
+            var order = await orderRepo.CreateNewOrderAsync(userId);
 
             var orderItems = new List<OrderItem>();
 
@@ -216,7 +216,7 @@ namespace Inventory_Order_Tracking.API.Services
                 item.product.StockQuantity -= item.quantity;
             }
 
-            orderItems = await orderRepo.AddOrderItems(orderItems);
+            orderItems = await orderRepo.AddOrderItemsAsync(orderItems);
 
             order.Items = orderItems;
 

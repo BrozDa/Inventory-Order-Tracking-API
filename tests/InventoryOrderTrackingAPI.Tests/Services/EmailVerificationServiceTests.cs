@@ -57,11 +57,11 @@ namespace InventoryManagement.API.Tests.Services
                 CreatedOn = DateTime.UtcNow,
                 ExpiresOn = DateTime.UtcNow.AddDays(1),
             };
-            _repoMock.Setup(x => x.AddToken(It.IsAny<EmailVerificationToken>()))
+            _repoMock.Setup(x => x.AddTokenAsync(It.IsAny<EmailVerificationToken>()))
                         .ReturnsAsync((EmailVerificationToken?)null);
             //act
 
-            var result = await _sut.SendVerificationEmail(user);
+            var result = await _sut.SendVerificationEmailAsync(user);
             //assert
             Assert.False(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
@@ -107,10 +107,10 @@ namespace InventoryManagement.API.Tests.Services
             _emailSenderMock.Setup(x => x.Body(It.IsAny<string>(), It.IsAny<bool>())).Returns(_emailSenderMock.Object);
             _emailSenderMock.Setup(x => x.SendAsync(null)).ReturnsAsync(sendResponse);
 
-            _repoMock.Setup(x => x.AddToken(It.IsAny<EmailVerificationToken>())).ReturnsAsync(token);
+            _repoMock.Setup(x => x.AddTokenAsync(It.IsAny<EmailVerificationToken>())).ReturnsAsync(token);
             //act
 
-            var result = await _sut.SendVerificationEmail(user);
+            var result = await _sut.SendVerificationEmailAsync(user);
             //assert
             Assert.False(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
@@ -157,10 +157,10 @@ namespace InventoryManagement.API.Tests.Services
 
             _emailSenderMock.Setup(x => x.SendAsync(null)).Throws<ArgumentNullException>();
 
-            _repoMock.Setup(x => x.AddToken(It.IsAny<EmailVerificationToken>())).ReturnsAsync(token);
+            _repoMock.Setup(x => x.AddTokenAsync(It.IsAny<EmailVerificationToken>())).ReturnsAsync(token);
             //act
 
-            var result = await _sut.SendVerificationEmail(user);
+            var result = await _sut.SendVerificationEmailAsync(user);
             //assert
             Assert.False(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
@@ -208,10 +208,10 @@ namespace InventoryManagement.API.Tests.Services
 
             _emailSenderMock.Setup(x => x.SendAsync(null)).ReturnsAsync(sendResponse);
 
-            _repoMock.Setup(x => x.AddToken(It.IsAny<EmailVerificationToken>())).ReturnsAsync(token);
+            _repoMock.Setup(x => x.AddTokenAsync(It.IsAny<EmailVerificationToken>())).ReturnsAsync(token);
             //act
 
-            var result = await _sut.SendVerificationEmail(user);
+            var result = await _sut.SendVerificationEmailAsync(user);
             //assert
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
@@ -222,9 +222,9 @@ namespace InventoryManagement.API.Tests.Services
         {//reponse text ["Invalid Token received"]
             //arrange
             var id = Guid.NewGuid();
-            _repoMock.Setup(x => x.GetById(id)).ReturnsAsync(default(EmailVerificationToken));
+            _repoMock.Setup(x => x.GetByIdAsync(id)).ReturnsAsync(default(EmailVerificationToken));
             //act
-            var result = await _sut.VerifyEmail(id);
+            var result = await _sut.VerifyEmailAsync(id);
             //assert
 
             Assert.False(result.IsSuccessful);
@@ -267,10 +267,10 @@ namespace InventoryManagement.API.Tests.Services
                 User = user,
             };
 
-            _repoMock.Setup(x => x.GetById(id)).ReturnsAsync(expiredToken);
+            _repoMock.Setup(x => x.GetByIdAsync(id)).ReturnsAsync(expiredToken);
 
             //act
-            var result = await _sut.VerifyEmail(id);
+            var result = await _sut.VerifyEmailAsync(id);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -313,10 +313,10 @@ namespace InventoryManagement.API.Tests.Services
                 User = user,
             };
 
-            _repoMock.Setup(x => x.GetById(id)).ReturnsAsync(token);
+            _repoMock.Setup(x => x.GetByIdAsync(id)).ReturnsAsync(token);
 
             //act
-            var result = await _sut.VerifyEmail(id);
+            var result = await _sut.VerifyEmailAsync(id);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -347,9 +347,9 @@ namespace InventoryManagement.API.Tests.Services
                 User = null, // <<<<<<<<<<<<<<<<<<<<<<<<< Throws arg null exception upon checking expiration or verification
             };
 
-            _repoMock.Setup(x => x.GetById(id)).ReturnsAsync(token);
+            _repoMock.Setup(x => x.GetByIdAsync(id)).ReturnsAsync(token);
             //act
-            var result = await _sut.VerifyEmail(id);
+            var result = await _sut.VerifyEmailAsync(id);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -393,10 +393,10 @@ namespace InventoryManagement.API.Tests.Services
                 User = user,
             };
 
-            _repoMock.Setup(x => x.GetById(tokenId)).ReturnsAsync(token);
+            _repoMock.Setup(x => x.GetByIdAsync(tokenId)).ReturnsAsync(token);
 
             //act
-            var result = await _sut.VerifyEmail(tokenId);
+            var result = await _sut.VerifyEmailAsync(tokenId);
 
             //assert
             Assert.True(result.IsSuccessful);

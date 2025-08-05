@@ -120,7 +120,7 @@ public class AuthControllerTests
             StatusCode = HttpStatusCode.OK
         };
 
-        _emailVerificationServiceMock.Setup(x => x.VerifyEmail(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
+        _emailVerificationServiceMock.Setup(x => x.VerifyEmailAsync(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
         //act
 
         var result = await _sut.Verify(Guid.NewGuid());
@@ -140,7 +140,7 @@ public class AuthControllerTests
             StatusCode = HttpStatusCode.Unauthorized
         };
 
-        _emailVerificationServiceMock.Setup(x => x.VerifyEmail(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
+        _emailVerificationServiceMock.Setup(x => x.VerifyEmailAsync(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
         //act
 
         var result = await _sut.Verify(Guid.NewGuid());

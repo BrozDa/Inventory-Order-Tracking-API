@@ -71,7 +71,7 @@ namespace InventoryManagement.API.Tests.Services
             _auditLogRepository.Setup(ar => ar.GetAllForDateAsync(date)).Throws(() => new Exception("Test exception"));
             //act
 
-            var result = await _sut.GetAllForDate(date);
+            var result = await _sut.GetAllForDateAsync(date);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -96,7 +96,7 @@ namespace InventoryManagement.API.Tests.Services
             _auditLogRepository.Setup(ar => ar.GetAllForDateAsync(date)).ReturnsAsync(logs);
             //act
 
-            var result = await _sut.GetAllForDate(date);
+            var result = await _sut.GetAllForDateAsync(date);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -121,7 +121,7 @@ namespace InventoryManagement.API.Tests.Services
             _auditLogRepository.Setup(ar => ar.GetAllForDateAsync(date)).ReturnsAsync(logs);
             //act
 
-            var result = await _sut.GetAllForDate(date);
+            var result = await _sut.GetAllForDateAsync(date);
 
             //assert
             Assert.True(result.IsSuccessful);
@@ -137,7 +137,7 @@ namespace InventoryManagement.API.Tests.Services
             _auditLogRepository.Setup(ar => ar.GetAllForDateAsync(date)).ReturnsAsync(logs);
             //act
 
-            var result = await _sut.GetAllForDate(date);
+            var result = await _sut.GetAllForDateAsync(date);
 
             //assert
             Assert.True(result.IsSuccessful);
@@ -151,11 +151,11 @@ namespace InventoryManagement.API.Tests.Services
             //arrange
             var userId = Guid.NewGuid();
             
-            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(true);
+            _userRepository.Setup(ur => ur.IdExistsAsync(userId)).ReturnsAsync(true);
             _auditLogRepository.Setup(ar => ar.GetAllForUserAsync(userId)).Throws(() => new Exception("Test exception"));
             //act
 
-            var result = await _sut.GetAllForUser(userId);
+            var result = await _sut.GetAllForUserAsync(userId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -178,11 +178,11 @@ namespace InventoryManagement.API.Tests.Services
             var userId = Guid.NewGuid();
             var logs = new List<AuditLog>();
 
-            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(false);
+            _userRepository.Setup(ur => ur.IdExistsAsync(userId)).ReturnsAsync(false);
             _auditLogRepository.Setup(ar => ar.GetAllForUserAsync(userId)).ReturnsAsync(logs);
 
             //act
-            var result = await _sut.GetAllForUser(userId);
+            var result = await _sut.GetAllForUserAsync(userId);
 
             //assert
             Assert.False(result.IsSuccessful);
@@ -205,11 +205,11 @@ namespace InventoryManagement.API.Tests.Services
             var userId = Guid.NewGuid();
             var logs = new List<AuditLog>();
 
-            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(true);
+            _userRepository.Setup(ur => ur.IdExistsAsync(userId)).ReturnsAsync(true);
             _auditLogRepository.Setup(ar => ar.GetAllForUserAsync(userId)).ReturnsAsync(logs);
 
             //act
-            var result = await _sut.GetAllForUser(userId);
+            var result = await _sut.GetAllForUserAsync(userId);
 
             //assert
             Assert.True(result.IsSuccessful);
@@ -235,7 +235,7 @@ namespace InventoryManagement.API.Tests.Services
                 UserId = userId,
                 Action = action
             };
-            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(true);
+            _userRepository.Setup(ur => ur.IdExistsAsync(userId)).ReturnsAsync(true);
             _auditLogRepository.Setup(ar => ar.AddAsync(It.IsAny<AuditLog>())).Throws(() => new Exception("Test exception"));
             //act
 
@@ -274,7 +274,7 @@ namespace InventoryManagement.API.Tests.Services
                 UserId = userId,
                 Action = action
             };
-            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(false);
+            _userRepository.Setup(ur => ur.IdExistsAsync(userId)).ReturnsAsync(false);
             _auditLogRepository.Setup(ar => ar.AddAsync(It.IsAny<AuditLog>()));
             //act
 
@@ -313,7 +313,7 @@ namespace InventoryManagement.API.Tests.Services
                 UserId = userId,
                 Action = action
             };
-            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(true);
+            _userRepository.Setup(ur => ur.IdExistsAsync(userId)).ReturnsAsync(true);
             _auditLogRepository.Setup(ar => ar.AddAsync(It.IsAny<AuditLog>()));
             //act
 

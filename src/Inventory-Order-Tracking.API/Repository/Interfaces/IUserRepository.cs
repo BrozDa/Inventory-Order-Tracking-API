@@ -6,7 +6,7 @@ namespace Inventory_Order_Tracking.API.Repository.Interfaces
     {
         Task<bool> UsernameExistsAsync(string username);
 
-        Task<bool> IdExists(Guid id);
+        Task<bool> IdExistsAsync(Guid id);
         Task<User?> GetByUsernameAsync(string username);
 
         Task<User?> GetByIdAsync(Guid id);

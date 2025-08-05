@@ -9,7 +9,7 @@ namespace Inventory_Order_Tracking.API.Repository
     public class OrderRepository(InventoryManagementContext context) : IOrderRepository
     {
 
-        public async Task<Order> CreateNewOrder(Guid userId)
+        public async Task<Order> CreateNewOrderAsync(Guid userId)
         {
             var newOrder = new Order { UserId = userId, Status =  OrderStatus.Submitted};
 
@@ -17,13 +17,13 @@ namespace Inventory_Order_Tracking.API.Repository
 
             return newOrder;
         }
-        public async Task<List<OrderItem>> AddOrderItems(List<OrderItem> items)
+        public async Task<List<OrderItem>> AddOrderItemsAsync(List<OrderItem> items)
         {
             await context.AddRangeAsync(items);
 
             return items;
         }
-        public async Task<Order?> GetById(Guid orderId)
+        public async Task<Order?> GetByIdAsync(Guid orderId)
         {
             return await context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
         }

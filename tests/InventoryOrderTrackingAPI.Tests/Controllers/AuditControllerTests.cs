@@ -52,7 +52,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var userId = Guid.NewGuid();
             var serviceResult = ServiceResult<List<AuditLogDto>>.BadRequest("Test failure");
 
-            _auditServiceMock.Setup(s => s.GetAllForUser(userId)).ReturnsAsync(serviceResult);
+            _auditServiceMock.Setup(s => s.GetAllForUserAsync(userId)).ReturnsAsync(serviceResult);
 
             //act
             var result = await _sut.GetAllForUser(userId);
@@ -67,7 +67,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var logs = new List<AuditLogDto>();
             var serviceResult = ServiceResult<List<AuditLogDto>>.Ok(logs);
 
-            _auditServiceMock.Setup(s => s.GetAllForUser(userId)).ReturnsAsync(serviceResult);
+            _auditServiceMock.Setup(s => s.GetAllForUserAsync(userId)).ReturnsAsync(serviceResult);
 
             //act
             var result = await _sut.GetAllForUser(userId);
@@ -82,7 +82,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var date = DateTime.UtcNow;
             var serviceResult = ServiceResult<List<AuditLogDto>>.BadRequest("Test failure");
 
-            _auditServiceMock.Setup(s => s.GetAllForDate(date)).ReturnsAsync(serviceResult);
+            _auditServiceMock.Setup(s => s.GetAllForDateAsync(date)).ReturnsAsync(serviceResult);
 
             //act
             var result = await _sut.GetAllForDate(date);
@@ -97,7 +97,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var logs = new List<AuditLogDto>();
             var serviceResult = ServiceResult<List<AuditLogDto>>.Ok(logs);
 
-            _auditServiceMock.Setup(s => s.GetAllForDate(date)).ReturnsAsync(serviceResult);
+            _auditServiceMock.Setup(s => s.GetAllForDateAsync(date)).ReturnsAsync(serviceResult);
 
             //act
             var result = await _sut.GetAllForDate(date);

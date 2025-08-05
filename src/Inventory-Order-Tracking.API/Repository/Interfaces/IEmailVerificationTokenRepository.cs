@@ -4,9 +4,9 @@ namespace Inventory_Order_Tracking.API.Repository.Interfaces
 {
     public interface IEmailVerificationTokenRepository
     {
-        Task<EmailVerificationToken> AddToken(EmailVerificationToken token);
+        Task<EmailVerificationToken> AddTokenAsync(EmailVerificationToken token);
 
-        Task<EmailVerificationToken?> GetById(Guid id);
+        Task<EmailVerificationToken?> GetByIdAsync(Guid id);
 
         Task RemoveAsync(EmailVerificationToken token);
 

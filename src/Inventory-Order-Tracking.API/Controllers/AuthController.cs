@@ -47,7 +47,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         [HttpGet("user/verify/{tokenId:guid}")]
         public async Task<IActionResult> Verify(Guid tokenId)
         {
-            var serviceResult = await emailService.VerifyEmail(tokenId);
+            var serviceResult = await emailService.VerifyEmailAsync(tokenId);
 
             return serviceResult.IsSuccessful
                 ? Ok()
