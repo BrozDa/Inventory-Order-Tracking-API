@@ -73,7 +73,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][SubmitOrder] Non existent user attempted to submit order")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][SubmitOrderAsync] Non existent user attempted to submit order")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -118,7 +118,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][SubmitOrder] Unhandled Exception has occured")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][SubmitOrderAsync] Unhandled Exception has occured")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -224,7 +224,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderById] Non existent user attempted to fetch order")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderByIdAsync] Non existent user attempted to fetch order")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -254,7 +254,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderById] Non existent order fetch attempt")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderByIdAsync] Non existent order fetch attempt")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -283,7 +283,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderById] User tried to fetch order beloning to different user")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetOrderByIdAsync] User tried to fetch order beloning to different user")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -330,7 +330,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetAllOrdersForUser] Non existent user attempted to fetch order history")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetAllOrdersForUserAsync] Non existent user attempted to fetch order history")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -359,7 +359,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetAllOrdersForUser] Unhandled Exception has occured")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetAllOrdersForUserAsync] Unhandled Exception has occured")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -412,7 +412,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrder] Non existent user attempted to cancel order")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrderAsync] Non existent user attempted to cancel order")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -446,7 +446,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrder] Non existent order cancellation attempt")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrderAsync] Non existent order cancellation attempt")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -480,7 +480,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrder] User tried to cancel order belonging to different user")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrderAsync] User tried to cancel order belonging to different user")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -515,7 +515,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrder] User tried to cancel in other state than Submited")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrderAsync] User tried to cancel in other state than Submited")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -550,7 +550,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][GetByIdAsync] Unhandled Exception has occured")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[OrderService][CancelOrderAsync] Unhandled Exception has occured")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);

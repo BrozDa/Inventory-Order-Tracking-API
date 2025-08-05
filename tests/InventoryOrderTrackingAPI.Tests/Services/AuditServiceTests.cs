@@ -82,7 +82,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][GetAllForDate] Unhandled Exception has occured")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][GetAllForDateAsync] Unhandled Exception has occured")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -107,7 +107,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][GetAllForDate] Attempt to gather logs for future date")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][GetAllForDateAsync] Attempt to gather logs for future date")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -166,7 +166,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][GetAllForUser] Unhandled Exception has occured")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][GetAllForUserAsync] Unhandled Exception has occured")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -193,7 +193,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][GetAllForUser] Attempt to gather logs for non existing user")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][GetAllForUserAsync] Attempt to gather logs for non existing user")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);

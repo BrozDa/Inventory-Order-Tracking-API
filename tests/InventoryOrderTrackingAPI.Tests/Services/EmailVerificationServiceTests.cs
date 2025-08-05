@@ -281,7 +281,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[EmailVerification] Expired token verification attempt")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[EmailVerificationService][VerifyEmailAsync] Expired token verification attempt")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -327,7 +327,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[EmailVerification] Already verified user attempt")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[EmailVerificationService][VerifyEmailAsync] Already verified user attempt")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -360,7 +360,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[UnhandledError] Unhandled error occurred")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[EmailVerificationService][VerifyEmailAsync] Unhandled error occurred")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);

@@ -237,7 +237,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[CustomerGetAllAsync] Unhandled Exception has occured")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[ProductService][AdminsGetAllAsync] Unhandled Exception has occured")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -296,7 +296,7 @@ namespace InventoryManagement.API.Tests.Services
                 x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[CustomerGetSingleAsync] Unhandled Exception has occured")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[ProductService][AdminsGetSingleAsync] Unhandled Exception has occured")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -787,7 +787,7 @@ namespace InventoryManagement.API.Tests.Services
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, _) => v.ToString()
-                    .Contains("[ProductService][UpdateNameAsync] Attempted name change for non-existing product")),
+                    .Contains("[ProductService][UpdateAsync] Attempted name change for non-existing product")),
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);

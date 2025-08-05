@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
 
-namespace InventoryOrderTracking.API.Tests;
+namespace InventoryOrderTracking.API.Tests.Services;
 
 public class AuthServiceTests
 {
@@ -61,7 +61,7 @@ public class AuthServiceTests
             LogLevel.Warning,
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) =>
-                v.ToString().Contains("[Registration][UsernameExistsAsync]")),
+                v.ToString().Contains("[AuthService][RegisterAsync] ")),
             It.IsAny<ArgumentNullException>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
@@ -153,7 +153,7 @@ public class AuthServiceTests
             LogLevel.Error,
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) =>
-                v.ToString().Contains("[Registration][UnhandledException]")),
+                v.ToString().Contains("[AuthService][RegisterAsync]")),
             It.IsAny<Exception>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
@@ -215,7 +215,7 @@ public class AuthServiceTests
             LogLevel.Warning,
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) =>
-                v.ToString().Contains("[LoginAsync][AuthenticationFailed]")),
+                v.ToString().Contains("[AuthService][LoginAsync]")),
             null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
@@ -258,7 +258,7 @@ public class AuthServiceTests
             LogLevel.Warning,
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) =>
-                v.ToString().Contains("[LoginAsync][AuthenticationFailed]")),
+                v.ToString().Contains("[AuthService][LoginAsync]")),
             null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
@@ -301,7 +301,7 @@ public class AuthServiceTests
             LogLevel.Warning,
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) =>
-                v.ToString().Contains("[LoginAsync][AuthenticationFailed]")),
+                v.ToString().Contains("[AuthService][LoginAsync]")),
             null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
@@ -344,7 +344,7 @@ public class AuthServiceTests
             LogLevel.Warning,
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) =>
-                v.ToString().Contains("[LoginAsync][Unverified]")),
+                v.ToString().Contains("[AuthService][LoginAsync]")),
             null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
@@ -387,7 +387,7 @@ public class AuthServiceTests
             LogLevel.Error,
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) =>
-                v.ToString().Contains("[LoginAsync][Exception]")),
+                v.ToString().Contains("[AuthService][LoginAsync]")),
             It.IsAny<Exception>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
