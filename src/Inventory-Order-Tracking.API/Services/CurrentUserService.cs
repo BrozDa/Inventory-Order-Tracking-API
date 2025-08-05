@@ -1,4 +1,5 @@
-﻿using Inventory_Order_Tracking.API.Models;
+﻿using Inventory_Order_Tracking.API.Domain;
+using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using System.Security.Claims;
 

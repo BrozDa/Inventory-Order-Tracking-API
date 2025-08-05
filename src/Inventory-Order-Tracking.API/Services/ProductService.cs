@@ -7,6 +7,8 @@ using Inventory_Order_Tracking.API.Services.Shared;
 namespace Inventory_Order_Tracking.API.Services
 {
     public class ProductService(
+        ICurrentUserService currentUserService,
+        IAuditService auditService,
         IProductRepository repository,
         ILogger<ProductService> logger
         ) : IProductService
@@ -89,6 +91,11 @@ namespace Inventory_Order_Tracking.API.Services
                     StockQuantity = dto.StockQuantity ?? 0
                 });
 
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto {
+                        UserId = currentUserService.GetCurentUserId()!.Value, // user is already authorized -> its existing
+                        Action = $"Added new product {entity.Id}"});
+
                 return ProductServiceResult<ProductAdminDto>.Created(entity.ToAdminDto());
             }
             catch (Exception ex)
@@ -109,9 +116,17 @@ namespace Inventory_Order_Tracking.API.Services
                     return ProductServiceResult<ProductAdminDto>.NotFound();
                 }
 
+                var oldName = entity.Name;
                 entity.Name = newName;
 
                 await repository.SaveChangesAsync();
+
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto
+                    {
+                        UserId = currentUserService.GetCurentUserId()!.Value, // user is already authorized -> its existing
+                        Action = $"Renamed product {entity.Id}; Old name: {oldName} - New name: {entity.Name}"
+                    });
 
                 return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
             }
@@ -133,9 +148,17 @@ namespace Inventory_Order_Tracking.API.Services
                     return ProductServiceResult<ProductAdminDto>.NotFound();
                 }
 
+                var oldDescription = entity.Description;
                 entity.Description = newDescription;
 
                 await repository.SaveChangesAsync();
+
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto
+                    {
+                        UserId = currentUserService.GetCurentUserId()!.Value, // user is already authorized -> its existing
+                        Action = $"Changed product description, {entity.Id}; Old description: {oldDescription} - New description: {entity.Description}"
+                    });
 
                 return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
             }
@@ -157,9 +180,17 @@ namespace Inventory_Order_Tracking.API.Services
                     return ProductServiceResult<ProductAdminDto>.NotFound();
                 }
 
+                var oldPrice = entity.Price;
                 entity.Price = newPrice;
 
                 await repository.SaveChangesAsync();
+
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto
+                    {
+                        UserId = currentUserService.GetCurentUserId()!.Value, // user is already authorized -> its existing
+                        Action = $"Changed product price, {entity.Id}; Old price: {oldPrice} - New price: {entity.Price}"
+                    });
 
                 return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
             }
@@ -181,9 +212,17 @@ namespace Inventory_Order_Tracking.API.Services
                     return ProductServiceResult<ProductAdminDto>.NotFound();
                 }
 
+                var oldStockQuantity = entity.StockQuantity;    
                 entity.StockQuantity = newStockQuantity;
 
                 await repository.SaveChangesAsync();
+
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto
+                    {
+                        UserId = currentUserService.GetCurentUserId()!.Value, // user is already authorized -> its existing
+                        Action = $"Changed product stock quantity, {entity.Id}; Old stock quantity: {oldStockQuantity} - New stock quantity: {entity.StockQuantity}"
+                    });
 
                 return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
             }
@@ -206,12 +245,37 @@ namespace Inventory_Order_Tracking.API.Services
                     return ProductServiceResult<ProductAdminDto>.NotFound();
                 }
 
-                entity.Name = dto.Name ?? entity.Name;
-                entity.Description = dto.Description ?? entity.Description;
-                entity.Price = dto.Price ?? entity.Price;
-                entity.StockQuantity = dto.StockQuantity ?? entity.StockQuantity;
+                var newValues = new List<string>();
+
+                if(dto.Name is not null)
+                {
+                    entity.Name = dto.Name;
+                    newValues.Add(dto.Name);
+                };
+                if (dto.Description is not null)
+                {
+                    entity.Description = dto.Description;
+                    newValues.Add(dto.Description);
+                };
+                if (dto.Price is not null)
+                {
+                    entity.Price = dto.Price.Value;
+                    newValues.Add(dto.Price.Value.ToString());
+                };
+                if (dto.StockQuantity is not null)
+                {
+                    entity.StockQuantity = dto.StockQuantity.Value;
+                    newValues.Add(dto.StockQuantity.Value.ToString());
+                };
 
                 await repository.SaveChangesAsync();
+
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto
+                    {
+                        UserId = currentUserService.GetCurentUserId()!.Value, // user is already authorized -> its existing
+                        Action = $"Changed product information {entity.Id}, new values {string.Join(";", newValues)};"
+                    });
 
                 return ProductServiceResult<ProductAdminDto>.Ok(entity.ToAdminDto());
             }
@@ -234,7 +298,16 @@ namespace Inventory_Order_Tracking.API.Services
                     return ProductServiceResult<ProductAdminDto>.NotFound();
                 }
 
+                var entityId = entity.Id;
+
                 await repository.DeleteAsync(entity);
+
+                await auditService.AddNewLogAsync(
+                    new AuditLogAddDto
+                    {
+                        UserId = currentUserService.GetCurentUserId()!.Value, // user is already authorized -> its existing
+                        Action = $"Added new product {entityId}"
+                    });
 
                 return ProductServiceResult<ProductAdminDto>.NoContent();
             }
@@ -244,5 +317,6 @@ namespace Inventory_Order_Tracking.API.Services
                 return ProductServiceResult<ProductAdminDto>.InternalServerError("Failed to update product");
             }
         }
+
     }
 }
