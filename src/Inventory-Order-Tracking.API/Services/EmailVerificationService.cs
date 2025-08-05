@@ -34,7 +34,7 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (!sendResult.Successful)
                 {
-                    logger.LogError($"[VerificationEmailSending] Failed to send email: {string.Join(";", sendResult.ErrorMessages)}");
+                    logger.LogError($"[EmailVerificationService][SendVerificationEmailAsync] Failed to send email: {string.Join(";", sendResult.ErrorMessages)}");
                     return ServiceResult<object>.InternalServerError("Failed to sent verification email");
                 }
 
@@ -47,7 +47,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[UnhandledError] Unhandled error occurred");
+                logger.LogError(ex, "[EmailVerificationService][SendVerificationEmailAsync] Unhandled error occurred");
                 return ServiceResult<object>.InternalServerError("Unhandled error occurred");
             }
         }
@@ -60,19 +60,19 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (storedToken is null)
                 {
-                    logger.LogWarning($"[EmailVerification] Invalid token verification attempt");
+                    logger.LogWarning($"[EmailVerificationService][VerifyEmailAsync] Invalid token verification attempt");
                     return ServiceResult<object>.Unauthorized("Invalid Token received");
                 }
 
                 if (storedToken.ExpiresOn < DateTime.UtcNow)
                 {
-                    logger.LogWarning("[EmailVerification] Expired token verification attempt by {UserId}", storedToken.User.Id);
+                    logger.LogWarning("[EmailVerificationService][VerifyEmailAsync] Expired token verification attempt by {UserId}", storedToken.User.Id);
                     return ServiceResult<object>.Unauthorized("Verification link expired");
                 }
 
                 if (storedToken.User.IsVerified)
                 {
-                    logger.LogWarning("[EmailVerification] Already verified user attempt by {UserId}", storedToken.User.Id);
+                    logger.LogWarning("[EmailVerificationService][VerifyEmailAsync] Already verified user attempt by {UserId}", storedToken.User.Id);
                     return ServiceResult<object>.Unauthorized("User already verified");
                 }
 
@@ -84,7 +84,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[UnhandledError] Unhandled error occurred");
+                logger.LogError(ex, "[EmailVerificationService][VerifyEmailAsync] Unhandled error occurred");
                 return ServiceResult<object>.InternalServerError("Unhandled error occurred");
             }
         }

@@ -24,7 +24,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[CustomerGetAllAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][CustomerGetAllAsync] Unhandled Exception has occured");
                 return ServiceResult<List<ProductCustomerDto>>.InternalServerError("Failed to fetch products from database");
             }
         }
@@ -41,7 +41,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[CustomerGetSingleAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][CustomerGetSingleAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductCustomerDto>.InternalServerError("Failed to fetch product from database");
             }
         }
@@ -57,7 +57,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[CustomerGetAllAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][AdminsGetAllAsync] Unhandled Exception has occured");
                 return ServiceResult<List<ProductAdminDto>>.InternalServerError("Failed to fetch products from database");
             }
         }
@@ -74,7 +74,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[CustomerGetSingleAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][AdminsGetSingleAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to fetch product from database");
             }
         }
@@ -100,7 +100,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[AddAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][AddAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to create new product");
             }
         }
@@ -132,7 +132,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[UpdateNameAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][UpdateNameAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to update name");
             }
         }
@@ -164,7 +164,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[UpdateDescriptionAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][UpdateDescriptionAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to update description");
             }
         }
@@ -196,7 +196,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[UpdatePriceAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][UpdatePriceAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to update price");
             }
         }
@@ -228,7 +228,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[UpdateStockQuantityAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][UpdateStockQuantityAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to update stock quantity");
             }
         }
@@ -241,7 +241,7 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (entity is null)
                 {
-                    logger.LogWarning("[ProductService][UpdateNameAsync] Attempted name change for non-existing product");
+                    logger.LogWarning("[ProductService][UpdateAsync] Attempted name change for non-existing product");
                     return ServiceResult<ProductAdminDto>.NotFound();
                 }
 
@@ -281,7 +281,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[UpdateAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][UpdateAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to update product");
             }
         }
@@ -313,7 +313,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[DeleteAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[ProductService][DeleteAsync] Unhandled Exception has occured");
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to update product");
             }
         }

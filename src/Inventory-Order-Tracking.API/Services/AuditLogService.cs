@@ -36,7 +36,7 @@ namespace Inventory_Order_Tracking.API.Services
             {
                 if (date > DateTime.Now) 
                 {
-                    logger.LogWarning("[AuditService][GetAllForDate] Attempt to gather logs for future date");
+                    logger.LogWarning("[AuditService][GetAllForDateAsync] Attempt to gather logs for future date");
                     return ServiceResult<List<AuditLogDto>>.BadRequest("Cannot get logs for future date");
                 }
                 var logs = await auditLogRepo.GetAllForDateAsync(date);
@@ -46,7 +46,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[AuditService][GetAllForDate] Unhandled Exception has occured");
+                logger.LogError(ex, "[AuditService][GetAllForDateAsync] Unhandled Exception has occured");
                 return ServiceResult<List<AuditLogDto>>.InternalServerError("Failed to fetch logs");
             }
         }
@@ -57,7 +57,7 @@ namespace Inventory_Order_Tracking.API.Services
             {
                 if(! await userRepository.IdExistsAsync(userId))
                 {
-                    logger.LogWarning("[AuditService][GetAllForUser] Attempt to gather logs for non existing user");
+                    logger.LogWarning("[AuditService][GetAllForUserAsync] Attempt to gather logs for non existing user");
                     return ServiceResult<List<AuditLogDto>>.BadRequest("User with provided Id does not exist");
                 }
 
@@ -68,7 +68,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[AuditService][GetAllForUser] Unhandled Exception has occured");
+                logger.LogError(ex, "[AuditService][GetAllForUserAsync] Unhandled Exception has occured");
                 return ServiceResult<List<AuditLogDto>>.InternalServerError("Failed to fetch logs");
             }
         }

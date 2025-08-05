@@ -30,7 +30,7 @@ namespace Inventory_Order_Tracking.API.Services
             {
                 if (await repository.UsernameExistsAsync(request.Username))
                 {
-                    logger.LogWarning("[Registration][UsernameExistsAsync] Duplicate username {Username}", request.Username);
+                    logger.LogWarning("[AuthService][RegisterAsync] Duplicate username {Username}", request.Username);
                     return ServiceResult<string>.BadRequest("User Already Exists");
                 }
 
@@ -59,13 +59,13 @@ namespace Inventory_Order_Tracking.API.Services
             catch (DbUpdateException dbEx)
             {
                 logger.LogError(dbEx,
-                    "[Registration][DbUpdateException] Database error during processing request for {Username}", request.Username);
+                    "[AuthService][RegisterAsync] Database error during processing request for {Username}", request.Username);
                 return ServiceResult<string>.InternalServerError("A database error occured during processing the request");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex,
-                    "[Registration][UnhandledException] Unexpected error during processing request for {Username}", request.Username);
+                    "[AuthService][RegisterAsync] Unexpected error during processing request for {Username}", request.Username);
                 return ServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
             }
         }
@@ -78,17 +78,17 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (user is null)
                 {
-                    logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
+                    logger.LogWarning("[AuthService][LoginAsync] Invalid username or password: {Username}", request.Username);
                     return ServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
                 if (!PasswordHasher.VerifyPassword(user.PasswordHash, request.Password, user.PasswordSalt))
                 {
-                    logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
+                    logger.LogWarning("[AuthService][LoginAsync] Invalid username or password: {Username}", request.Username);
                     return ServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
                 if (!user.IsVerified)
                 {
-                    logger.LogWarning("[LoginAsync][Unverified] Unverified user login: {Username}", request.Username);
+                    logger.LogWarning("[AuthService][LoginAsync] Unverified user login: {Username}", request.Username);
                     return ServiceResult<TokenResponseDto>.BadRequest("User not verified");
                 }
 
@@ -99,7 +99,7 @@ namespace Inventory_Order_Tracking.API.Services
             catch (Exception ex)
             {
                 logger.LogError(ex,
-                    "[LoginAsync][Exception] Unexpected error during processing request for {Username}", request.Username);
+                    "[AuthService][LoginAsync] Unexpected error during processing request for {Username}", request.Username);
                 return ServiceResult<TokenResponseDto>.InternalServerError("An Unexpected error occured during processing the request");
             }
         }

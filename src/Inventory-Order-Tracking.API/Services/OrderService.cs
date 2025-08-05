@@ -23,14 +23,14 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (user is null)
                 {
-                    logger.LogWarning("[OrderService][SubmitOrder] Non existent user attempted to submit order");
+                    logger.LogWarning("[OrderService][SubmitOrderAsync] Non existent user attempted to submit order");
                     return ServiceResult<OrderDto>.BadRequest("Non existent user");
                 }
                 var (orderedProducts, errors) = await ValidateAndFetchProducts(dto);
 
                 if (errors.Count > 0)
                 {
-                    logger.LogWarning("[OrderService][SubmitOrder] Invalid products within an order by {user}, encountered errors:" +
+                    logger.LogWarning("[OrderService][SubmitOrderAsync] Invalid products within an order by {user}, encountered errors:" +
                         "{errors}", userId, errors);
 
                     return ServiceResult<OrderDto>.BadRequest(string.Join(";", errors));
@@ -51,7 +51,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex) 
             {
-                logger.LogError(ex, "[OrderService][SubmitOrder] Unhandled Exception has occured");
+                logger.LogError(ex, "[OrderService][SubmitOrderAsync] Unhandled Exception has occured");
                 return ServiceResult<OrderDto>.InternalServerError("Failed to submit order");
             }
             
@@ -65,7 +65,7 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (user is null)
                 {
-                    logger.LogWarning("[OrderService][GetOrderById] Non existent user attempted to fetch order");
+                    logger.LogWarning("[OrderService][GetOrderByIdAsync] Non existent user attempted to fetch order");
                     return ServiceResult<OrderDto>.NotFound("Non existent user");
                 }
 
@@ -73,13 +73,13 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (order is null)
                 {
-                    logger.LogWarning("[OrderService][GetOrderById] Non existent order fetch attempt");
+                    logger.LogWarning("[OrderService][GetOrderByIdAsync] Non existent order fetch attempt");
                     return ServiceResult<OrderDto>.NotFound("Non existent order");
                 }
 
                 if (order.UserId != userId)
                 {
-                    logger.LogWarning("[OrderService][GetOrderById] User tried to fetch order beloning to different user; requesting id {id}/ actual id {actual}"
+                    logger.LogWarning("[OrderService][GetOrderByIdAsync] User tried to fetch order beloning to different user; requesting id {id}/ actual id {actual}"
                         , userId, order.UserId);
                     return ServiceResult<OrderDto>.Forbidden();
                 }
@@ -88,7 +88,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[OrderService][GetOrderById] Unhandled Exception has occured");
+                logger.LogError(ex, "[OrderService][GetOrderByIdAsync] Unhandled Exception has occured");
                 return ServiceResult<OrderDto>.InternalServerError("Failed to fetch the order order");
             }
 
@@ -103,7 +103,7 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if (user is null)
                 {
-                    logger.LogWarning("[OrderService][GetAllOrdersForUser] Non existent user attempted to fetch order history");
+                    logger.LogWarning("[OrderService][GetAllOrdersForUserAsync] Non existent user attempted to fetch order history");
                     return ServiceResult<List<OrderDto>>.NotFound("Non existent user");
                 }
 
@@ -113,7 +113,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[OrderService][GetAllOrdersForUser] Unhandled Exception has occured");
+                logger.LogError(ex, "[OrderService][GetAllOrdersForUserAsync] Unhandled Exception has occured");
                 return ServiceResult<List<OrderDto>>.InternalServerError("Failed to fetch the order history");
             }
 
@@ -126,7 +126,7 @@ namespace Inventory_Order_Tracking.API.Services
                 var user = await userRepo.GetByIdAsync(userId);
                 if (user is null)
                 {
-                    logger.LogWarning("[OrderService][CancelOrder] Non existent user attempted to cancel order");
+                    logger.LogWarning("[OrderService][CancelOrderAsync] Non existent user attempted to cancel order");
                     return ServiceResult<OrderDto>.NotFound("Non existent user");
                 }
 
@@ -134,20 +134,20 @@ namespace Inventory_Order_Tracking.API.Services
 
                 if(order is null)
                 {
-                    logger.LogWarning("[OrderService][CancelOrder] Non existent order cancellation attempt");
+                    logger.LogWarning("[OrderService][CancelOrderAsync] Non existent order cancellation attempt");
                     return ServiceResult<OrderDto>.NotFound("Non existent order");
                 }
 
                 if (order.UserId != userId)
                 {
-                    logger.LogWarning("[OrderService][CancelOrder] User tried to cancel order belonging to different user; requesting id {id}/ actual id {actual}"
+                    logger.LogWarning("[OrderService][CancelOrderAsync] User tried to cancel order belonging to different user; requesting id {id}/ actual id {actual}"
                         , userId, order.UserId);
                     return ServiceResult<OrderDto>.Forbidden();
                 }
 
                 if(order.Status != OrderStatus.Submitted)
                 {
-                    logger.LogWarning("[OrderService][CancelOrder] User tried to cancel in other state than Submited; order id {id}"
+                    logger.LogWarning("[OrderService][CancelOrderAsync] User tried to cancel in other state than Submited; order id {id}"
                         , order.Id);
                     return ServiceResult<OrderDto>.BadRequest("Only orders in submitted state can be cancelled");
                 }
@@ -167,7 +167,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "[OrderService][GetByIdAsync] Unhandled Exception has occured");
+                logger.LogError(ex, "[OrderService][CancelOrderAsync] Unhandled Exception has occured");
                 return ServiceResult<OrderDto>.InternalServerError("Failed to cancel the order");
             }
         }

@@ -20,7 +20,7 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             if (!validationResult.IsValid)
             {
-                logger.LogWarning("[Register][Validation] Validation failed for {Username}. Encountered Errors: {Errors}",
+                logger.LogWarning("[AuthController][Register] Validation failed for {Username}. Encountered Errors: {Errors}",
                     request.Username,
                     string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)));
 
