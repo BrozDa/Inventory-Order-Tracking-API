@@ -62,7 +62,7 @@ namespace Inventory_Order_Tracking.API.Context
             modelBuilder.Entity<OrderItem>().HasKey(oi => oi.Id);
         }
 
-        public async Task SeedAdminUserAsync()
+        public async Task SeedUsersAsync()
         {
             var (hash, salt) = PasswordHasher.GenerateHashAndSalt("admin");
             var user = new User
@@ -78,5 +78,6 @@ namespace Inventory_Order_Tracking.API.Context
             await Users.AddAsync(user);
             await SaveChangesAsync();
         }
+
     }
 }

@@ -1,3 +1,4 @@
+using FluentEmail.Core.Interfaces;
 using Inventory_Order_Tracking.API.Configuration;
 using Inventory_Order_Tracking.API.Context;
 using Inventory_Order_Tracking.API.Domain;
@@ -88,6 +89,7 @@ namespace Inventory_Order_Tracking.API
                 builder.Services.AddScoped<IOrderService, OrderService>();
                 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
                 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+                builder.Services.AddScoped<ISeedingService, SeedingService>();
 
                 builder.Services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -133,15 +135,19 @@ namespace Inventory_Order_Tracking.API
 
                 var app = builder.Build();
 
-                using var scope = app.Services.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<InventoryManagementContext>();
-                await context.Database.MigrateAsync();
-                //await context.SeedAdminUserAsync();
-
                 if (app.Environment.IsDevelopment())
                 {
                     app.UseSwagger();
                     app.UseSwaggerUI();
+
+                    using var scope = app.Services.CreateScope();
+
+                    var context = scope.ServiceProvider.GetRequiredService<InventoryManagementContext>();
+                    var seeder = scope.ServiceProvider.GetRequiredService<ISeedingService>();
+
+                    await context.Database.EnsureDeletedAsync();
+                    await context.Database.MigrateAsync();
+                    await seeder.SeedInitialData();
                 }
                 app.UseHttpsRedirection();
 
