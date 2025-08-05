@@ -2,6 +2,7 @@
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
+using Inventory_Order_Tracking.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -13,12 +14,18 @@ namespace InventoryManagement.API.Tests.Services
     {
         private readonly ProductService _sut;
 
+        private readonly Mock<ICurrentUserService> _curentUserServiceMock = new();
+        private readonly Mock<IAuditService> _auditServiceMock = new();
         private readonly Mock<IProductRepository> _productRepositoryMock = new();
         private readonly Mock<ILogger<ProductService>> _loggerMock = new();
 
         public ProductServiceTests()
         {
-            _sut = new(_productRepositoryMock.Object, _loggerMock.Object);
+            _sut = new(
+                _curentUserServiceMock.Object,
+                _auditServiceMock.Object,
+                _productRepositoryMock.Object,
+                _loggerMock.Object);
         }
 
         [Fact]
@@ -310,6 +317,7 @@ namespace InventoryManagement.API.Tests.Services
             var newName = "Test name changed";
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existing);
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateNameAsync(id, newName);
@@ -318,6 +326,10 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(newName, existing.Name);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
         }
 
         [Fact]
@@ -328,6 +340,7 @@ namespace InventoryManagement.API.Tests.Services
             var newName = "Test description changed";
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateNameAsync(id, newName);
@@ -345,6 +358,10 @@ namespace InventoryManagement.API.Tests.Services
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -355,6 +372,7 @@ namespace InventoryManagement.API.Tests.Services
             var newName = "Test name changed";
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).Throws(() => new DbUpdateException("Test exception"));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateNameAsync(id, newName);
@@ -373,6 +391,10 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -391,6 +413,7 @@ namespace InventoryManagement.API.Tests.Services
             var newDescription = "Test description changed";
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existing);
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateDescriptionAsync(id, newDescription);
@@ -399,6 +422,10 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(newDescription, existing.Description);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
         }
 
         [Fact]
@@ -409,6 +436,7 @@ namespace InventoryManagement.API.Tests.Services
             var newDescription = "Test description changed";
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateDescriptionAsync(id, newDescription);
@@ -426,6 +454,10 @@ namespace InventoryManagement.API.Tests.Services
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -436,6 +468,7 @@ namespace InventoryManagement.API.Tests.Services
             var newDescription = "Test description changed";
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).Throws(() => new DbUpdateException("Test exception"));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateDescriptionAsync(id, newDescription);
@@ -454,6 +487,10 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -472,6 +509,7 @@ namespace InventoryManagement.API.Tests.Services
             var newPrice = 17m;
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existing);
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdatePriceAsync(id, newPrice);
@@ -480,6 +518,10 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(newPrice, existing.Price);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
         }
 
         [Fact]
@@ -490,6 +532,7 @@ namespace InventoryManagement.API.Tests.Services
             var newPrice = 12m;
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdatePriceAsync(id, newPrice);
@@ -507,6 +550,10 @@ namespace InventoryManagement.API.Tests.Services
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -517,6 +564,7 @@ namespace InventoryManagement.API.Tests.Services
             var newPrice = 12.12m;
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).Throws(() => new DbUpdateException("Test exception"));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdatePriceAsync(id, newPrice);
@@ -535,6 +583,10 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -553,6 +605,7 @@ namespace InventoryManagement.API.Tests.Services
             var newStockSquantity = 15;
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existing);
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateStockQuantityAsync(id, newStockSquantity);
@@ -561,6 +614,10 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(newStockSquantity, existing.StockQuantity);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
         }
 
         [Fact]
@@ -571,6 +628,7 @@ namespace InventoryManagement.API.Tests.Services
             var newQuantity = 18;
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateStockQuantityAsync(id, newQuantity);
@@ -588,6 +646,10 @@ namespace InventoryManagement.API.Tests.Services
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -598,6 +660,7 @@ namespace InventoryManagement.API.Tests.Services
             var newStockQuantity = 12;
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).Throws(() => new DbUpdateException("Test exception"));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateStockQuantityAsync(id, newStockQuantity);
@@ -616,6 +679,10 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -632,6 +699,7 @@ namespace InventoryManagement.API.Tests.Services
             };
 
             _productRepositoryMock.Setup(r => r.AddAsync(It.IsAny<Product>())).Throws(() => new DbUpdateException("Test exception"));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.AddAsync(dto);
@@ -650,6 +718,10 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -673,13 +745,17 @@ namespace InventoryManagement.API.Tests.Services
             };
 
             _productRepositoryMock.Setup(r => r.AddAsync(It.IsAny<Product>())).ReturnsAsync(addedProduct);
-
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid()); 
             //act
             var result = await _sut.AddAsync(dto);
 
             //assert
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
         }
 
         [Fact]
@@ -696,6 +772,7 @@ namespace InventoryManagement.API.Tests.Services
             };
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateAsync(id, dto);
@@ -713,6 +790,10 @@ namespace InventoryManagement.API.Tests.Services
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -730,6 +811,7 @@ namespace InventoryManagement.API.Tests.Services
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                 .Throws(() => new DbUpdateException("Test exception"));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateAsync(id, dto);
@@ -748,6 +830,10 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -774,6 +860,7 @@ namespace InventoryManagement.API.Tests.Services
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(entity);
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
 
             //act
             var result = await _sut.UpdateAsync(id, requestDto);
@@ -781,6 +868,10 @@ namespace InventoryManagement.API.Tests.Services
             //assert
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
         }
 
         [Fact]
@@ -790,6 +881,8 @@ namespace InventoryManagement.API.Tests.Services
             var id = Guid.NewGuid();
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Product));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
+
             //act
             var result = await _sut.DeleteAsync(id);
             //assert
@@ -806,6 +899,10 @@ namespace InventoryManagement.API.Tests.Services
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -816,6 +913,8 @@ namespace InventoryManagement.API.Tests.Services
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                 .Throws(() => new DbUpdateException("Test exception"));
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
+
             //act
             var result = await _sut.DeleteAsync(id);
             //assert
@@ -832,6 +931,10 @@ namespace InventoryManagement.API.Tests.Services
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Never);
         }
 
         [Fact]
@@ -851,12 +954,18 @@ namespace InventoryManagement.API.Tests.Services
 
             _productRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(entity);
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
+
             //act
             var result = await _sut.DeleteAsync(id);
             //assert
 
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+
+            _auditServiceMock.Verify(
+                s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+                Times.Once);
         }
     }
 }
