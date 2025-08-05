@@ -6,6 +6,8 @@ using Inventory_Order_Tracking.API.Services.Shared;
 
 namespace Inventory_Order_Tracking.API.Services
 {
+
+    //NOTE: Results are fire and forget -> not refactoring to void Tasks for now as the result might be handy in future
     public class AuditService(
         IAuditLogRepository auditLogRepo,
         IUserRepository userRepository,

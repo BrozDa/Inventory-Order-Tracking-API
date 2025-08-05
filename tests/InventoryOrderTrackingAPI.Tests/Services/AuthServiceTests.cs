@@ -24,13 +24,14 @@ public class AuthServiceTests
         RefreshTokenExpirationDays = 1
     };
 
-    private readonly Mock<IUserRepository> _userRepoMock = new Mock<IUserRepository>();
-    private readonly Mock<ILogger<AuthService>> _loggerMock = new Mock<ILogger<AuthService>>();
-    private readonly Mock<IEmailVerificationService> _emailServiceMock = new Mock<IEmailVerificationService>();
+    private readonly Mock<IUserRepository> _userRepoMock = new();
+    private readonly Mock<ILogger<AuthService>> _loggerMock = new();
+    private readonly Mock<IEmailVerificationService> _emailServiceMock = new();
+    private readonly Mock<IAuditService> _auditServiceMock = new();
 
     public AuthServiceTests()
     {
-        _sut = new AuthService(_userRepoMock.Object, _emailServiceMock.Object, _loggerMock.Object, _jwtSettings);
+        _sut = new AuthService(_userRepoMock.Object, _emailServiceMock.Object, _auditServiceMock.Object, _loggerMock.Object, _jwtSettings);
     }
 
     [Fact]
@@ -64,6 +65,10 @@ public class AuthServiceTests
             It.IsAny<ArgumentNullException>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
+
+        _auditServiceMock.Verify(
+            s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+            Times.Never);
     }
 
     [Fact]
@@ -86,6 +91,10 @@ public class AuthServiceTests
         Assert.False(result.IsSuccessful);
         Assert.Equal("Password cannot be empty", result.ErrorMessage);
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+
+        _auditServiceMock.Verify(
+            s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+            Times.Never);
     }
 
     [Fact]
@@ -110,6 +119,10 @@ public class AuthServiceTests
         Assert.False(result.IsSuccessful);
         Assert.Equal("A database error occured during processing the request", result.ErrorMessage);
         Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+
+        _auditServiceMock.Verify(
+            s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+            Times.Never);
     }
 
     [Fact]
@@ -144,6 +157,10 @@ public class AuthServiceTests
             It.IsAny<Exception>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
         Times.Once);
+
+        _auditServiceMock.Verify(
+            s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+            Times.Never);
     }
 
     [Fact]
@@ -165,6 +182,10 @@ public class AuthServiceTests
         Assert.True(result.IsSuccessful);
         Assert.Equal("Registration successful. Please verify your email to activate your account.", result.Data);
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+
+        _auditServiceMock.Verify(
+            s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
+            Times.Once);
     }
 
     [Fact]
