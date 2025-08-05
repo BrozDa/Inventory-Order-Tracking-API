@@ -1,4 +1,5 @@
-﻿using Inventory_Order_Tracking.API.Models;
+﻿using Inventory_Order_Tracking.API.Dtos;
+using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Microsoft.Extensions.Logging;
@@ -215,5 +216,115 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(logs);
         }
+
+        [Fact]
+        public async Task AddNewLogAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsError()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+
+            var action = "Registered";
+
+            var newLogDto = new AuditLogAddDto
+            {
+                UserId = userId,
+                Action = action
+            };
+
+            var newLog = new AuditLog {
+                UserId = userId,
+                Action = action
+            };
+            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(true);
+            _auditLogRepository.Setup(ar => ar.AddAsync(It.IsAny<AuditLog>())).Throws(() => new Exception("Test exception"));
+            //act
+
+            var result = await _sut.AddNewLogAsync(newLogDto);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+            Assert.Equal("Failed to add new log", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][AddNewLogAsync] Unhandled Exception has occured")),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+        [Fact]
+        public async Task AddNewLogAsync_UserDoesNotExist_ReturnBadRequestAndLogsWarning()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+
+            var action = "Registered";
+
+            var newLogDto = new AuditLogAddDto
+            {
+                UserId = userId,
+                Action = action
+            };
+
+            var newLog = new AuditLog
+            {
+                UserId = userId,
+                Action = action
+            };
+            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(false);
+            _auditLogRepository.Setup(ar => ar.AddAsync(It.IsAny<AuditLog>()));
+            //act
+
+            var result = await _sut.AddNewLogAsync(newLogDto);
+
+            //assert
+            Assert.False(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Cannot add logs for non existent user", result.ErrorMessage);
+
+            _loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("[AuditService][AddNewLogAsync] Attempt to add log for non existent user")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+        [Fact]
+        public async Task AddNewLogAsync_ValidFlow_ReturnsCreated()
+        {
+            //arrange
+            var userId = Guid.NewGuid();
+
+            var action = "Registered";
+
+            var newLogDto = new AuditLogAddDto
+            {
+                UserId = userId,
+                Action = action
+            };
+
+            var newLog = new AuditLog
+            {
+                UserId = userId,
+                Action = action
+            };
+            _userRepository.Setup(ur => ur.IdExists(userId)).ReturnsAsync(true);
+            _auditLogRepository.Setup(ar => ar.AddAsync(It.IsAny<AuditLog>()));
+            //act
+
+            var result = await _sut.AddNewLogAsync(newLogDto);
+
+            //assert
+            Assert.True(result.IsSuccessful);
+            Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+            Assert.NotNull(result.Data);
+        }
+
+
     }
 }

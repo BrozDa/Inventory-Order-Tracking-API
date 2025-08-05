@@ -87,11 +87,13 @@ namespace Inventory_Order_Tracking.API
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<IOrderService, OrderService>();
                 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+                builder.Services.AddScoped<IAuditService, AuditService>();
 
                 builder.Services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
                 builder.Services.AddScoped<IProductRepository, ProductRepository>();
                 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+                builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
                 
 
                 builder.Services.AddScoped<RegisterRequestValidator>();

@@ -8,5 +8,7 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         Task<ServiceResult<List<AuditLogDto>>> GetAllAsync();
         Task<ServiceResult<List<AuditLogDto>>> GetAllForUser(Guid userId);
         Task<ServiceResult<List<AuditLogDto>>> GetAllForDate(DateTime date);
+        
+        Task<ServiceResult<AuditLogDto>> AddNewLogAsync(AuditLogAddDto log);
     }
 }

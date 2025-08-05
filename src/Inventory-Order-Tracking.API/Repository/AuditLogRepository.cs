@@ -27,5 +27,11 @@ namespace Inventory_Order_Tracking.API.Repository
 
             return await context.AuditLog.Where(x => x.UserId == userId).ToListAsync();
         }
+
+        public async Task AddAsync(AuditLog log)
+        {
+            await context.AddRangeAsync(log);
+            await context.SaveChangesAsync();
+        }
     }
 }
