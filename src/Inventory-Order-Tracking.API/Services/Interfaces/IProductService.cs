@@ -5,26 +5,26 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<ProductServiceResult<List<ProductAdminDto>>> AdminsGetAllAsync();
+        Task<ServiceResult<List<ProductAdminDto>>> AdminsGetAllAsync();
 
-        Task<ProductServiceResult<ProductAdminDto>> AdminsGetSingleAsync(Guid id);
+        Task<ServiceResult<ProductAdminDto>> AdminsGetSingleAsync(Guid id);
 
-        Task<ProductServiceResult<List<ProductCustomerDto>>> CustomersGetAllAsync();
+        Task<ServiceResult<List<ProductCustomerDto>>> CustomersGetAllAsync();
 
-        Task<ProductServiceResult<ProductCustomerDto>> CustomersGetSingleAsync(Guid id);
+        Task<ServiceResult<ProductCustomerDto>> CustomersGetSingleAsync(Guid id);
 
-        Task<ProductServiceResult<ProductAdminDto>> UpdateAsync(Guid id, ProductUpdateDto dto);
+        Task<ServiceResult<ProductAdminDto>> UpdateAsync(Guid id, ProductUpdateDto dto);
 
-        Task<ProductServiceResult<ProductAdminDto>> UpdateNameAsync(Guid id, string newName);
+        Task<ServiceResult<ProductAdminDto>> UpdateNameAsync(Guid id, string newName);
 
-        Task<ProductServiceResult<ProductAdminDto>> UpdateDescriptionAsync(Guid id, string newDescription);
+        Task<ServiceResult<ProductAdminDto>> UpdateDescriptionAsync(Guid id, string newDescription);
 
-        Task<ProductServiceResult<ProductAdminDto>> UpdatePriceAsync(Guid id, decimal newPrice);
+        Task<ServiceResult<ProductAdminDto>> UpdatePriceAsync(Guid id, decimal newPrice);
 
-        Task<ProductServiceResult<ProductAdminDto>> UpdateStockQuantityAsync(Guid id, int newStockQuantity);
+        Task<ServiceResult<ProductAdminDto>> UpdateStockQuantityAsync(Guid id, int newStockQuantity);
 
-        Task<ProductServiceResult<ProductAdminDto>> AddAsync(ProductAddDto dto);
+        Task<ServiceResult<ProductAdminDto>> AddAsync(ProductAddDto dto);
 
-        Task<ProductServiceResult<ProductAdminDto>> DeleteAsync(Guid id);
+        Task<ServiceResult<ProductAdminDto>> DeleteAsync(Guid id);
     }
 }

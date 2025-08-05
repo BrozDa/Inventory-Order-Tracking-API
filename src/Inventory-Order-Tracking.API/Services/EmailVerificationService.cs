@@ -14,17 +14,17 @@ namespace Inventory_Order_Tracking.API.Services
         LinkGenerator linkGenerator
         ) : IEmailVerificationService
     {
-        public async Task<EmailVerificationServiceResult> SendVerificationEmail(User user)
+        public async Task<ServiceResult<object>> SendVerificationEmail(User user)
         {
             try
             {
                 var token = await GenerateAndStoreToken(user.Id);
                 if (token is null)  //logging is in GenerateAndStoreToken
-                    return EmailVerificationServiceResult.InternalServerError("Could not store email verification token.");
+                    return ServiceResult<object>.InternalServerError("Could not store email verification token.");
 
                 var link = GenerateVerificationLink(token);
                 if (link is null) //logging is in GenerateVerificationLink
-                    return EmailVerificationServiceResult.InternalServerError("Failed to generate verification link");
+                    return ServiceResult<object>.InternalServerError("Failed to generate verification link");
 
                 var sendResult = await emailService
                     .To(user.Email)
@@ -35,24 +35,24 @@ namespace Inventory_Order_Tracking.API.Services
                 if (!sendResult.Successful)
                 {
                     logger.LogError($"[VerificationEmailSending] Failed to send email: {string.Join(";", sendResult.ErrorMessages)}");
-                    return EmailVerificationServiceResult.InternalServerError("Failed to sent verification email");
+                    return ServiceResult<object>.InternalServerError("Failed to sent verification email");
                 }
 
-                return EmailVerificationServiceResult.Ok();
+                return ServiceResult<object>.Ok();
             }
             catch (ApplicationException)
             {
                 //thrown by GenerateAndStoreToken - already logged
-                return EmailVerificationServiceResult.InternalServerError("Failed to generate verification token");
+                return ServiceResult<object>.InternalServerError("Failed to generate verification token");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "[UnhandledError] Unhandled error occurred");
-                return EmailVerificationServiceResult.InternalServerError("Unhandled error occurred");
+                return ServiceResult<object>.InternalServerError("Unhandled error occurred");
             }
         }
 
-        public async Task<EmailVerificationServiceResult> VerifyEmail(Guid tokenId)
+        public async Task<ServiceResult<object>> VerifyEmail(Guid tokenId)
         {
             try
             {
@@ -61,31 +61,31 @@ namespace Inventory_Order_Tracking.API.Services
                 if (storedToken is null)
                 {
                     logger.LogWarning($"[EmailVerification] Invalid token verification attempt");
-                    return EmailVerificationServiceResult.Unauthorized("Invalid Token received");
+                    return ServiceResult<object>.Unauthorized("Invalid Token received");
                 }
 
                 if (storedToken.ExpiresOn < DateTime.UtcNow)
                 {
                     logger.LogWarning("[EmailVerification] Expired token verification attempt by {UserId}", storedToken.User.Id);
-                    return EmailVerificationServiceResult.Unauthorized("Verification link expired");
+                    return ServiceResult<object>.Unauthorized("Verification link expired");
                 }
 
                 if (storedToken.User.IsVerified)
                 {
                     logger.LogWarning("[EmailVerification] Already verified user attempt by {UserId}", storedToken.User.Id);
-                    return EmailVerificationServiceResult.Unauthorized("User already verified");
+                    return ServiceResult<object>.Unauthorized("User already verified");
                 }
 
                 storedToken.User.IsVerified = true;
                 await repository.RemoveAsync(storedToken);
                 await repository.SaveChangesAsync();
 
-                return EmailVerificationServiceResult.Ok();
+                return ServiceResult<object>.Ok();
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "[UnhandledError] Unhandled error occurred");
-                return EmailVerificationServiceResult.InternalServerError("Unhandled error occurred");
+                return ServiceResult<object>.InternalServerError("Unhandled error occurred");
             }
         }
 

@@ -23,7 +23,7 @@ namespace InventoryManagement.API.Tests.Controllers
         public async Task CustomerGetAll_SuccessfulRequest_ReturnsOk()
         {
             var data = new List<ProductCustomerDto>();
-            var serviceResult = ProductServiceResult<List<ProductCustomerDto>>.Ok(data);
+            var serviceResult = ServiceResult<List<ProductCustomerDto>>.Ok(data);
 
             _serviceMock.Setup(s => s.CustomersGetAllAsync()).ReturnsAsync(serviceResult);
 
@@ -36,7 +36,7 @@ namespace InventoryManagement.API.Tests.Controllers
         public async Task CustomerGetAll_FailedRequest_ReturnsOtherThanOk()
         {
             var data = new List<ProductCustomerDto>();
-            var serviceResult = ProductServiceResult<List<ProductCustomerDto>>.InternalServerError("Test result");
+            var serviceResult = ServiceResult<List<ProductCustomerDto>>.InternalServerError("Test result");
 
             _serviceMock.Setup(s => s.CustomersGetAllAsync()).ReturnsAsync(serviceResult);
 
@@ -50,7 +50,7 @@ namespace InventoryManagement.API.Tests.Controllers
         {
             var id = Guid.NewGuid();
             var data = new ProductCustomerDto() { Id = id };
-            var serviceResult = ProductServiceResult<ProductCustomerDto>.Ok(data);
+            var serviceResult = ServiceResult<ProductCustomerDto>.Ok(data);
 
             _serviceMock.Setup(s => s.CustomersGetSingleAsync(id)).ReturnsAsync(serviceResult);
 
@@ -64,7 +64,7 @@ namespace InventoryManagement.API.Tests.Controllers
         {
             var id = Guid.NewGuid();
             var data = new ProductCustomerDto() { Id = id };
-            var serviceResult = ProductServiceResult<ProductCustomerDto>.NotFound();
+            var serviceResult = ServiceResult<ProductCustomerDto>.NotFound();
 
             _serviceMock.Setup(s => s.CustomersGetSingleAsync(id)).ReturnsAsync(serviceResult);
 
@@ -78,7 +78,7 @@ namespace InventoryManagement.API.Tests.Controllers
         public async Task AdminsGetAll_SuccessfulRequest_ReturnsOk()
         {
             var data = new List<ProductAdminDto>();
-            var serviceResult = ProductServiceResult<List<ProductAdminDto>>.Ok(data);
+            var serviceResult = ServiceResult<List<ProductAdminDto>>.Ok(data);
 
             _serviceMock.Setup(s => s.AdminsGetAllAsync()).ReturnsAsync(serviceResult);
 
@@ -91,7 +91,7 @@ namespace InventoryManagement.API.Tests.Controllers
         public async Task AdminsGetAll_FailedRequest_ReturnsOtherThanOk()
         {
             var data = new List<ProductAdminDto>();
-            var serviceResult = ProductServiceResult<List<ProductAdminDto>>.InternalServerError("Test result");
+            var serviceResult = ServiceResult<List<ProductAdminDto>>.InternalServerError("Test result");
 
             _serviceMock.Setup(s => s.AdminsGetAllAsync()).ReturnsAsync(serviceResult);
 
@@ -105,7 +105,7 @@ namespace InventoryManagement.API.Tests.Controllers
         {
             var id = Guid.NewGuid();
             var data = new ProductAdminDto() { Id = id };
-            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok(data);
+            var serviceResult = ServiceResult<ProductAdminDto>.Ok(data);
 
             _serviceMock.Setup(s => s.AdminsGetSingleAsync(id)).ReturnsAsync(serviceResult);
 
@@ -119,7 +119,7 @@ namespace InventoryManagement.API.Tests.Controllers
         {
             var id = Guid.NewGuid();
             var data = new ProductAdminDto() { Id = id };
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
 
             _serviceMock.Setup(s => s.AdminsGetSingleAsync(id)).ReturnsAsync(serviceResult);
 
@@ -141,7 +141,7 @@ namespace InventoryManagement.API.Tests.Controllers
                 StockQuantity = 2
             };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+            var serviceResult = ServiceResult<ProductAdminDto>.Ok();
 
             _serviceMock.Setup(s => s.AddAsync(It.IsAny<ProductAddDto>())).ReturnsAsync(serviceResult);
             //act
@@ -163,7 +163,7 @@ namespace InventoryManagement.API.Tests.Controllers
                 StockQuantity = 2
             };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
 
             _serviceMock.Setup(s => s.AddAsync(It.IsAny<ProductAddDto>())).ReturnsAsync(serviceResult);
             //act
@@ -182,7 +182,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
             var dto = new ProductUpdateNameDto { Name = "Changed Name" };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
 
             _serviceMock.Setup(s => s.UpdateNameAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(serviceResult);
 
@@ -201,7 +201,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
             var dto = new ProductUpdateNameDto { Name = "Changed Name" };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+            var serviceResult = ServiceResult<ProductAdminDto>.Ok();
 
             _serviceMock.Setup(s => s.UpdateNameAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(serviceResult);
 
@@ -220,7 +220,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
             var dto = new ProductUpdateDescriptionDto { Description = "Changed Description" };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
 
             _serviceMock.Setup(s => s.UpdateDescriptionAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(serviceResult);
 
@@ -239,7 +239,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
             var dto = new ProductUpdateDescriptionDto { Description = "Changed Description" };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+            var serviceResult = ServiceResult<ProductAdminDto>.Ok();
 
             _serviceMock.Setup(s => s.UpdateDescriptionAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(serviceResult);
 
@@ -258,7 +258,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
             var dto = new ProductUpdatePriceDto { Price= 13.24m};
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
 
             _serviceMock.Setup(s => s.UpdatePriceAsync(It.IsAny<Guid>(), It.IsAny<decimal>())).ReturnsAsync(serviceResult);
 
@@ -277,7 +277,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
             var dto = new ProductUpdatePriceDto { Price = 13.24m };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+            var serviceResult = ServiceResult<ProductAdminDto>.Ok();
 
             _serviceMock.Setup(s => s.UpdatePriceAsync(It.IsAny<Guid>(), It.IsAny<decimal>())).ReturnsAsync(serviceResult);
 
@@ -296,7 +296,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
             var dto = new ProductUpdateStockDto { Stock = 13 };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
 
             _serviceMock.Setup(s => s.UpdateStockQuantityAsync(It.IsAny<Guid>(), It.IsAny<int>())).ReturnsAsync(serviceResult);
 
@@ -315,7 +315,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
             var dto = new ProductUpdateStockDto { Stock = 13 };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+            var serviceResult = ServiceResult<ProductAdminDto>.Ok();
 
             _serviceMock.Setup(s => s.UpdateStockQuantityAsync(It.IsAny<Guid>(), It.IsAny<int>())).ReturnsAsync(serviceResult);
 
@@ -340,7 +340,7 @@ namespace InventoryManagement.API.Tests.Controllers
                 StockQuantity = 15
             };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.Ok();
+            var serviceResult = ServiceResult<ProductAdminDto>.Ok();
 
             _serviceMock.Setup(s => s.UpdateAsync(id, It.IsAny<ProductUpdateDto>())).ReturnsAsync(serviceResult);
             //act
@@ -363,7 +363,7 @@ namespace InventoryManagement.API.Tests.Controllers
                 StockQuantity = 15
             };
 
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
 
             _serviceMock.Setup(s => s.UpdateAsync(id, It.IsAny<ProductUpdateDto>())).ReturnsAsync(serviceResult);
             //act
@@ -380,7 +380,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
 
             //act
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NotFound();
+            var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
             _serviceMock.Setup(s => s.DeleteAsync(id)).ReturnsAsync(serviceResult);
 
             var result = await _sut.AdminsDelete(id);
@@ -396,7 +396,7 @@ namespace InventoryManagement.API.Tests.Controllers
             var id = Guid.NewGuid();
 
             //act
-            var serviceResult = ProductServiceResult<ProductAdminDto>.NoContent();
+            var serviceResult = ServiceResult<ProductAdminDto>.NoContent();
             _serviceMock.Setup(s => s.DeleteAsync(id)).ReturnsAsync(serviceResult);
 
             var result = await _sut.AdminsDelete(id);

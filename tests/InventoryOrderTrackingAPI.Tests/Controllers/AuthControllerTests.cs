@@ -36,7 +36,7 @@ public class AuthControllerTests
 
         _authServiceMock.Setup(
             s => s.RegisterAsync(request))
-            .ReturnsAsync(AuthServiceResult<string>.BadRequest("Invalid inputs"));
+            .ReturnsAsync(ServiceResult<string>.BadRequest("Invalid inputs"));
         //act
         var result = await _sut.Register(request);
 
@@ -57,7 +57,7 @@ public class AuthControllerTests
 
         _authServiceMock.Setup(
             s => s.RegisterAsync(request))
-            .ReturnsAsync(AuthServiceResult<string>.Ok("Registration successfull"));
+            .ReturnsAsync(ServiceResult<string>.Ok("Registration successfull"));
         //act
         var result = await _sut.Register(request);
 
@@ -77,7 +77,7 @@ public class AuthControllerTests
 
         _authServiceMock.Setup(
             s => s.LoginAsync(request))
-            .ReturnsAsync(AuthServiceResult<TokenResponseDto>.BadRequest("Invalid Login"));
+            .ReturnsAsync(ServiceResult<TokenResponseDto>.BadRequest("Invalid Login"));
         //act
         var result = await _sut.Login(request);
         //assert
@@ -97,7 +97,7 @@ public class AuthControllerTests
 
         _authServiceMock.Setup(
             s => s.LoginAsync(request))
-            .ReturnsAsync(AuthServiceResult<TokenResponseDto>
+            .ReturnsAsync(ServiceResult<TokenResponseDto>
             .Ok(new TokenResponseDto
             {
                 AccessToken = "Sample Token",
@@ -114,7 +114,7 @@ public class AuthControllerTests
     public async Task Verify_InvalidInput_ReturnsOtherThanOk()
     {
         //arrange
-        var serviceResult = new EmailVerificationServiceResult
+        var serviceResult = new ServiceResult<object>
         {
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK
@@ -133,7 +133,7 @@ public class AuthControllerTests
     public async Task Verify_ValidInput_ReturnsOk()
     {
         //arrange
-        var serviceResult = new EmailVerificationServiceResult
+        var serviceResult = new ServiceResult<object>
         {
             IsSuccessful = false,
             ErrorMessage = "This is test generated error",

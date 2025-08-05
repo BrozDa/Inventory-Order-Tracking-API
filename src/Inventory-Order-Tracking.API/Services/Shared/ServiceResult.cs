@@ -48,13 +48,13 @@ namespace Inventory_Order_Tracking.API.Services.Shared
             };
         }
 
-        public static ServiceResult<T> NotFound(string? errorMessage = "Not found")
+        public static ServiceResult<T> NotFound(string errorMessage = "Not found")
         {
             return new ServiceResult<T>
             {
                 IsSuccessful = false,
                 StatusCode = HttpStatusCode.NotFound,
-                ErrorMessage = errorMessage ?? "Bad request"
+                ErrorMessage = errorMessage
             };
         }
 
@@ -68,13 +68,13 @@ namespace Inventory_Order_Tracking.API.Services.Shared
             };
         }
 
-        public static ServiceResult<T> Unauthorized()
+        public static ServiceResult<T> Unauthorized(string errorMessage = "Unauthorized")
         {
             return new ServiceResult<T>
             {
                 IsSuccessful = false,
                 StatusCode = HttpStatusCode.Unauthorized,
-                ErrorMessage = "Unauthorized"
+                ErrorMessage = errorMessage
             };
         }
         public static ServiceResult<T> Forbidden()

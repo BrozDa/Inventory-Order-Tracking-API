@@ -5,8 +5,8 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
 {
     public interface IEmailVerificationService
     {
-        Task<EmailVerificationServiceResult> SendVerificationEmail(User user);
+        Task<ServiceResult<object>> SendVerificationEmail(User user);
 
-        Task<EmailVerificationServiceResult> VerifyEmail(Guid tokenId);
+        Task<ServiceResult<object>> VerifyEmail(Guid tokenId);
     }
 }

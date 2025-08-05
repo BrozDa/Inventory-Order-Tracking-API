@@ -5,10 +5,10 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthServiceResult<string>> RegisterAsync(UserRegistrationDto request);
+        Task<ServiceResult<string>> RegisterAsync(UserRegistrationDto request);
 
-        Task<AuthServiceResult<TokenResponseDto>> LoginAsync(UserLoginDto request);
+        Task<ServiceResult<TokenResponseDto>> LoginAsync(UserLoginDto request);
 
-        Task<AuthServiceResult<TokenResponseDto>> RefreshTokens(RefreshTokenRequestDto request);
+        Task<ServiceResult<TokenResponseDto>> RefreshTokens(RefreshTokenRequestDto request);
     }
 }

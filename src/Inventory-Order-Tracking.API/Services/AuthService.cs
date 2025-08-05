@@ -24,14 +24,14 @@ namespace Inventory_Order_Tracking.API.Services
         : IAuthService
     {
         //NOTE: jwtSettings is validated on startup in program.cs - right after build
-        public async Task<AuthServiceResult<string>> RegisterAsync(UserRegistrationDto request)
+        public async Task<ServiceResult<string>> RegisterAsync(UserRegistrationDto request)
         {
             try
             {
                 if (await repository.UsernameExistsAsync(request.Username))
                 {
                     logger.LogWarning("[Registration][UsernameExistsAsync] Duplicate username {Username}", request.Username);
-                    return AuthServiceResult<string>.BadRequest("User Already Exists");
+                    return ServiceResult<string>.BadRequest("User Already Exists");
                 }
 
                 var (hash, salt) = PasswordHasher.GenerateHashAndSalt(request.Password);
@@ -50,27 +50,27 @@ namespace Inventory_Order_Tracking.API.Services
 
                 await auditService.AddNewLogAsync(new AuditLogAddDto { UserId = user.Id, Action = "Registered new user" });
 
-                return AuthServiceResult<string>.Ok("Registration successful. Please verify your email to activate your account.");
+                return ServiceResult<string>.Ok("Registration successful. Please verify your email to activate your account.");
             }
             catch (ArgumentNullException)
             {
-                return AuthServiceResult<string>.BadRequest("Password cannot be empty");
+                return ServiceResult<string>.BadRequest("Password cannot be empty");
             }
             catch (DbUpdateException dbEx)
             {
                 logger.LogError(dbEx,
                     "[Registration][DbUpdateException] Database error during processing request for {Username}", request.Username);
-                return AuthServiceResult<string>.InternalServerError("A database error occured during processing the request");
+                return ServiceResult<string>.InternalServerError("A database error occured during processing the request");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex,
                     "[Registration][UnhandledException] Unexpected error during processing request for {Username}", request.Username);
-                return AuthServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
+                return ServiceResult<string>.InternalServerError("An Unexpected error occured during processing the request");
             }
         }
 
-        public async Task<AuthServiceResult<TokenResponseDto>> LoginAsync(UserLoginDto request)
+        public async Task<ServiceResult<TokenResponseDto>> LoginAsync(UserLoginDto request)
         {
             try
             {
@@ -79,43 +79,43 @@ namespace Inventory_Order_Tracking.API.Services
                 if (user is null)
                 {
                     logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
-                    return AuthServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
+                    return ServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
                 if (!PasswordHasher.VerifyPassword(user.PasswordHash, request.Password, user.PasswordSalt))
                 {
                     logger.LogWarning("[LoginAsync][AuthenticationFailed] Invalid username or password: {Username}", request.Username);
-                    return AuthServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
+                    return ServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
                 if (!user.IsVerified)
                 {
                     logger.LogWarning("[LoginAsync][Unverified] Unverified user login: {Username}", request.Username);
-                    return AuthServiceResult<TokenResponseDto>.BadRequest("User not verified");
+                    return ServiceResult<TokenResponseDto>.BadRequest("User not verified");
                 }
 
                 TokenResponseDto tokenResponse = await GenerateTokenResponse(user);
 
-                return AuthServiceResult<TokenResponseDto>.Ok(tokenResponse);
+                return ServiceResult<TokenResponseDto>.Ok(tokenResponse);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex,
                     "[LoginAsync][Exception] Unexpected error during processing request for {Username}", request.Username);
-                return AuthServiceResult<TokenResponseDto>.InternalServerError("An Unexpected error occured during processing the request");
+                return ServiceResult<TokenResponseDto>.InternalServerError("An Unexpected error occured during processing the request");
             }
         }
 
-        public async Task<AuthServiceResult<TokenResponseDto>> RefreshTokens(RefreshTokenRequestDto request)
+        public async Task<ServiceResult<TokenResponseDto>> RefreshTokens(RefreshTokenRequestDto request)
         {
             var user = await ValidateRefreshToken(request.UserId, request.ExpiredRefreshToken);
 
             if (user is null)
             {
-                return AuthServiceResult<TokenResponseDto>.Unauthorized();
+                return ServiceResult<TokenResponseDto>.Unauthorized();
             }
 
             var tokenResponse = await GenerateTokenResponse(user);
 
-            return AuthServiceResult<TokenResponseDto>.Ok(tokenResponse);
+            return ServiceResult<TokenResponseDto>.Ok(tokenResponse);
         }
 
         private string CreateToken(User user)
