@@ -2,6 +2,10 @@
 
 namespace Inventory_Order_Tracking.API.Dtos
 {
+
+    /// <summary>
+    /// Represents the data transfer object for fetching audit logs.
+    /// </summary>
     public class AuditLogDto
     {
         public Guid Id { get; set; }

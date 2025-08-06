@@ -2,6 +2,10 @@
 
 namespace Inventory_Order_Tracking.API.Dtos
 {
+    /// <summary>
+    /// Represents the data transfer object for fetching product by customer user.
+    /// Differs from AdminDto in non exact representation of stock number
+    /// </summary>
     public class ProductCustomerDto
     {
         public Guid Id { get; set; }

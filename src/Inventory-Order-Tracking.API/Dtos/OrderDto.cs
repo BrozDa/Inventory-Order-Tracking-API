@@ -3,6 +3,10 @@ using Inventory_Order_Tracking.API.Models;
 
 namespace Inventory_Order_Tracking.API.Dtos
 {
+
+    /// <summary>
+    /// Represents the data transfer object for fetching existing order.
+    /// </summary>
     public class OrderDto
     {
         public Guid Id { get; set; }

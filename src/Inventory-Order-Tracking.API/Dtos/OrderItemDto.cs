@@ -1,5 +1,9 @@
 ﻿namespace Inventory_Order_Tracking.API.Dtos
 {
+
+    /// <summary>
+    /// Represents the data transfer object for fetching existing order item.
+    /// </summary>
     public class OrderItemDto
     {
         public Guid Id { get; set; }
