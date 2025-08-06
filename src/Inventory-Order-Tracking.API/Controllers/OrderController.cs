@@ -1,9 +1,7 @@
 ﻿using Inventory_Order_Tracking.API.Dtos;
-using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Inventory_Order_Tracking.API.Controllers
 {
