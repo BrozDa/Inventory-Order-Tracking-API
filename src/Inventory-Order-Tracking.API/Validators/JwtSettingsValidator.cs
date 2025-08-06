@@ -3,9 +3,9 @@ using Inventory_Order_Tracking.API.Configuration;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
-    public class JwtSettingValidator : AbstractValidator<JwtSettings>
+    public class JwtSettingsValidator : AbstractValidator<JwtSettings>
     {
-        public JwtSettingValidator()
+        public JwtSettingsValidator()
         {
             RuleFor(x => x.Token)
                 .NotEmpty()

@@ -5,11 +5,11 @@ namespace InventoryManagement.API.Tests.Validators
 {
     public class JwtSettingValidatorTests
     {
-        private readonly JwtSettingValidator _sut;
+        private readonly JwtSettingsValidator _sut;
 
         public JwtSettingValidatorTests()
         {
-            _sut = new JwtSettingValidator();
+            _sut = new JwtSettingsValidator();
         }
 
         [Fact]
