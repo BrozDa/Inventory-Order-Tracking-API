@@ -1,5 +1,8 @@
 ﻿namespace Inventory_Order_Tracking.API.Models
 {
+    /// <summary>
+    /// Represents a registered user who can view and order products.
+    /// </summary>
     public class User
     {
         public Guid Id { get; set; }
