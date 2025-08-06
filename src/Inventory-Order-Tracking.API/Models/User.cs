@@ -12,6 +12,7 @@
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpirationTime { get; set; }
 
+        public ICollection<EmailVerificationToken> EmailVerificationTokens { get; set; } = new List<EmailVerificationToken>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
     }

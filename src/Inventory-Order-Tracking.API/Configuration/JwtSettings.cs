@@ -1,5 +1,8 @@
 ﻿namespace Inventory_Order_Tracking.API.Configuration
 {
+    /// <summary>
+    /// Represents settings for Jwt token stored in appconfig.json
+    /// </summary>
     public class JwtSettings
     {
         public string Token { get; set; } = string.Empty;

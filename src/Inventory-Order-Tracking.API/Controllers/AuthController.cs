@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory_Order_Tracking.API.Controllers
 {
+    /// <summary>
+    /// Controller responsible for fetching Authentication operations.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController(
@@ -13,6 +16,17 @@ namespace Inventory_Order_Tracking.API.Controllers
         IEmailVerificationService emailService,
         ILogger<AuthController> logger) : ControllerBase
     {
+
+        /// <summary>
+        /// Perform registration for new user, adds him to database and sends verification email
+        /// </summary>
+        /// <param name="request">An <see cref="UserRegistrationDto"/> containing username and 
+        /// password of new user 
+        /// </param>
+        /// <returns>
+        /// An OK <see cref="IActionResult"/> containing success message on success.
+        /// Returns an appropriate status code and error message on failure.
+        /// </returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegistrationDto request)
         {
@@ -34,6 +48,16 @@ namespace Inventory_Order_Tracking.API.Controllers
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
 
+        /// <summary>
+        /// Perform login of an user.
+        /// </summary>
+        /// <param name="request">An <see cref="UserLoginDto"/> containing username and 
+        /// password a new user 
+        /// </param>
+        /// <returns>
+        /// An OK <see cref="IActionResult"/> containing JWT token on success.
+        /// Returns an appropriate status code and error message on failure.
+        /// </returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto request)
         {
@@ -44,6 +68,14 @@ namespace Inventory_Order_Tracking.API.Controllers
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
 
+        /// <summary>
+        /// Perform email verification of an user.
+        /// </summary>
+        /// <param name="tokenId">An <see cref="Guid"/> of the user to be verified  </param>
+        /// <returns>
+        /// An OK <see cref="IActionResult"/> on success.
+        /// Returns an appropriate status code and error message on failure.
+        /// </returns>
         [HttpGet("user/verify/{tokenId:guid}")]
         public async Task<IActionResult> Verify(Guid tokenId)
         {
