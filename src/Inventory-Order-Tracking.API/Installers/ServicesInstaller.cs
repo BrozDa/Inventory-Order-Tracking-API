@@ -14,8 +14,17 @@ using Inventory_Order_Tracking.API.Domain;
 
 namespace Inventory_Order_Tracking.API.Installers
 {
+    /// <summary>
+    /// Provides a service installing extension for the <see cref="IServiceCollection"/>.
+    /// </summary>
     public static class ServicesInstaller
     {
+        /// <summary>
+        /// Validates Jwt settings from provided <see cref="IConfiguration"/> and adds JWT settings, Authentication and Authorization to the service collection
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to extend</param>
+        /// <param name="configuration">An instance of <see cref="IConfiguration"/> used to read configuration data</param>
+        /// <returns>Extended instance of the <see cref="IServiceCollection"/></returns>
         public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettingsSection = configuration.GetSection("JwtSettings");
@@ -62,6 +71,13 @@ namespace Inventory_Order_Tracking.API.Installers
 
             return services;
         }
+
+        /// <summary>
+        /// Validates email settings from provided <see cref="IConfiguration"/> and adds email settings and AddFluentEmail to the service collection
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to extend</param>
+        /// <param name="configuration">An instance of <see cref="IConfiguration"/> used to read configuration data</param>
+        /// <returns>Extended instance of the <see cref="IServiceCollection"/></returns>
         public static IServiceCollection AddEmail(this IServiceCollection services, IConfiguration configuration)
         {
             var emailSettingsSection = configuration.GetSection("EmailSettings");
@@ -89,6 +105,12 @@ namespace Inventory_Order_Tracking.API.Installers
 
         }
 
+        /// <summary>
+        /// Gets the connection string from provided <see cref="IConfiguration"/> and adds Db context to the service collection
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to extend</param>
+        /// <param name="configuration">An instance of <see cref="IConfiguration"/> used to read configuration data</param>
+        /// <returns>Extended instance of the <see cref="IServiceCollection"/></returns>
         public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<InventoryManagementContext>(options =>
@@ -97,6 +119,12 @@ namespace Inventory_Order_Tracking.API.Installers
 
             return services;
         }
+
+        /// <summary>
+        /// Adds services used across the app to the service collection
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to extend</param>
+        /// <returns>Extended instance of the <see cref="IServiceCollection"/></returns>
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();

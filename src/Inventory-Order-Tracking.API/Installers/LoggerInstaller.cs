@@ -2,6 +2,9 @@
 
 namespace Inventory_Order_Tracking.API.Installers
 {
+    /// <summary>
+    /// Adds the application wide instance of Serilog logger
+    /// </summary>
     public class LoggerInstaller
     {
         public static void AddLogger()

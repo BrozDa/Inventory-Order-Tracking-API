@@ -1,12 +1,18 @@
 ﻿using Inventory_Order_Tracking.API.Context;
 using Inventory_Order_Tracking.API.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace Inventory_Order_Tracking.API.Installers
 {
-    public static class DevEnvSeeder
+    /// <summary>
+    /// Provides a middleware installing extension for the <see cref="WebApplication"/>.
+    /// </summary>
+    public static class DataSeeder
     {
+        /// <summary>
+        /// Deletes the existing database, applies all migrations, and seeds initial data.
+        /// </summary>
+        /// <param name="app">The <see cref="WebApplication"/> instance to extend.</param>
         public static async Task SeedDatabaseAsync(this WebApplication app)
         {
             using var scope = app.Services.CreateScope();
