@@ -4,10 +4,13 @@ using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
-using System.Collections.Generic;
 
 namespace Inventory_Order_Tracking.API.Services
 {
+
+    /// <summary>
+    /// Provides operations related to handling and managing orders.
+    /// </summary>
     public class OrderService(
         IAuditLogService auditService,
         IUserRepository userRepo,
@@ -15,6 +18,8 @@ namespace Inventory_Order_Tracking.API.Services
         IOrderRepository orderRepo,
         ILogger<OrderService> logger) : IOrderService
     {
+
+        /// <inheritdoc/>
         public async Task<ServiceResult<OrderDto>> SubmitOrderAsync(Guid userId, CreateOrderDto dto)
         {
             try
@@ -57,6 +62,7 @@ namespace Inventory_Order_Tracking.API.Services
             
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<OrderDto>> GetOrderByIdAsync(Guid userId, Guid orderId)
         {
             try
@@ -94,7 +100,7 @@ namespace Inventory_Order_Tracking.API.Services
 
 
         }
-
+        /// <inheritdoc/>
         public async Task<ServiceResult<List<OrderDto>>> GetAllOrdersForUserAsync(Guid userId)
         {
             try
@@ -118,7 +124,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
 
         }
-
+        /// <inheritdoc/>
         public async Task<ServiceResult<OrderDto>> CancelOrderAsync(Guid userId, Guid orderId)
         {
             try
@@ -171,6 +177,14 @@ namespace Inventory_Order_Tracking.API.Services
                 return ServiceResult<OrderDto>.InternalServerError("Failed to cancel the order");
             }
         }
+
+        /// <summary>
+        /// Validates products in newly submitted order and retrieves them from the data storage
+        /// </summary>
+        /// <param name="dto">A <see cref="CreateOrderDto"/> containing list of ordered products and quantities</param>
+        /// <returns>A tupple containing:
+        /// List of tupples (<see cref="Product"/>, ordered quantities)
+        /// and List of encountered errors while validation, or an empty list in case of successful validaton </returns>
         private async Task<(List<(Product, int)> orderedProducts, List<string> errors)> ValidateAndFetchProducts(CreateOrderDto dto)
         {
             var errors = new List<string>();
@@ -196,6 +210,12 @@ namespace Inventory_Order_Tracking.API.Services
 
             return(orderedProducts, errors);
         }
+        /// <summary>
+        /// Creates a <see cref="Order"/> model
+        /// </summary>
+        /// <param name="userId">An <see cref="User"/> ordering the products</param>
+        /// <param name="orderedProducts">A list of tupples (<see cref="Product"/>, ordered quantities)</param>
+        /// <returns>An <see cref="Order"/> model created based on requested information </returns>
         private async Task<Order> CreateOrder(Guid userId, List<(Product product, int quantity)> orderedProducts) 
         {
             var order = await orderRepo.CreateNewOrderAsync(userId);
