@@ -2,12 +2,18 @@
 
 namespace Inventory_Order_Tracking.API.Services.Shared
 {
+    /// <summary>
+    /// Represents a standardized result returned from a services.
+    /// </summary>
+    /// <typeparam name="T">The type of data returned from the operation on success.</typeparam>
     public class ServiceResult<T>
     {
         public bool IsSuccessful { get; set; }
         public HttpStatusCode StatusCode { get; set; }
         public string? ErrorMessage { get; set; }
         public T? Data { get; set; }
+
+        //Documentation is left out from static methods due to self-explanatory nature
 
         public static ServiceResult<T> Ok(T? data = default)
         {
