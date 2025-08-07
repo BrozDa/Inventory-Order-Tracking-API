@@ -6,6 +6,9 @@ using Inventory_Order_Tracking.API.Services.Shared;
 
 namespace Inventory_Order_Tracking.API.Services
 {
+    /// <summary>
+    /// Provides operations related to email verification..
+    /// </summary>
     public class EmailVerificationService(
         IFluentEmail emailService,
         IEmailVerificationTokenRepository repository,
@@ -14,6 +17,7 @@ namespace Inventory_Order_Tracking.API.Services
         LinkGenerator linkGenerator
         ) : IEmailVerificationService
     {
+        /// <inheritdoc/>
         public async Task<ServiceResult<object>> SendVerificationEmailAsync(User user)
         {
             try
@@ -52,6 +56,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<object>> VerifyEmailAsync(Guid tokenId)
         {
             try
@@ -89,6 +94,11 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <summary>
+        /// Generates email verification link for newly registered user
+        /// </summary>
+        /// <param name="token">An <see cref="EmailVerificationToken"/> associated with new user</param>
+        /// <returns>An string representation of a verification URI for the user in case of success, false otherwise</returns>
         private string? GenerateVerificationLink(EmailVerificationToken token)
         {
             HttpContext? httpContext = httpContextAccessor.HttpContext;
@@ -111,7 +121,11 @@ namespace Inventory_Order_Tracking.API.Services
 
             return uri;
         }
-
+        /// <summary>
+        /// Generates and stores verification token for newly registered user
+        /// </summary>
+        /// <param name="userId">An Id in form of <see cref="Guid"/> of newly registered user</param>
+        /// <returns>An instance of <see cref="EmailVerificationToken"/> on success, null otherwise</returns>
         private async Task<EmailVerificationToken?> GenerateAndStoreToken(Guid userId)
         {
             try
