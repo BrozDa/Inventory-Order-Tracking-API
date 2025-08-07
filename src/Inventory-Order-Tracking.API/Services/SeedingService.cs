@@ -7,9 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inventory_Order_Tracking.API.Services
 {
+    /// <summary>
+    /// Provides operations for seeding the data storage with initial testing data
+    /// </summary>
     public class SeedingService(
         InventoryManagementContext context) : ISeedingService
     {
+        /// <inheritdoc/>
         public async Task SeedInitialData()
         {
             if (await context.Users.AnyAsync())
@@ -24,6 +28,10 @@ namespace Inventory_Order_Tracking.API.Services
 
             await context.SaveChangesAsync();
         }
+        /// <summary>
+        /// Generates and stores admin user to the database
+        /// </summary>
+        /// <returns>An instance of <see cref="User"/> with generated admin user</returns>
         private async Task<User> SeedAdminUser()
         {
             var (hash, salt) = PasswordHasher.GenerateHashAndSalt("admin");
@@ -42,6 +50,11 @@ namespace Inventory_Order_Tracking.API.Services
             return user;
 
         }
+
+        /// <summary>
+        /// Generates and stores customer user to the database
+        /// </summary>
+        /// <returns>An instance of <see cref="User"/> with generated customer user</returns>
         private async Task<User> SeedCustomerUser()
         {
             var (hash, salt) = PasswordHasher.GenerateHashAndSalt("customer");
@@ -58,6 +71,11 @@ namespace Inventory_Order_Tracking.API.Services
 
             return user;
         }
+
+        /// <summary>
+        /// Generates and stores Products to the database
+        /// </summary>
+        /// <returns>A list of generated <see cref="Product"/> instances</returns>
         private async Task<List<Product>> SeedProducts()
         {
             var products = new List<Product>()
@@ -97,6 +115,13 @@ namespace Inventory_Order_Tracking.API.Services
 
             return products;
         }
+
+        /// <summary>
+        /// Generates and stores products Orders to the database
+        /// </summary>
+        /// <param name="admin">An instance of admin user</param>
+        /// <param name="customer">An instance of customer user</param>
+        /// <returns>A list of generated <see cref="Order"/> instances</returns>
         private async Task<List<Order>> SeedOrders(User admin, User customer)
         {
             var orders = new List<Order>()
@@ -124,6 +149,13 @@ namespace Inventory_Order_Tracking.API.Services
 
             return orders;
         }
+
+        /// <summary>
+        /// Generates and stores products order items to the database
+        /// </summary>
+        /// <param name="orders">A list of previously generated orders</param>
+        /// <param name="products">A list of previously generated products</param>
+        /// <returns>A list of generated <see cref="OrderItem"/> instances</returns>
         private async Task<List<OrderItem>> SeedOrderItems(List<Order> orders, List<Product> products)
         {
             var orderItems = new List<OrderItem>()
@@ -165,6 +197,12 @@ namespace Inventory_Order_Tracking.API.Services
             return orderItems;
         }
 
+        /// <summary>
+        /// Generates and stores products audit logs items to the database
+        /// </summary>
+        /// <param name="admin">An instance of admin user</param>
+        /// <param name="customer">An instance of customer user</param>
+        /// <returns></returns>
         private async Task<List<AuditLog>> SeedAuditLogs(User admin, User customer)
         {
             var logs = new List<AuditLog>()
