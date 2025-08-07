@@ -6,6 +6,9 @@ using Inventory_Order_Tracking.API.Services.Shared;
 
 namespace Inventory_Order_Tracking.API.Services
 {
+    /// <summary>
+    /// Provides operations related to handling and managing products.
+    /// </summary>
     public class ProductService(
         ICurrentUserService currentUserService,
         IAuditLogService auditService,
@@ -13,6 +16,7 @@ namespace Inventory_Order_Tracking.API.Services
         ILogger<ProductService> logger
         ) : IProductService
     {
+        /// <inheritdoc/>
         public async Task<ServiceResult<List<ProductCustomerDto>>> CustomersGetAllAsync()
         {
             try
@@ -29,6 +33,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductCustomerDto>> CustomersGetSingleAsync(Guid id)
         {
             try
@@ -46,6 +51,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<List<ProductAdminDto>>> AdminsGetAllAsync()
         {
             try
@@ -62,6 +68,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductAdminDto>> AdminsGetSingleAsync(Guid id)
         {
             try
@@ -79,6 +86,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductAdminDto>> AddAsync(ProductAddDto dto)
         {
             try
@@ -105,6 +113,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductAdminDto>> UpdateNameAsync(Guid id, string newName)
         {
             try
@@ -137,6 +146,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductAdminDto>> UpdateDescriptionAsync(Guid id, string newDescription)
         {
             try
@@ -169,6 +179,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductAdminDto>> UpdatePriceAsync(Guid id, decimal newPrice)
         {
             try
@@ -201,6 +212,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductAdminDto>> UpdateStockQuantityAsync(Guid id, int newStockQuantity)
         {
             try
@@ -233,6 +245,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductAdminDto>> UpdateAsync(Guid id, ProductUpdateDto dto)
         {
             try
@@ -286,6 +299,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<ProductAdminDto>> DeleteAsync(Guid id)
         {
             try
