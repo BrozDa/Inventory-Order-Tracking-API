@@ -15,15 +15,19 @@ using System.Text;
 
 namespace Inventory_Order_Tracking.API.Services
 {
+    /// <summary>
+    /// Defines authentication related operations within the app.
+    /// </summary>
     public class AuthService(
         IUserRepository repository, 
         IEmailVerificationService emailService,
         IAuditLogService auditService,
         ILogger<AuthService> logger, 
-        JwtSettings jwtSettings)
+        JwtSettings jwtSettings) //NOTE: jwtSettings is validated on startup in program.cs - right after build
         : IAuthService
     {
-        //NOTE: jwtSettings is validated on startup in program.cs - right after build
+
+        /// <inheritdoc/>
         public async Task<ServiceResult<string>> RegisterAsync(UserRegistrationDto request)
         {
             try
@@ -70,6 +74,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<TokenResponseDto>> LoginAsync(UserLoginDto request)
         {
             try
@@ -104,9 +109,10 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<TokenResponseDto>> RefreshTokens(RefreshTokenRequestDto request)
         {
-            var user = await ValidateRefreshToken(request.UserId, request.ExpiredRefreshToken);
+            var user = await GetUserIfRefreshTokenIsValid(request.UserId, request.ExpiredRefreshToken);
 
             if (user is null)
             {
@@ -118,6 +124,13 @@ namespace Inventory_Order_Tracking.API.Services
             return ServiceResult<TokenResponseDto>.Ok(tokenResponse);
         }
 
+        /// <summary>
+        /// Generates a JWT token for logged in user
+        /// </summary>
+        /// <param name="user">A <see cref="User"/> for whom the token will be generated</param>
+        /// <returns>A string representation of JWT token</returns>
+        /// <exception cref="ArgumentNullException"> Thrown when the <paramref name="user"/> argument is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when the <paramref name="user"/> has a missing or empty Username or Role.</exception>
         private string CreateToken(User user)
         {
             if (user is null)
@@ -148,6 +161,10 @@ namespace Inventory_Order_Tracking.API.Services
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
 
+        /// <summary>
+        /// Generates a new refresh token
+        /// </summary>
+        /// <returns>A string representation of refresh token</returns>
         private string GenerateRefreshToken()
         {
             var refreshToken = new byte[32];
@@ -156,7 +173,11 @@ namespace Inventory_Order_Tracking.API.Services
 
             return Convert.ToBase64String(refreshToken);
         }
-
+        /// <summary>
+        /// Calls GenerateRefreshToken() to generate refresh token and performs data persistence
+        /// </summary>
+        /// <param name="user">A <see cref="User"/> for whom the token will be generated</param>
+        /// <returns>A string representation of refresh token</returns>
         private async Task<string> GenerateAndStoreRefreshToken(User user)
         {
             var refreshToken = GenerateRefreshToken();
@@ -173,6 +194,11 @@ namespace Inventory_Order_Tracking.API.Services
             return refreshToken;
         }
 
+        /// <summary>
+        /// Generates both JWT and Refresh tokens and wraps them within <see cref="TokenResponseDto"/>
+        /// </summary>
+        /// <param name="user">A <see cref="User"/> for whom the tokens will be generated</param>
+        /// <returns>A <see cref="TokenResponseDto"/> containing generated tokens</returns>
         private async Task<TokenResponseDto> GenerateTokenResponse(User user)
         {
             return new TokenResponseDto
@@ -181,8 +207,13 @@ namespace Inventory_Order_Tracking.API.Services
                 RefreshToken = await GenerateAndStoreRefreshToken(user)
             };
         }
-
-        private async Task<User?> ValidateRefreshToken(Guid userId, string refreshToken)
+        /// <summary>
+        /// Retrieves a <see cref="User"/> if the provided refresh tokens is valid and belongs to the user 
+        /// </summary>
+        /// <param name="userId">An Id of the <see cref="User"/> for whom the validation will be performed</param>
+        /// <param name="refreshToken">A <see cref="string"/> representation of the refresh token</param>
+        /// <returns>A <see cref="User"/>instance in case of valid token, null otherwise </returns>
+        private async Task<User?> GetUserIfRefreshTokenIsValid(Guid userId, string refreshToken)
         {
             var user = await repository.GetByIdAsync(userId);
             if (user is null

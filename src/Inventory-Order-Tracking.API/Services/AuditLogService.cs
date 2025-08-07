@@ -8,12 +8,17 @@ namespace Inventory_Order_Tracking.API.Services
 {
 
     //NOTE: Results are fire and forget -> not refactoring to void Tasks for now as the result might be handy in future
+
+    /// <summary>
+    /// Defines operations for retrieving and managing audit logs within the app.
+    /// </summary>
     public class AuditLogService(
         IAuditLogRepository auditLogRepo,
         IUserRepository userRepository,
         ILogger<AuditLogService> logger
         ) : IAuditLogService
     {
+        /// <inheritdoc/>
         public async Task<ServiceResult<List<AuditLogDto>>> GetAllAsync()
         {
             try
@@ -30,6 +35,7 @@ namespace Inventory_Order_Tracking.API.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<ServiceResult<List<AuditLogDto>>> GetAllForDateAsync(DateTime date)
         {
             try
@@ -50,7 +56,7 @@ namespace Inventory_Order_Tracking.API.Services
                 return ServiceResult<List<AuditLogDto>>.InternalServerError("Failed to fetch logs");
             }
         }
-
+        /// <inheritdoc/>
         public async Task<ServiceResult<List<AuditLogDto>>> GetAllForUserAsync(Guid userId)
         {
             try
@@ -72,7 +78,7 @@ namespace Inventory_Order_Tracking.API.Services
                 return ServiceResult<List<AuditLogDto>>.InternalServerError("Failed to fetch logs");
             }
         }
-
+        /// <inheritdoc/>
         public async Task<ServiceResult<AuditLogDto>> AddNewLogAsync(AuditLogAddDto log)
         {
             try
