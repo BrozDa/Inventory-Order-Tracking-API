@@ -3,6 +3,10 @@ using Inventory_Order_Tracking.API.Configuration;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
+    /// <summary>
+    /// Validates the <see cref="JwtSettings"/> configuration from appsettings.
+    /// Ensures all required fields are present and valid.
+    /// </summary>
     public class JwtSettingsValidator : AbstractValidator<JwtSettings>
     {
         public JwtSettingsValidator()

@@ -3,6 +3,10 @@ using Inventory_Order_Tracking.API.Configuration;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
+    /// <summary>
+    /// Validates the <see cref="EmailSettings"/> configuration from appsettings.
+    /// Ensures all required SMTP fields are present and valid.
+    /// </summary>
     public class EmailSettingsValidator : AbstractValidator<EmailSettings>
     {
         public EmailSettingsValidator()

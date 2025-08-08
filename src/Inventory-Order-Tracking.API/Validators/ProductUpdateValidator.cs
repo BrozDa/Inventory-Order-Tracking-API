@@ -3,6 +3,9 @@ using Inventory_Order_Tracking.API.Dtos;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
+    /// <summary>
+    /// Validates the all fields in <see cref="ProductUpdateDto"/> when updating more valued of an existing product.
+    /// </summary>
     public class ProductUpdateValidator : AbstractValidator<ProductUpdateDto>
     {
         public ProductUpdateValidator()

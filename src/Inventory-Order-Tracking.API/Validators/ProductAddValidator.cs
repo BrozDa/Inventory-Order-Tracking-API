@@ -3,6 +3,9 @@ using Inventory_Order_Tracking.API.Dtos;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
+    /// <summary>
+    /// Validates the all fields in <see cref="ProductAddDto"/> when adding a new product.
+    /// </summary>
     public class ProductAddValidator : AbstractValidator<ProductAddDto>
     {
         public ProductAddValidator()
