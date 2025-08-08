@@ -39,8 +39,8 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// An OK <see cref="IActionResult"/> containing a list of <see cref="AuditLogDto"/> on success.
         /// Returns an appropriate status code and error message on failure.
         /// </returns>
-        [HttpGet("by-user")]
-        public async Task<IActionResult> GetAllForUser([FromQuery] Guid userId)
+        [HttpGet("by-user/{userId:guid}")]
+        public async Task<IActionResult> GetAllForUser(Guid userId)
         {
             var serviceResult = await auditService.GetAllForUserAsync(userId);
 
@@ -56,8 +56,8 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// An OK <see cref="IActionResult"/> containing a list of <see cref="AuditLogDto"/> on success.
         /// Returns an appropriate status code and error message on failure.
         /// </returns>
-        [HttpGet("by-date")]
-        public async Task<IActionResult> GetAllForDate([FromQuery] DateTime date)
+        [HttpGet("by-date/{date:datetime}")]
+        public async Task<IActionResult> GetAllForDate(DateTime date)
         {
             var serviceResult = await auditService.GetAllForDateAsync(date);
 
