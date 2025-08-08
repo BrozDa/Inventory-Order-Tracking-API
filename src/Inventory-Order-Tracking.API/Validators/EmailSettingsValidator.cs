@@ -23,8 +23,6 @@ namespace Inventory_Order_Tracking.API.Validators
                .WithMessage("Failed to load Host from appconfig");
 
             RuleFor(x => x.Port)
-               .NotEmpty()
-               .NotNull()
                .Must(x => x > 0)
                .WithMessage("Failed to load Port from appconfig");
         }
