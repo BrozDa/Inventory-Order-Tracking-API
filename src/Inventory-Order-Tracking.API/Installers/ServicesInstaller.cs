@@ -10,6 +10,8 @@ using Inventory_Order_Tracking.API.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 namespace Inventory_Order_Tracking.API.Installers
@@ -127,8 +129,15 @@ namespace Inventory_Order_Tracking.API.Installers
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "InventoryManagementAPI", Version = "v1" });
 
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                c.IncludeXmlComments(xmlPath);
+            });
             services.AddHttpContextAccessor();
 
             services.AddControllers();
