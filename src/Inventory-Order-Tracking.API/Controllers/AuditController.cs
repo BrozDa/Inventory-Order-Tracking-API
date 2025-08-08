@@ -12,17 +12,26 @@ namespace Inventory_Order_Tracking.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = UserRoles.Admin)]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public class AuditController(
         IAuditLogService auditService) : ControllerBase
     {
         /// <summary>
         /// Retrieves all audit logs.
         /// </summary>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> containing a list of <see cref="AuditLogDto"/> on success.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <returns>List of all audit logs</returns>
+        /// <response code="200">List of all audit logs.</response>
+        /// <response code="401">Requesting user is not logged in.</response>
+        /// <response code="403">Requesting user does not have admin role.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpGet("all")]
+        [ProducesResponseType(typeof(List<AuditLogDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllLogs()
         {
             var serviceResult = await auditService.GetAllAsync();
@@ -35,11 +44,17 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// <summary>
         /// Retrieves all audit logs for provided User Id
         /// </summary>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> containing a list of <see cref="AuditLogDto"/> on success.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <param name="userId">An id of the user whose logs to be retrieved</param>
+        /// <returns>List of all audit logs</returns>
+        /// <response code="200">List of all audit logs for the user.</response>
+        /// <response code="401">Requesting user is not logged in.</response>
+        /// <response code="403">Requesting user does not have admin role.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpGet("by-user/{userId:guid}")]
+        [ProducesResponseType(typeof(List<AuditLogDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllForUser(Guid userId)
         {
             var serviceResult = await auditService.GetAllForUserAsync(userId);
@@ -50,13 +65,19 @@ namespace Inventory_Order_Tracking.API.Controllers
         }
 
         /// <summary>
-        /// Retrieves all audit logs for provided Date
+        /// Retrieves all audit logs for provided User Id
         /// </summary>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> containing a list of <see cref="AuditLogDto"/> on success.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <param name="date">A date for which logs to be retrieved</param>
+        /// <returns>List of all audit logs</returns>
+        /// <response code="200">List of all audit logs for the user.</response>
+        /// <response code="401">Requesting user is not logged in.</response>
+        /// <response code="403">Requesting user does not have admin role.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpGet("by-date/{date:datetime}")]
+        [ProducesResponseType(typeof(List<AuditLogDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllForDate(DateTime date)
         {
             var serviceResult = await auditService.GetAllForDateAsync(date);
