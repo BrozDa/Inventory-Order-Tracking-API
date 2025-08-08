@@ -252,7 +252,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// An Created <see cref="IActionResult"/> on success.
         /// Returns an appropriate status code and error message on failure.
         /// </returns>
-        [HttpPut("admin/add")]
+        [HttpPost("admin/add")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsAdd(ProductAddDto dto)
         {
@@ -282,7 +282,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// An NoContent <see cref="IActionResult"/> on success.
         /// Returns an appropriate status code and error message on failure.
         /// </returns>
-        [HttpPut("admin/delete/{id:guid}")]
+        [HttpDelete("admin/delete/{id:guid}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> AdminsDelete([FromQuery] Guid id)
         {

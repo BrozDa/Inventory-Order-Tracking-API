@@ -94,7 +94,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// An OK <see cref="IActionResult"/> containing information about cancelled order.
         /// Returns an appropriate status code and error message on failure.
         /// </returns>
-        [HttpPut("{orderId:guid}/cancel")]
+        [HttpPatch("{orderId:guid}/cancel")]
         [Authorize]
         public async Task<IActionResult> CancelOrder(Guid orderId)
         {
