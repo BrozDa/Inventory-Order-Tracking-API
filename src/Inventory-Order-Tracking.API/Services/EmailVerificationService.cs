@@ -78,7 +78,7 @@ namespace Inventory_Order_Tracking.API.Services
                 if (storedToken.User.IsVerified)
                 {
                     logger.LogWarning("[EmailVerificationService][VerifyEmailAsync] Already verified user attempt by {UserId}", storedToken.User.Id);
-                    return ServiceResult<object>.Unauthorized("User already verified");
+                    return ServiceResult<object>.BadRequest("User already verified");
                 }
 
                 storedToken.User.IsVerified = true;

@@ -20,7 +20,7 @@ namespace Inventory_Order_Tracking.API.Utils
             {
                 throw new ArgumentNullException("Password null or empty");
             }
-            var salt = new byte[128];
+            var salt = new byte[16];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(salt);
 

@@ -85,7 +85,7 @@ namespace Inventory_Order_Tracking.API.Services
                     logger.LogWarning("[AuthService][LoginAsync] Invalid username or password: {Username}", request.Username);
                     return ServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
                 }
-                if (!PasswordHasher.VerifyPassword(user.PasswordHash, request.Password, user.PasswordSalt))
+                if (!PasswordHasher.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt))
                 {
                     logger.LogWarning("[AuthService][LoginAsync] Invalid username or password: {Username}", request.Username);
                     return ServiceResult<TokenResponseDto>.BadRequest("Invalid username or password");
