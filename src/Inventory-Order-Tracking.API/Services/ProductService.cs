@@ -100,9 +100,11 @@ namespace Inventory_Order_Tracking.API.Services
                 });
 
                 await auditService.AddNewLogAsync(
-                    new AuditLogAddDto {
+                    new AuditLogAddDto
+                    {
                         UserId = currentUserService.GetCurentUserId()!.Value, // user is already authorized -> its existing
-                        Action = $"Added new product {entity.Id}"});
+                        Action = $"Added new product {entity.Id}"
+                    });
 
                 return ServiceResult<ProductAdminDto>.Created(entity.ToAdminDto());
             }
@@ -224,7 +226,7 @@ namespace Inventory_Order_Tracking.API.Services
                     return ServiceResult<ProductAdminDto>.NotFound();
                 }
 
-                var oldStockQuantity = entity.StockQuantity;    
+                var oldStockQuantity = entity.StockQuantity;
                 entity.StockQuantity = newStockQuantity;
 
                 await repository.SaveChangesAsync();
@@ -260,7 +262,7 @@ namespace Inventory_Order_Tracking.API.Services
 
                 var newValues = new List<string>();
 
-                if(dto.Name is not null)
+                if (dto.Name is not null)
                 {
                     entity.Name = dto.Name;
                     newValues.Add(dto.Name);
@@ -331,6 +333,5 @@ namespace Inventory_Order_Tracking.API.Services
                 return ServiceResult<ProductAdminDto>.InternalServerError("Failed to update product");
             }
         }
-
     }
 }

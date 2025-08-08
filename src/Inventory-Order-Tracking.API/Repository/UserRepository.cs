@@ -34,6 +34,7 @@ namespace Inventory_Order_Tracking.API.Repository
 
             return user;
         }
+
         /// <inheritdoc/>
         public async Task<User?> GetByUsernameAsync(string username)
         {

@@ -3,7 +3,6 @@ using Inventory_Order_Tracking.API.Dtos;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
-
     /// <summary>
     /// Validates new name within <see cref="ProductUpdateNameDto"/> when updating.
     /// </summary>

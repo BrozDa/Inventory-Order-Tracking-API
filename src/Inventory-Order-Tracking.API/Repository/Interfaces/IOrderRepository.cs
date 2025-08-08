@@ -20,6 +20,7 @@ namespace Inventory_Order_Tracking.API.Repository.Interfaces
         /// <param name="items">List of items to be added</param>
         /// <returns>Return list with added items with auto-generated Ids</returns>
         Task<List<OrderItem>> AddOrderItemsAsync(List<OrderItem> items);
+
         /// <summary>
         /// Retrieves single <see cref="Order"/> from data storage based on provided id.
         /// </summary>

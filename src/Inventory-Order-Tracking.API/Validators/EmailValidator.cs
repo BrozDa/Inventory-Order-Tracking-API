@@ -12,7 +12,7 @@ namespace Inventory_Order_Tracking.API.Validators
             RuleFor(email => email)
                 .NotEmpty().WithMessage("Email cannot be empty")
                 .Matches(@"^$|^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Entered email address invalid");
-                //Intentionally used simple email validation due to nature of the project
+            //Intentionally used simple email validation due to nature of the project
         }
     }
 }

@@ -3,7 +3,6 @@ using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Interfaces;
-using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -746,7 +745,7 @@ namespace InventoryManagement.API.Tests.Services
             };
 
             _productRepositoryMock.Setup(r => r.AddAsync(It.IsAny<Product>())).ReturnsAsync(addedProduct);
-            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid()); 
+            _curentUserServiceMock.Setup(s => s.GetCurentUserId()).Returns(Guid.NewGuid());
             //act
             var result = await _sut.AddAsync(dto);
 

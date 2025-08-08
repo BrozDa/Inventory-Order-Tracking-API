@@ -7,7 +7,6 @@ using Inventory_Order_Tracking.API.Services.Shared;
 
 namespace Inventory_Order_Tracking.API.Services
 {
-
     /// <summary>
     /// Provides operations related to handling and managing orders.
     /// </summary>
@@ -18,7 +17,6 @@ namespace Inventory_Order_Tracking.API.Services
         IOrderRepository orderRepo,
         ILogger<OrderService> logger) : IOrderService
     {
-
         /// <inheritdoc/>
         public async Task<ServiceResult<OrderDto>> SubmitOrderAsync(Guid userId, CreateOrderDto dto)
         {
@@ -54,12 +52,11 @@ namespace Inventory_Order_Tracking.API.Services
 
                 return ServiceResult<OrderDto>.Created(order.ToDto());
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 logger.LogError(ex, "[OrderService][SubmitOrderAsync] Unhandled Exception has occured");
                 return ServiceResult<OrderDto>.InternalServerError("Failed to submit order");
             }
-            
         }
 
         /// <inheritdoc/>
@@ -97,9 +94,8 @@ namespace Inventory_Order_Tracking.API.Services
                 logger.LogError(ex, "[OrderService][GetOrderByIdAsync] Unhandled Exception has occured");
                 return ServiceResult<OrderDto>.InternalServerError("Failed to fetch the order order");
             }
-
-
         }
+
         /// <inheritdoc/>
         public async Task<ServiceResult<List<OrderDto>>> GetAllOrdersForUserAsync(Guid userId)
         {
@@ -122,8 +118,8 @@ namespace Inventory_Order_Tracking.API.Services
                 logger.LogError(ex, "[OrderService][GetAllOrdersForUserAsync] Unhandled Exception has occured");
                 return ServiceResult<List<OrderDto>>.InternalServerError("Failed to fetch the order history");
             }
-
         }
+
         /// <inheritdoc/>
         public async Task<ServiceResult<OrderDto>> CancelOrderAsync(Guid userId, Guid orderId)
         {
@@ -138,7 +134,7 @@ namespace Inventory_Order_Tracking.API.Services
 
                 var order = await orderRepo.GetByIdAsync(orderId);
 
-                if(order is null)
+                if (order is null)
                 {
                     logger.LogWarning("[OrderService][CancelOrderAsync] Non existent order cancellation attempt");
                     return ServiceResult<OrderDto>.NotFound("Non existent order");
@@ -151,7 +147,7 @@ namespace Inventory_Order_Tracking.API.Services
                     return ServiceResult<OrderDto>.Forbidden();
                 }
 
-                if(order.Status != OrderStatus.Submitted)
+                if (order.Status != OrderStatus.Submitted)
                 {
                     logger.LogWarning("[OrderService][CancelOrderAsync] User tried to cancel in other state than Submited; order id {id}"
                         , order.Id);
@@ -169,7 +165,6 @@ namespace Inventory_Order_Tracking.API.Services
                     });
 
                 return ServiceResult<OrderDto>.Ok(order.ToDto());
-
             }
             catch (Exception ex)
             {
@@ -197,7 +192,6 @@ namespace Inventory_Order_Tracking.API.Services
                 {
                     errors.Add($"Invalid product Id: {product.ProductId}");
                     continue;
-
                 }
                 if (entity.StockQuantity < product.Quantity)
                 {
@@ -208,21 +202,22 @@ namespace Inventory_Order_Tracking.API.Services
                 orderedProducts.Add((entity, product.Quantity));
             }
 
-            return(orderedProducts, errors);
+            return (orderedProducts, errors);
         }
+
         /// <summary>
         /// Creates a <see cref="Order"/> model
         /// </summary>
         /// <param name="userId">An <see cref="User"/> ordering the products</param>
         /// <param name="orderedProducts">A list of tupples (<see cref="Product"/>, ordered quantities)</param>
         /// <returns>An <see cref="Order"/> model created based on requested information </returns>
-        private async Task<Order> CreateOrder(Guid userId, List<(Product product, int quantity)> orderedProducts) 
+        private async Task<Order> CreateOrder(Guid userId, List<(Product product, int quantity)> orderedProducts)
         {
             var order = await orderRepo.CreateNewOrderAsync(userId);
 
             var orderItems = new List<OrderItem>();
 
-            foreach (var item in orderedProducts) 
+            foreach (var item in orderedProducts)
             {
                 orderItems.Add(new OrderItem
                 {
@@ -244,9 +239,5 @@ namespace Inventory_Order_Tracking.API.Services
 
             return order;
         }
-
-
-
-
     }
 }

@@ -1,8 +1,5 @@
-﻿using Inventory_Order_Tracking.API.Models;
-
-namespace Inventory_Order_Tracking.API.Dtos
+﻿namespace Inventory_Order_Tracking.API.Dtos
 {
-
     /// <summary>
     /// Represents the data transfer object for fetching audit logs.
     /// </summary>
@@ -14,4 +11,3 @@ namespace Inventory_Order_Tracking.API.Dtos
         public string Action { get; set; } = string.Empty;
     }
 }
-

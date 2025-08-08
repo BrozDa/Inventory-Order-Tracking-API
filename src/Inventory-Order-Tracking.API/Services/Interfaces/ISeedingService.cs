@@ -1,5 +1,4 @@
-﻿
-namespace Inventory_Order_Tracking.API.Services.Interfaces
+﻿namespace Inventory_Order_Tracking.API.Services.Interfaces
 {
     /// <summary>
     /// Provides contract for seeding the data storage with initial testing data

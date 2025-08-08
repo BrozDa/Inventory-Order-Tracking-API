@@ -4,9 +4,7 @@ using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Moq;
-
 
 namespace InventoryManagement.API.Tests.Controllers
 {
@@ -18,7 +16,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
         public OrderControllerTests()
         {
-            _sut = new OrderController(_userServiceMock.Object,_orderServiceMock.Object);
+            _sut = new OrderController(_userServiceMock.Object, _orderServiceMock.Object);
         }
 
         [Fact]
@@ -55,8 +53,9 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<UnauthorizedObjectResult>(result);
         }
+
         [Fact]
-        public async Task PlaceOrder_FailedRequest_ReturnsOtherThanOK() 
+        public async Task PlaceOrder_FailedRequest_ReturnsOtherThanOK()
         {
             Guid? userId = Guid.NewGuid();
             //arrange
@@ -93,10 +92,10 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsNotType<CreatedResult>(result);
-
         }
+
         [Fact]
-        public async Task PlaceOrder_SuccessfulRequest_ReturnsCreated() 
+        public async Task PlaceOrder_SuccessfulRequest_ReturnsCreated()
         {
             //arrange
             Guid? userId = Guid.NewGuid();
@@ -148,7 +147,6 @@ namespace InventoryManagement.API.Tests.Controllers
                 }
             };
 
-
             var serviceResult = ServiceResult<OrderDto>.Created(orderDto);
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
@@ -161,6 +159,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<CreatedAtActionResult>(result);
         }
+
         [Fact]
         public async Task GetOrderById_InvalidUser_ReturnsUnauthorized()
         {
@@ -176,6 +175,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<UnauthorizedObjectResult>(result);
         }
+
         [Fact]
         public async Task GetOrderById_FailedRequest_ReturnsOtherThanOK()
         {
@@ -186,17 +186,17 @@ namespace InventoryManagement.API.Tests.Controllers
 
             var serviceResult = ServiceResult<OrderDto>.NotFound();
 
-
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
-            _orderServiceMock.Setup(os => os.GetOrderByIdAsync(userId.Value,orderId)).ReturnsAsync(serviceResult);   
+            _orderServiceMock.Setup(os => os.GetOrderByIdAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
             //act
             var result = await _sut.GetOrderById(orderId);
 
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
         [Fact]
-        public async Task GetOrderById_SuccessfulRequest_ReturnsOk() 
+        public async Task GetOrderById_SuccessfulRequest_ReturnsOk()
         {
             //arrange
             Guid? userId = Guid.NewGuid();
@@ -204,7 +204,6 @@ namespace InventoryManagement.API.Tests.Controllers
             var orderDto = new OrderDto { Id = orderId };
 
             var serviceResult = ServiceResult<OrderDto>.Ok(orderDto);
-
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
             _orderServiceMock.Setup(os => os.GetOrderByIdAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
@@ -229,13 +228,14 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<UnauthorizedObjectResult>(result);
         }
+
         [Fact]
         public async Task GetOrderHistoryForUser_FailedRequest_ReturnsOtherThanOk()
         {
             //arrange
             Guid? userId = Guid.NewGuid();
             var orderId = Guid.NewGuid();
-            
+
             var serviceResult = ServiceResult<List<OrderDto>>.BadRequest("Test bad request");
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
@@ -247,6 +247,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task GetOrderHistoryForUser_SuccessfulRequest_ReturnsOk()
         {
@@ -284,6 +285,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<UnauthorizedObjectResult>(result);
         }
+
         [Fact]
         public async Task CancelOrder_FailedRequest_ReturnsOtherThanOk()
         {
@@ -301,6 +303,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task CancelOrder_SuccessfulRequest_ReturnsOk()
         {
@@ -322,7 +325,5 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<OkObjectResult>(result);
         }
-
-
     }
 }

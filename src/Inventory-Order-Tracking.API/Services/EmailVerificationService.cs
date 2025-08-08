@@ -121,6 +121,7 @@ namespace Inventory_Order_Tracking.API.Services
 
             return uri;
         }
+
         /// <summary>
         /// Generates and stores verification token for newly registered user
         /// </summary>

@@ -1,28 +1,16 @@
-﻿using Castle.Core.Logging;
-using Inventory_Order_Tracking.API.Domain;
+﻿using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Services.Interfaces;
-using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.SqlServer.Server;
 using Moq;
-using Serilog.Core;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventoryManagement.API.Tests.Services
 {
-    
-
     public class OrderServiceTests
     {
         public readonly OrderService _sut;
@@ -31,7 +19,6 @@ namespace InventoryManagement.API.Tests.Services
         public readonly Mock<IOrderRepository> _orderRepositoryMock = new();
         public readonly Mock<IProductRepository> _productRepositoryMock = new();
         private readonly Mock<ILogger<OrderService>> _loggerMock = new();
-
 
         public OrderServiceTests()
         {
@@ -43,7 +30,7 @@ namespace InventoryManagement.API.Tests.Services
         }
 
         [Fact]
-        public async Task SubmitOrder_NonExistingUser_ReturnsBadRequestAndLogsWarning() 
+        public async Task SubmitOrder_NonExistingUser_ReturnsBadRequestAndLogsWarning()
         {
             //arrange
             var userId = Guid.NewGuid();
@@ -81,8 +68,8 @@ namespace InventoryManagement.API.Tests.Services
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
                 Times.Never);
-
         }
+
         [Fact]
         public async Task SubmitOrder_RepoThrowsException_ReturnsInternalServerErrorAndLogsError()
         {
@@ -127,6 +114,7 @@ namespace InventoryManagement.API.Tests.Services
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
                 Times.Never);
         }
+
         [Fact]
         public async Task SubmitOrder_ValidFlow_ReturnsCreated()
         {
@@ -228,10 +216,10 @@ namespace InventoryManagement.API.Tests.Services
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
-
         }
+
         [Fact]
-        public async Task GetOrderById_NonExistingOrder_ReturnsNotFoundAndLogsWarning() 
+        public async Task GetOrderById_NonExistingOrder_ReturnsNotFoundAndLogsWarning()
         {
             //arrange
             var userId = Guid.NewGuid();
@@ -240,7 +228,7 @@ namespace InventoryManagement.API.Tests.Services
             var user = new User { Id = userId };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(userId)).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or=> or.GetByIdAsync(orderId)).ReturnsAsync(default(Order)); 
+            _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).ReturnsAsync(default(Order));
             //act
 
             var result = await _sut.GetOrderByIdAsync(userId, orderId);
@@ -259,8 +247,9 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
-        public async Task GetOrderById_RequestingUserAndOrderUserMismatch_ReturnsUnauthorizedAndLogsWarning() 
+        public async Task GetOrderById_RequestingUserAndOrderUserMismatch_ReturnsUnauthorizedAndLogsWarning()
         {
             //arrange
             var userId = Guid.NewGuid();
@@ -288,6 +277,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task GetOrderById_ValidFlow_ReturnsOk()
         {
@@ -334,8 +324,8 @@ namespace InventoryManagement.API.Tests.Services
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
-
         }
+
         [Fact]
         public async Task GetAllOrdersForUser_RepoThrowsException_ReturnsInternalServerErrorAndLogsError()
         {
@@ -363,8 +353,8 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
-
         }
+
         [Fact]
         public async Task GetAllOrdersForUser_ValidFlow_ReturnsOk()
         {
@@ -373,7 +363,7 @@ namespace InventoryManagement.API.Tests.Services
 
             var user = new User { Id = userId };
 
-            var orderHistory = new List<Order> { 
+            var orderHistory = new List<Order> {
                 new Order { Id = Guid.NewGuid() },
                 new Order { Id = Guid.NewGuid() }
             };
@@ -388,7 +378,6 @@ namespace InventoryManagement.API.Tests.Services
             Assert.True(result.IsSuccessful);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(result.Data);
-
         }
 
         [Fact]
@@ -420,8 +409,8 @@ namespace InventoryManagement.API.Tests.Services
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
                 Times.Never);
-
         }
+
         [Fact]
         public async Task CancelOrder_NonExistingOrder_ReturnsNotFoundAndLogsWarning()
         {
@@ -432,7 +421,7 @@ namespace InventoryManagement.API.Tests.Services
             var user = new User { Id = userId };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
-            _orderRepositoryMock.Setup(or=>or.GetByIdAsync(orderId)).ReturnsAsync(default(Order));
+            _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).ReturnsAsync(default(Order));
             //act
 
             var result = await _sut.CancelOrderAsync(userId, orderId);
@@ -454,8 +443,8 @@ namespace InventoryManagement.API.Tests.Services
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
                 Times.Never);
-
         }
+
         [Fact]
         public async Task CancelOrder_OrderBelonsToDifferentUser_ReturnsForbiddenAndLogsWarning()
         {
@@ -464,7 +453,7 @@ namespace InventoryManagement.API.Tests.Services
             var orderId = Guid.NewGuid();
 
             var user = new User { Id = userId };
-            var order = new Order { Id = orderId, UserId = Guid.NewGuid() }; 
+            var order = new Order { Id = orderId, UserId = Guid.NewGuid() };
 
             _userRepositoryMock.Setup(ur => ur.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
             _orderRepositoryMock.Setup(or => or.GetByIdAsync(orderId)).ReturnsAsync(order);
@@ -488,8 +477,8 @@ namespace InventoryManagement.API.Tests.Services
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
                 Times.Never);
-
         }
+
         [Fact]
         public async Task CancelOrder_OrderNotInSubmittedStatus_ReturnsBadRequestAndLogsWarning()
         {
@@ -523,8 +512,8 @@ namespace InventoryManagement.API.Tests.Services
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
                 Times.Never);
-
         }
+
         [Fact]
         public async Task CancelOrder_RepoThrowsAnException_ReturnsInternalServerErrorAndLogsError()
         {
@@ -558,8 +547,8 @@ namespace InventoryManagement.API.Tests.Services
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
                 Times.Never);
-
         }
+
         [Fact]
         public async Task CancelOrder_ValidInput_ReturnsOk()
         {
@@ -585,8 +574,6 @@ namespace InventoryManagement.API.Tests.Services
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
                 Times.Once);
-
         }
-
     }
 }

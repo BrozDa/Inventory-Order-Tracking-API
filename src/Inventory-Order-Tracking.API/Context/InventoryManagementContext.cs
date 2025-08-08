@@ -19,7 +19,7 @@ namespace Inventory_Order_Tracking.API.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //sets 1-to-many relationship between User-Orders, User-AuditLogs and 
+            //sets 1-to-many relationship between User-Orders, User-AuditLogs and
             //User-EmailVerifiationTokens
             modelBuilder.Entity<User>(entity =>
             {

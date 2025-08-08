@@ -3,7 +3,6 @@ using Inventory_Order_Tracking.API.Dtos;
 
 namespace Inventory_Order_Tracking.API.Validators
 {
-
     /// <summary>
     /// Validates new description within <see cref="ProductUpdateDescriptionDto"/> when updating.
     /// </summary>

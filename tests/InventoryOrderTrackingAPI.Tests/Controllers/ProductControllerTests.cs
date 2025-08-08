@@ -175,9 +175,8 @@ namespace InventoryManagement.API.Tests.Controllers
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         [Fact]
-        public async Task AdminsUpdateName_FailedRequest_ReturnsOtherThanOk() 
-        { 
-
+        public async Task AdminsUpdateName_FailedRequest_ReturnsOtherThanOk()
+        {
             //arrange
             var id = Guid.NewGuid();
             var dto = new ProductUpdateNameDto { Name = "Changed Name" };
@@ -191,12 +190,11 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsNotType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task AdminsUpdateName_SuccessfulRequest_ReturnsOk()
         {
-
             //arrange
             var id = Guid.NewGuid();
             var dto = new ProductUpdateNameDto { Name = "Changed Name" };
@@ -210,12 +208,11 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task AdminsUpdateDescription_FailedRequest_ReturnsOtherThanOk()
         {
-
             //arrange
             var id = Guid.NewGuid();
             var dto = new ProductUpdateDescriptionDto { Description = "Changed Description" };
@@ -229,12 +226,11 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsNotType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task AdminsUpdateDescription_SuccessfulRequest_ReturnsOk()
         {
-
             //arrange
             var id = Guid.NewGuid();
             var dto = new ProductUpdateDescriptionDto { Description = "Changed Description" };
@@ -248,15 +244,14 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task AdminsUpdatePrice_FailedRequest_ReturnsOtherThanOk()
         {
-
             //arrange
             var id = Guid.NewGuid();
-            var dto = new ProductUpdatePriceDto { Price= 13.24m};
+            var dto = new ProductUpdatePriceDto { Price = 13.24m };
 
             var serviceResult = ServiceResult<ProductAdminDto>.NotFound();
 
@@ -267,12 +262,11 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsNotType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task AdminsUpdatePrice_SuccessfulRequest_ReturnsOk()
         {
-
             //arrange
             var id = Guid.NewGuid();
             var dto = new ProductUpdatePriceDto { Price = 13.24m };
@@ -286,12 +280,11 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task UpdateStock_FailedRequest_ReturnsOtherThanOk()
         {
-
             //arrange
             var id = Guid.NewGuid();
             var dto = new ProductUpdateStockDto { Stock = 13 };
@@ -305,12 +298,11 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsNotType<OkObjectResult>(result);
-
         }
+
         [Fact]
         public async Task UpdateStock_SuccessfulRequest_ReturnsOk()
         {
-
             //arrange
             var id = Guid.NewGuid();
             var dto = new ProductUpdateStockDto { Stock = 13 };
@@ -324,8 +316,8 @@ namespace InventoryManagement.API.Tests.Controllers
 
             //assert
             Assert.IsType<OkObjectResult>(result);
-
         }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         [Fact]
         public async Task AdminsUpdate_SuccessfulRequest_ReturnsOk()

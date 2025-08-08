@@ -1,16 +1,16 @@
 ﻿using Inventory_Order_Tracking.API.Configuration;
 using Inventory_Order_Tracking.API.Context;
-using Inventory_Order_Tracking.API.Repository.Interfaces;
+using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Repository;
-using Inventory_Order_Tracking.API.Services.Interfaces;
+using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
+using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Utils;
 using Inventory_Order_Tracking.API.Validators;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Inventory_Order_Tracking.API.Domain;
 
 namespace Inventory_Order_Tracking.API.Installers
 {
@@ -102,7 +102,6 @@ namespace Inventory_Order_Tracking.API.Installers
                     .AddSmtpSender(emailSettings.Host, emailSettings.Port);
 
             return services;
-
         }
 
         /// <summary>
@@ -147,7 +146,6 @@ namespace Inventory_Order_Tracking.API.Installers
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
-
             services.AddScoped<RegisterRequestValidator>();
             services.AddScoped<ProductAddValidator>();
             services.AddScoped<ProductUpdateValidator>();
@@ -155,8 +153,6 @@ namespace Inventory_Order_Tracking.API.Installers
             services.AddScoped<ProductUpdateDescriptionValidator>();
 
             return services;
-
-            
         }
     }
 }

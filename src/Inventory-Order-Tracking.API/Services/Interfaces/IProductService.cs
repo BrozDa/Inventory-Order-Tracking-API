@@ -11,7 +11,7 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// <summary>
         /// Retrieves all products for admin user
         /// </summary>
-        /// <returns> 
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing list of existing <see cref="ProductAdminDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -21,7 +21,7 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Retrieves single product for admin user
         /// </summary>
         /// <param name="id">An id of product to be retrieved</param>
-        /// <returns> 
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing an existing <see cref="ProductAdminDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -30,7 +30,7 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// <summary>
         /// Retrieves all products for customer user
         /// </summary>
-        /// <returns> 
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing list of existing <see cref="ProductCustomerDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -40,7 +40,7 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Retrieves single customer for admin user
         /// </summary>
         /// <param name="id">An id of product to be retrieved</param>
-        /// <returns> 
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing an existing <see cref="ProductAdminDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -50,9 +50,9 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Updates one or more values of an existing product
         /// </summary>
         /// <param name="id">An id of product to be updated</param>
-        /// <param name="dto">A <see cref="ProductCustomerDto"/> containing new values of product 
+        /// <param name="dto">A <see cref="ProductCustomerDto"/> containing new values of product
         /// (values which have to remain same should be set to null in the dto</param>
-        /// <returns> 
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing an updated <see cref="ProductAdminDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -62,8 +62,8 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Updates name of existing product
         /// </summary>
         /// <param name="id">An id of product to be updated</param>
-        /// <param name="newName">A <see cref="string"/> containing new name of the product 
-        /// <returns> 
+        /// <param name="newName">A <see cref="string"/> containing new name of the product
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing an updated <see cref="ProductAdminDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -73,8 +73,8 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Updates description of existing product
         /// </summary>
         /// <param name="id">An id of product to be updated</param>
-        /// <param name="newDescription">A <see cref="string"/> containing new description of the product 
-        /// <returns> 
+        /// <param name="newDescription">A <see cref="string"/> containing new description of the product
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing an updated <see cref="ProductAdminDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -84,8 +84,8 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Updates price of existing product
         /// </summary>
         /// <param name="id">An id of product to be updated</param>
-        /// <param name="newPrice">A <see cref="decimal"/> containing new price of the product 
-        /// <returns> 
+        /// <param name="newPrice">A <see cref="decimal"/> containing new price of the product
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing an updated <see cref="ProductAdminDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -95,8 +95,8 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Updates stock of existing product
         /// </summary>
         /// <param name="id">An id of product to be updated</param>
-        /// <param name="newStockQuantity">A <see cref="int"/> containing new stock of the product 
-        /// <returns> 
+        /// <param name="newStockQuantity">A <see cref="int"/> containing new stock of the product
+        /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing an updated <see cref="ProductAdminDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -106,7 +106,7 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Adds a new product to the data storage
         /// </summary>
         /// <param name="dto">An <see cref="ProductAddDto"/> containing all necessary information about the new product</param>
-        // <returns> 
+        // <returns>
         /// An <see cref="ServiceResult{T}"/> containing the new <see cref="ProductAddDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
@@ -116,7 +116,7 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Deletes existing product from the data storage
         /// </summary>
         /// <param name="id">An Id of the product to be deleted</param>
-        // <returns> 
+        // <returns>
         /// An <see cref="ServiceResult{T}"/> containing the deleted <see cref="ProductAddDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>

@@ -19,14 +19,13 @@ namespace Inventory_Order_Tracking.API.Services
     /// Defines authentication related operations within the app.
     /// </summary>
     public class AuthService(
-        IUserRepository repository, 
+        IUserRepository repository,
         IEmailVerificationService emailService,
         IAuditLogService auditService,
-        ILogger<AuthService> logger, 
+        ILogger<AuthService> logger,
         JwtSettings jwtSettings) //NOTE: jwtSettings is validated on startup in program.cs - right after build
         : IAuthService
     {
-
         /// <inheritdoc/>
         public async Task<ServiceResult<string>> RegisterAsync(UserRegistrationDto request)
         {
@@ -173,6 +172,7 @@ namespace Inventory_Order_Tracking.API.Services
 
             return Convert.ToBase64String(refreshToken);
         }
+
         /// <summary>
         /// Calls GenerateRefreshToken() to generate refresh token and performs data persistence
         /// </summary>
@@ -207,8 +207,9 @@ namespace Inventory_Order_Tracking.API.Services
                 RefreshToken = await GenerateAndStoreRefreshToken(user)
             };
         }
+
         /// <summary>
-        /// Retrieves a <see cref="User"/> if the provided refresh tokens is valid and belongs to the user 
+        /// Retrieves a <see cref="User"/> if the provided refresh tokens is valid and belongs to the user
         /// </summary>
         /// <param name="userId">An Id of the <see cref="User"/> for whom the validation will be performed</param>
         /// <param name="refreshToken">A <see cref="string"/> representation of the refresh token</param>

@@ -29,12 +29,14 @@ namespace Inventory_Order_Tracking.API.Repository
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
+
         /// <inheritdoc/>
         public async Task RemoveAsync(EmailVerificationToken token)
         {
             context.EmailVerificationTokens.Remove(token);
             await SaveChangesAsync();
         }
+
         /// <inheritdoc/>
         public async Task SaveChangesAsync()
         {

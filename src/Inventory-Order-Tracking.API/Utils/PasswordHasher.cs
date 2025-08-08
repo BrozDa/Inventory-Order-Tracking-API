@@ -32,13 +32,13 @@ namespace Inventory_Order_Tracking.API.Utils
         }
 
         /// <summary>
-        /// Checks whether password with combination with salt generates same hash 
+        /// Checks whether password with combination with salt generates same hash
         /// </summary>
         /// <param name="password">A password to be checked</param>
         /// <param name="hash">Stored password hash</param>
         /// <param name="salt">Stored password salt</param>
         /// <returns>A true if hash generated using passed password is same as the stored one, false otherwise</returns>
-        public static bool VerifyPassword(string? password, string hash,  string salt)
+        public static bool VerifyPassword(string? password, string hash, string salt)
         {
             if (string.IsNullOrEmpty(password))
             {
@@ -51,7 +51,7 @@ namespace Inventory_Order_Tracking.API.Utils
         }
 
         /// <summary>
-        /// Generates hash based on password and hash 
+        /// Generates hash based on password and hash
         /// </summary>
         /// <param name="password">A password for which hash should be generated</param>
         /// <param name="salt">A salt to be used when generating hash</param>

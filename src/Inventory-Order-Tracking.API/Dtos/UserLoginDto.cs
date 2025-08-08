@@ -1,6 +1,5 @@
 ﻿namespace Inventory_Order_Tracking.API.Dtos
 {
-
     /// <summary>
     /// Represents the data transfer object for user login.
     /// </summary>

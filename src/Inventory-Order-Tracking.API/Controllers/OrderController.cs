@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory_Order_Tracking.API.Controllers
 {
-
     /// <summary>
     /// Controller responsible for order handling operations.
     /// </summary>
@@ -13,14 +12,13 @@ namespace Inventory_Order_Tracking.API.Controllers
     [ApiController]
     public class OrderController(
         ICurrentUserService userService,
-        IOrderService orderService) :ControllerBase
+        IOrderService orderService) : ControllerBase
     {
-
         /// <summary>
         /// Submits new order for an user.
         /// </summary>
-        /// <param name="orderDto">An <see cref="CreateOrderDto"/> containing list of <see cref="OrderItemDto"/> 
-        /// representing ordered items   
+        /// <param name="orderDto">An <see cref="CreateOrderDto"/> containing list of <see cref="OrderItemDto"/>
+        /// representing ordered items
         /// </param>
         /// <returns>
         /// An Created <see cref="IActionResult"/> containing information about submitted order on success.
@@ -44,7 +42,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// <summary>
         /// Retrieves specified order for the user.
         /// </summary>
-        /// <param name="orderId">An <see cref="Guid"/> or order to be retrieved 
+        /// <param name="orderId">An <see cref="Guid"/> or order to be retrieved
         /// </param>
         /// <returns>
         /// An OK <see cref="IActionResult"/> containing information requested order on success.
@@ -64,6 +62,7 @@ namespace Inventory_Order_Tracking.API.Controllers
             ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
+
         /// <summary>
         /// Retrieves specified all orders submitted by the user.
         /// </summary>
@@ -72,7 +71,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// Returns an appropriate status code and error message on failure.
         /// </returns>
         [HttpGet("user/all")]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> GetOrderHistoryForUser()
         {
             var userId = userService.GetCurentUserId();
@@ -85,17 +84,18 @@ namespace Inventory_Order_Tracking.API.Controllers
             ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
         }
+
         /// <summary>
         /// Cancels specified order submitted by the user.
         /// </summary>
-        /// <param name="orderId">An <see cref="Guid"/> or order to be cancelled 
+        /// <param name="orderId">An <see cref="Guid"/> or order to be cancelled
         /// </param>
         /// <returns>
         /// An OK <see cref="IActionResult"/> containing information about cancelled order.
         /// Returns an appropriate status code and error message on failure.
         /// </returns>
         [HttpPut("{orderId:guid}/cancel")]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> CancelOrder(Guid orderId)
         {
             var userId = userService.GetCurentUserId();
@@ -107,8 +107,6 @@ namespace Inventory_Order_Tracking.API.Controllers
             return serviceResult.IsSuccessful
             ? Ok(serviceResult.Data)
                 : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
-
         }
-
     }
 }

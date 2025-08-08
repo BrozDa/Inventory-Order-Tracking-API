@@ -34,7 +34,6 @@ namespace Inventory_Order_Tracking.API.Repository
         /// <inheritdoc/>
         public async Task<List<AuditLog>> GetAllForUserAsync(Guid userId)
         {
-
             return await context.AuditLog.Where(x => x.UserId == userId).ToListAsync();
         }
 

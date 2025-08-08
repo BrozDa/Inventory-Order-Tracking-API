@@ -3,7 +3,6 @@ using Inventory_Order_Tracking.API.Dtos;
 
 namespace Inventory_Order_Tracking.API.Models
 {
-
     /// <summary>
     /// Represents a product which can be shown or placed in the order.
     /// </summary>

@@ -83,6 +83,7 @@ namespace Inventory_Order_Tracking.API.Services.Shared
                 ErrorMessage = errorMessage
             };
         }
+
         public static ServiceResult<T> Forbidden()
         {
             return new ServiceResult<T>

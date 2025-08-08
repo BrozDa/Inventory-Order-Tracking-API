@@ -28,6 +28,7 @@ namespace Inventory_Order_Tracking.API.Services
 
             await context.SaveChangesAsync();
         }
+
         /// <summary>
         /// Generates and stores admin user to the database
         /// </summary>
@@ -48,7 +49,6 @@ namespace Inventory_Order_Tracking.API.Services
             await context.Users.AddAsync(user);
 
             return user;
-
         }
 
         /// <summary>
@@ -239,12 +239,10 @@ namespace Inventory_Order_Tracking.API.Services
                     Action = "Deleted product"
                 },
             };
-            
+
             await context.AuditLog.AddRangeAsync(logs);
 
             return logs;
-
         }
-
     }
 }

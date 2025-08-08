@@ -18,12 +18,13 @@ namespace Inventory_Order_Tracking.API.Repository
         /// <inheritdoc/>
         public async Task<Order> CreateNewOrderAsync(Guid userId)
         {
-            var newOrder = new Order { UserId = userId, Status =  OrderStatus.Submitted};
+            var newOrder = new Order { UserId = userId, Status = OrderStatus.Submitted };
 
             await context.Orders.AddAsync(newOrder);
 
             return newOrder;
         }
+
         /// <inheritdoc/>
         public async Task<List<OrderItem>> AddOrderItemsAsync(List<OrderItem> items)
         {
@@ -31,16 +32,19 @@ namespace Inventory_Order_Tracking.API.Repository
 
             return items;
         }
+
         /// <inheritdoc/>
         public async Task<Order?> GetByIdAsync(Guid orderId)
         {
             return await context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
         }
+
         /// <inheritdoc/>
         public async Task<List<Order>> GetAllForUserAsync(Guid userId)
         {
             return await context.Orders.Where(o => o.UserId == userId).ToListAsync();
         }
+
         /// <inheritdoc/>
         public async Task SaveChangesAsync()
         {

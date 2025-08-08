@@ -3,14 +3,8 @@ using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Repository.Interfaces;
 using Inventory_Order_Tracking.API.Services;
 using Microsoft.Extensions.Logging;
-using Microsoft.SqlServer.Server;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventoryManagement.API.Tests.Services
 {
@@ -20,13 +14,14 @@ namespace InventoryManagement.API.Tests.Services
         private readonly Mock<IAuditLogRepository> _auditLogRepository = new();
         private readonly Mock<IUserRepository> _userRepository = new();
         private readonly Mock<ILogger<AuditLogService>> _loggerMock = new();
+
         public AuditServiceTests()
         {
             _sut = new(_auditLogRepository.Object, _userRepository.Object, _loggerMock.Object);
         }
 
         [Fact]
-        public async Task GetAllAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsError() 
+        public async Task GetAllAsync_RepoThrowsException_ReturnsInternalServerErrorAndLogsError()
         {
             //arrange
 
@@ -48,6 +43,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task GetAllAsync_ValidFlow_ReturnsOkWithLogs()
         {
@@ -87,6 +83,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task GetAllForDate_DateInFuture_ReturnBadRequestAndLogsWarning()
         {
@@ -112,7 +109,8 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
-        [Fact]  
+
+        [Fact]
         public async Task GetAllForDate_SameDate_ReturnsOkWithLogs()
         {
             //arrange
@@ -128,6 +126,7 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(logs);
         }
+
         [Fact]
         public async Task GetAllForDate_PastDate_ReturnsOkWithLogs()
         {
@@ -150,7 +149,7 @@ namespace InventoryManagement.API.Tests.Services
         {
             //arrange
             var userId = Guid.NewGuid();
-            
+
             _userRepository.Setup(ur => ur.IdExistsAsync(userId)).ReturnsAsync(true);
             _auditLogRepository.Setup(ar => ar.GetAllForUserAsync(userId)).Throws(() => new Exception("Test exception"));
             //act
@@ -171,6 +170,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task GetAllForUser_UserDoesNotExist_ReturnBadRequestAndLogsWarning()
         {
@@ -198,6 +198,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task GetAllForUser_ValidFlow_ReturnsOkWithLogs()
         {
@@ -231,7 +232,8 @@ namespace InventoryManagement.API.Tests.Services
                 Action = action
             };
 
-            var newLog = new AuditLog {
+            var newLog = new AuditLog
+            {
                 UserId = userId,
                 Action = action
             };
@@ -255,6 +257,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task AddNewLogAsync_UserDoesNotExist_ReturnBadRequestAndLogsWarning()
         {
@@ -294,6 +297,7 @@ namespace InventoryManagement.API.Tests.Services
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
         [Fact]
         public async Task AddNewLogAsync_ValidFlow_ReturnsCreated()
         {
@@ -324,7 +328,5 @@ namespace InventoryManagement.API.Tests.Services
             Assert.Equal(HttpStatusCode.Created, result.StatusCode);
             Assert.NotNull(result.Data);
         }
-
-
     }
 }

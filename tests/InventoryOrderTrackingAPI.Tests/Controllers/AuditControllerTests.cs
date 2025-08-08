@@ -4,11 +4,6 @@ using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventoryManagement.API.Tests.Controllers
 {
@@ -16,12 +11,14 @@ namespace InventoryManagement.API.Tests.Controllers
     {
         private readonly AuditController _sut;
         private readonly Mock<IAuditLogService> _auditServiceMock = new();
+
         public AuditControllerTests()
         {
             _sut = new AuditController(_auditServiceMock.Object);
         }
+
         [Fact]
-        public async Task GetAllLogs_FailedRequest_ReturnsOtherThanOK() 
+        public async Task GetAllLogs_FailedRequest_ReturnsOtherThanOK()
         {
             //arrange
             var serviceResult = ServiceResult<List<AuditLogDto>>.BadRequest("Test failure");
@@ -32,6 +29,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task GetAllLogs_SuccessfulRequest_ReturnsCreated()
         {
@@ -45,6 +43,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task GetAllForUser_FailedRequest_ReturnsOtherThanOK()
         {
@@ -59,6 +58,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task GetAllForUser_SuccessfulRequest_ReturnsCreated()
         {
@@ -89,6 +89,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsNotType<OkObjectResult>(result);
         }
+
         [Fact]
         public async Task GetAllForDate_SuccessfulRequest_ReturnsCreated()
         {
@@ -104,6 +105,5 @@ namespace InventoryManagement.API.Tests.Controllers
             //assert
             Assert.IsType<OkObjectResult>(result);
         }
-
     }
 }

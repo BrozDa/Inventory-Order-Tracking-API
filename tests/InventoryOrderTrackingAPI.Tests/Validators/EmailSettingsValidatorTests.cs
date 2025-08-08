@@ -5,7 +5,6 @@ namespace InventoryManagement.API.Tests.Validators
 {
     public class EmailSettingsValidatorTests
     {
-
         private readonly EmailSettingsValidator _sut;
 
         public EmailSettingsValidatorTests()
@@ -14,7 +13,7 @@ namespace InventoryManagement.API.Tests.Validators
         }
 
         [Fact]
-        public void Validate_SenderEmailNull_ReturnsFalse() 
+        public void Validate_SenderEmailNull_ReturnsFalse()
         {
             //arrange
             var settings = new EmailSettings
@@ -31,6 +30,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_SenderEmailEmpty_ReturnsFalse()
         {
@@ -68,6 +68,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_SenderEmpty_ReturnsFalse()
         {
@@ -86,6 +87,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_HostNull_ReturnsFalse()
         {
@@ -123,6 +125,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_PortEmpty_ReturnsFalse() //Default value of 0 will be applied
         {
@@ -140,6 +143,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_PortNegative_ReturnsFalse()
         {
@@ -158,6 +162,7 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.False(result.IsValid);
         }
+
         [Fact]
         public void Validate_ValidInput_ReturnsTrue()
         {
@@ -176,6 +181,5 @@ namespace InventoryManagement.API.Tests.Validators
             //assert
             Assert.True(result.IsValid);
         }
-
     }
 }

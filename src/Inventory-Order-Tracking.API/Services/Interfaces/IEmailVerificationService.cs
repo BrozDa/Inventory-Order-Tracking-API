@@ -3,7 +3,6 @@ using Inventory_Order_Tracking.API.Services.Shared;
 
 namespace Inventory_Order_Tracking.API.Services.Interfaces
 {
-
     /// <summary>
     /// Defines a contract for operations related to email verification.
     /// </summary>

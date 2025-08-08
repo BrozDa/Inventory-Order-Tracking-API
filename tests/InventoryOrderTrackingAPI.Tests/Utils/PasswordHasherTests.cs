@@ -46,7 +46,7 @@ public class PasswordHasherTests
     {
         var (hash, salt) = PasswordHasher.GenerateHashAndSalt(testPw);
 
-        var result = PasswordHasher.VerifyPassword("differentPw", hash,  salt);
+        var result = PasswordHasher.VerifyPassword("differentPw", hash, salt);
 
         Assert.False(result);
     }

@@ -1,7 +1,4 @@
-using Inventory_Order_Tracking.API.Context;
-using Inventory_Order_Tracking.API.Services;
 using Inventory_Order_Tracking.API.Installers;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Inventory_Order_Tracking.API
@@ -23,7 +20,6 @@ namespace Inventory_Order_Tracking.API
                 builder.Services.AddDbContext(builder.Configuration);
                 builder.Services.AddServices();
 
-
                 var app = builder.Build();
 
                 if (app.Environment.IsDevelopment())
@@ -31,13 +27,12 @@ namespace Inventory_Order_Tracking.API
                     app.UseSwagger();
                     app.UseSwaggerUI();
 
-                    await app.SeedDatabaseAsync();    
+                    await app.SeedDatabaseAsync();
                 }
 
                 app.AddMiddleware();
 
                 app.Run();
-
             }
             catch (Exception ex)
             {

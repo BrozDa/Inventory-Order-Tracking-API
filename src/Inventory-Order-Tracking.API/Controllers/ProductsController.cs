@@ -33,6 +33,7 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             return Ok(serviceResult.Data);
         }
+
         /// <summary>
         /// Retrieves single product based on provided id in form of <see cref="ProductCustomerDto"/>.
         /// </summary>

@@ -1,6 +1,5 @@
 ﻿namespace Inventory_Order_Tracking.API.Dtos
 {
-
     /// <summary>
     /// Represents the data transfer object for fetching existing order item.
     /// </summary>
@@ -10,6 +9,6 @@
         public Guid ProductId { get; set; }
         public string? ProductName { get; set; } = string.Empty;
         public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; } 
+        public decimal UnitPrice { get; set; }
     }
 }

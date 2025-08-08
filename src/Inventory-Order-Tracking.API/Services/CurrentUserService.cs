@@ -3,13 +3,11 @@ using System.Security.Claims;
 
 namespace Inventory_Order_Tracking.API.Services
 {
-
     /// <summary>
     /// Provides functionality to retrieve information about the currently authenticated user from the HTTP context.
     /// </summary>
     public class CurrentUserService(IHttpContextAccessor contextAccessor) : ICurrentUserService
     {
-
         /// <inheritdoc/>
         public Guid? GetCurentUserId()
         {
@@ -20,5 +18,4 @@ namespace Inventory_Order_Tracking.API.Services
             : null;
         }
     }
-    
 }
