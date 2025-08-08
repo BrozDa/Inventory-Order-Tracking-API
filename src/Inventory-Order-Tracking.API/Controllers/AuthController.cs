@@ -18,15 +18,12 @@ namespace Inventory_Order_Tracking.API.Controllers
     {
 
         /// <summary>
-        /// Perform registration for new user, adds him to database and sends verification email
+        /// Registers new user and sends verification email.
         /// </summary>
-        /// <param name="request">An <see cref="UserRegistrationDto"/> containing username and 
-        /// password of new user 
-        /// </param>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> containing success message on success.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <param name="request">An username and password of the new user 
+        /// <response code="200">Success message.</response>
+        /// <response code="400">List of errors encountered during validation.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegistrationDto request)
         {
@@ -51,13 +48,11 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// <summary>
         /// Perform login of an user.
         /// </summary>
-        /// <param name="request">An <see cref="UserRegistrationDto"/> containing username and 
-        /// password of new user 
+        /// <param name="request">An username and password of existing user 
         /// </param>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> containing JWT token on success.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <response code="200">A JWT and refresh token</response>
+        /// <response code="400">List of errors encountered during validation.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto request)
         {
