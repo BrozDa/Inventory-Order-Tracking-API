@@ -24,7 +24,7 @@ namespace InventoryManagement.API.Tests.Controllers
         {
             Guid? userId = null;
             //arrange
-            var request = new CreateOrderDto
+            var request = new OrderCreateDto
             {
                 Items = new List<OrderItemDto> {
                     new OrderItemDto
@@ -60,7 +60,7 @@ namespace InventoryManagement.API.Tests.Controllers
             Guid? userId = Guid.NewGuid();
             //arrange
 
-            var request = new CreateOrderDto
+            var request = new OrderCreateDto
             {
                 Items = new List<OrderItemDto> {
                     new OrderItemDto
@@ -85,7 +85,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
-            _orderServiceMock.Setup(s => s.SubmitOrderAsync(It.IsAny<Guid>(), It.IsAny<CreateOrderDto>()))
+            _orderServiceMock.Setup(s => s.SubmitOrderAsync(It.IsAny<Guid>(), It.IsAny<OrderCreateDto>()))
                 .ReturnsAsync(serviceResult);
             //act
             var result = await _sut.PlaceOrder(request);
@@ -100,7 +100,7 @@ namespace InventoryManagement.API.Tests.Controllers
             //arrange
             Guid? userId = Guid.NewGuid();
 
-            var request = new CreateOrderDto
+            var request = new OrderCreateDto
             {
                 Items = new List<OrderItemDto> {
                     new OrderItemDto
@@ -151,7 +151,7 @@ namespace InventoryManagement.API.Tests.Controllers
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
-            _orderServiceMock.Setup(s => s.SubmitOrderAsync(It.IsAny<Guid>(), It.IsAny<CreateOrderDto>()))
+            _orderServiceMock.Setup(s => s.SubmitOrderAsync(It.IsAny<Guid>(), It.IsAny<OrderCreateDto>()))
                 .ReturnsAsync(serviceResult);
             //act
 

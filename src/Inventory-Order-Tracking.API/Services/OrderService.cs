@@ -18,7 +18,7 @@ namespace Inventory_Order_Tracking.API.Services
         ILogger<OrderService> logger) : IOrderService
     {
         /// <inheritdoc/>
-        public async Task<ServiceResult<OrderDto>> SubmitOrderAsync(Guid userId, CreateOrderDto dto)
+        public async Task<ServiceResult<OrderDto>> SubmitOrderAsync(Guid userId, OrderCreateDto dto)
         {
             try
             {
@@ -176,11 +176,11 @@ namespace Inventory_Order_Tracking.API.Services
         /// <summary>
         /// Validates products in newly submitted order and retrieves them from the data storage
         /// </summary>
-        /// <param name="dto">A <see cref="CreateOrderDto"/> containing list of ordered products and quantities</param>
+        /// <param name="dto">A <see cref="OrderCreateDto"/> containing list of ordered products and quantities</param>
         /// <returns>A tupple containing:
         /// List of tupples (<see cref="Product"/>, ordered quantities)
         /// and List of encountered errors while validation, or an empty list in case of successful validaton </returns>
-        private async Task<(List<(Product, int)> orderedProducts, List<string> errors)> ValidateAndFetchProducts(CreateOrderDto dto)
+        private async Task<(List<(Product, int)> orderedProducts, List<string> errors)> ValidateAndFetchProducts(OrderCreateDto dto)
         {
             var errors = new List<string>();
             var orderedProducts = new List<(Product, int)>();

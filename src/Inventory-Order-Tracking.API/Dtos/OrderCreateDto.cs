@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the data transfer object for creating new order.
     /// </summary>
-    public class CreateOrderDto
+    public class OrderCreateDto
     {
         public List<OrderItemDto> Items { get; set; } = new();
     }

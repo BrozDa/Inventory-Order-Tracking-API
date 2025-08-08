@@ -13,12 +13,12 @@ namespace Inventory_Order_Tracking.API.Services.Interfaces
         /// Verifies and adds new order to the data storage
         /// </summary>
         /// <param name="userId">An Id of <see cref="User"/> submitting the order</param>
-        /// <param name="dto">A <see cref="CreateOrderDto"/> containing list of ordered items</param>
+        /// <param name="dto">A <see cref="OrderCreateDto"/> containing list of ordered items</param>
         /// <returns>
         /// An <see cref="ServiceResult{T}"/> containing <see cref="OrderDto"/> on success,
         /// or an appropriate error message on failure.
         /// </returns>
-        Task<ServiceResult<OrderDto>> SubmitOrderAsync(Guid userId, CreateOrderDto dto);
+        Task<ServiceResult<OrderDto>> SubmitOrderAsync(Guid userId, OrderCreateDto dto);
 
         /// <summary>
         /// Retrieves a single order from data storage

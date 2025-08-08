@@ -34,7 +34,7 @@ namespace InventoryManagement.API.Tests.Services
         {
             //arrange
             var userId = Guid.NewGuid();
-            var request = new CreateOrderDto
+            var request = new OrderCreateDto
             {
                 Items = new List<OrderItemDto>
                     {
@@ -79,7 +79,7 @@ namespace InventoryManagement.API.Tests.Services
             {
                 Id = userId
             };
-            var request = new CreateOrderDto
+            var request = new OrderCreateDto
             {
                 Items = new List<OrderItemDto>
                     {
@@ -153,7 +153,7 @@ namespace InventoryManagement.API.Tests.Services
                 OrderDate = DateTime.UtcNow
             };
 
-            var request = new CreateOrderDto
+            var request = new OrderCreateDto
             {
                 Items = new List<OrderItemDto>
                     {

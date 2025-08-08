@@ -17,7 +17,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// <summary>
         /// Submits new order for an user.
         /// </summary>
-        /// <param name="orderDto">An <see cref="CreateOrderDto"/> containing list of <see cref="OrderItemDto"/>
+        /// <param name="orderDto">An <see cref="OrderCreateDto"/> containing list of <see cref="OrderItemDto"/>
         /// representing ordered items
         /// </param>
         /// <returns>
@@ -26,7 +26,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// </returns>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderDto orderDto)
+        public async Task<IActionResult> PlaceOrder([FromBody] OrderCreateDto orderDto)
         {
             var userId = userService.GetCurentUserId();
             if (userId is null)
