@@ -27,7 +27,11 @@ namespace Inventory_Order_Tracking.API.Services
                 if (user is null)
                 {
                     logger.LogWarning("[OrderService][SubmitOrderAsync] Non existent user attempted to submit order");
-                    return ServiceResult<OrderDto>.BadRequest("Non existent user");
+
+                    return ServiceResult<OrderDto>.Failure(
+                        errors: ["Non existent user"],
+                        statusCode: 400);
+
                 }
                 var (orderedProducts, errors) = await ValidateAndFetchProducts(dto);
 
@@ -36,7 +40,9 @@ namespace Inventory_Order_Tracking.API.Services
                     logger.LogWarning("[OrderService][SubmitOrderAsync] Invalid products within an order by {user}, encountered errors:" +
                         "{errors}", userId, errors);
 
-                    return ServiceResult<OrderDto>.BadRequest(string.Join(";", errors));
+                    return ServiceResult<OrderDto>.Failure(
+                        errors: errors,
+                        statusCode: 400);
                 }
 
                 var order = await CreateOrder(userId, orderedProducts);
@@ -50,12 +56,17 @@ namespace Inventory_Order_Tracking.API.Services
                         Action = $"Placed order {order.Id}"
                     });
 
-                return ServiceResult<OrderDto>.Created(order.ToDto());
+                return ServiceResult<OrderDto>.Success(
+                    data: order.ToDto(),
+                    statusCode: 201);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "[OrderService][SubmitOrderAsync] Unhandled Exception has occured");
-                return ServiceResult<OrderDto>.InternalServerError("Failed to submit order");
+
+                return ServiceResult<OrderDto>.Failure(
+                    errors: ["Failed to submit order"],
+                    statusCode: 500);
             }
         }
 
@@ -69,7 +80,9 @@ namespace Inventory_Order_Tracking.API.Services
                 if (user is null)
                 {
                     logger.LogWarning("[OrderService][GetOrderByIdAsync] Non existent user attempted to fetch order");
-                    return ServiceResult<OrderDto>.NotFound("Non existent user");
+                    return ServiceResult<OrderDto>.Failure(
+                        errors: ["Non existent user"],
+                        statusCode: 404);
                 }
 
                 var order = await orderRepo.GetByIdAsync(orderId);
@@ -77,22 +90,28 @@ namespace Inventory_Order_Tracking.API.Services
                 if (order is null)
                 {
                     logger.LogWarning("[OrderService][GetOrderByIdAsync] Non existent order fetch attempt");
-                    return ServiceResult<OrderDto>.NotFound("Non existent order");
+                    return ServiceResult<OrderDto>.Failure(
+                        errors: ["Non existent order"],
+                        statusCode: 404);
                 }
 
                 if (order.UserId != userId)
                 {
                     logger.LogWarning("[OrderService][GetOrderByIdAsync] User tried to fetch order beloning to different user; requesting id {id}/ actual id {actual}"
                         , userId, order.UserId);
-                    return ServiceResult<OrderDto>.Forbidden();
+                    return ServiceResult<OrderDto>.Failure(
+                        statusCode: 403);
                 }
 
-                return ServiceResult<OrderDto>.Ok(order.ToDto());
+                return ServiceResult<OrderDto>.Success(
+                    data: order.ToDto());
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "[OrderService][GetOrderByIdAsync] Unhandled Exception has occured");
-                return ServiceResult<OrderDto>.InternalServerError("Failed to fetch the order order");
+                return ServiceResult<OrderDto>.Failure(
+                    errors: ["Failed to fetch the order"],
+                    statusCode: 500);
             }
         }
 
@@ -106,17 +125,22 @@ namespace Inventory_Order_Tracking.API.Services
                 if (user is null)
                 {
                     logger.LogWarning("[OrderService][GetAllOrdersForUserAsync] Non existent user attempted to fetch order history");
-                    return ServiceResult<List<OrderDto>>.NotFound("Non existent user");
+                    return ServiceResult<List<OrderDto>>.Failure(
+                         errors: ["Non existent user"],
+                         statusCode: 404);
                 }
 
                 var orders = await orderRepo.GetAllForUserAsync(userId);
 
-                return ServiceResult<List<OrderDto>>.Ok(orders.Select(o => o.ToDto()).ToList());
+                return ServiceResult<List<OrderDto>>.Success(
+                    data: orders.Select(o => o.ToDto()).ToList());
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "[OrderService][GetAllOrdersForUserAsync] Unhandled Exception has occured");
-                return ServiceResult<List<OrderDto>>.InternalServerError("Failed to fetch the order history");
+                return ServiceResult<List<OrderDto>>.Failure(
+                    errors: ["Failed to fetch the order history"],
+                    statusCode: 500);
             }
         }
 
@@ -129,7 +153,9 @@ namespace Inventory_Order_Tracking.API.Services
                 if (user is null)
                 {
                     logger.LogWarning("[OrderService][CancelOrderAsync] Non existent user attempted to cancel order");
-                    return ServiceResult<OrderDto>.NotFound("Non existent user");
+                    return ServiceResult<OrderDto>.Failure(
+                         errors: ["Non existent user"],
+                         statusCode: 404);
                 }
 
                 var order = await orderRepo.GetByIdAsync(orderId);
@@ -137,21 +163,26 @@ namespace Inventory_Order_Tracking.API.Services
                 if (order is null)
                 {
                     logger.LogWarning("[OrderService][CancelOrderAsync] Non existent order cancellation attempt");
-                    return ServiceResult<OrderDto>.NotFound("Non existent order");
+                    return ServiceResult<OrderDto>.Failure(
+                         errors: ["Non existent order"],
+                         statusCode: 404);
                 }
 
                 if (order.UserId != userId)
                 {
                     logger.LogWarning("[OrderService][CancelOrderAsync] User tried to cancel order belonging to different user; requesting id {id}/ actual id {actual}"
                         , userId, order.UserId);
-                    return ServiceResult<OrderDto>.Forbidden();
+                    return ServiceResult<OrderDto>.Failure(
+                         statusCode: 403);
                 }
 
                 if (order.Status != OrderStatus.Submitted)
                 {
                     logger.LogWarning("[OrderService][CancelOrderAsync] User tried to cancel in other state than Submited; order id {id}"
                         , order.Id);
-                    return ServiceResult<OrderDto>.BadRequest("Only orders in submitted state can be cancelled");
+                    return ServiceResult<OrderDto>.Failure(
+                         errors: ["Only orders in submitted state can be cancelled"],
+                         statusCode: 400);
                 }
 
                 order.Status = OrderStatus.Cancelled;
@@ -164,12 +195,15 @@ namespace Inventory_Order_Tracking.API.Services
                         Action = $"Cancelled order {order.Id}"
                     });
 
-                return ServiceResult<OrderDto>.Ok(order.ToDto());
+                return ServiceResult<OrderDto>.Success(
+                    data: order.ToDto());
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "[OrderService][CancelOrderAsync] Unhandled Exception has occured");
-                return ServiceResult<OrderDto>.InternalServerError("Failed to cancel the order");
+                return ServiceResult<OrderDto>.Failure(
+                         errors: ["Failed to cancel the order"],
+                         statusCode: 500);
             }
         }
 

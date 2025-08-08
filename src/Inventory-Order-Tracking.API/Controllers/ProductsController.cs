@@ -1,8 +1,10 @@
 ﻿using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Services.Interfaces;
+using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Inventory_Order_Tracking.API.Controllers
 {
@@ -28,10 +30,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await service.CustomersGetAllAsync();
 
-            if (!serviceResult.IsSuccessful)
-                return StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
-
-            return Ok(serviceResult.Data);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -48,10 +47,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await service.CustomersGetSingleAsync(id);
 
-            if (!serviceResult.IsSuccessful)
-                return StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
-
-            return Ok(serviceResult.Data);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -67,10 +63,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await service.AdminsGetAllAsync();
 
-            if (!serviceResult.IsSuccessful)
-                return StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
-
-            return Ok(serviceResult.Data);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -87,10 +80,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await service.AdminsGetSingleAsync(id);
 
-            if (!serviceResult.IsSuccessful)
-                return StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
-
-            return Ok(serviceResult.Data);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -114,14 +104,13 @@ namespace Inventory_Order_Tracking.API.Controllers
                     .ToList();
 
                 logger.LogWarning("[ProductsController][AdminsUpdateName] Validation failed: {@errors}", errors);
-                return BadRequest(new { Errors = errors });
+                return StatusCode(400, ServiceResult<ProductAdminDto?>.Failure(
+                    errors: errors));
             }
 
             var serviceResult = await service.UpdateNameAsync(id, dto.Name);
 
-            return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -145,14 +134,13 @@ namespace Inventory_Order_Tracking.API.Controllers
                     .ToList();
 
                 logger.LogWarning("[ProductsController][AdminsUpdateDescription] Validation failed: {@errors}", errors);
-                return BadRequest(new { Errors = errors });
+                return StatusCode(400, ServiceResult<ProductAdminDto?>.Failure(
+                    errors: errors));
             }
 
             var serviceResult = await service.UpdateDescriptionAsync(id, dto.Description);
 
-            return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -174,14 +162,14 @@ namespace Inventory_Order_Tracking.API.Controllers
                     id,
                     dto.Price);
 
-                return BadRequest("Price must not be negative number");
+                return StatusCode(400, ServiceResult<ProductAdminDto?>.Failure(
+                    errors: ["Price must not be negative number"]));
+  
             }
 
             var serviceResult = await service.UpdatePriceAsync(id, dto.Price);
 
-            return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -203,14 +191,13 @@ namespace Inventory_Order_Tracking.API.Controllers
                     id,
                     dto.Stock);
 
-                return BadRequest("Stock must not be negative number");
+                return StatusCode(400, ServiceResult<ProductAdminDto?>.Failure(
+                    errors: ["Stock must not be negative number"]));
             }
 
             var serviceResult = await service.UpdateStockQuantityAsync(id, dto.Stock);
 
-            return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -234,14 +221,13 @@ namespace Inventory_Order_Tracking.API.Controllers
                     .ToList();
 
                 logger.LogWarning("[ProductsController][AdminsUpdate] Validation failed: {@errors}", errors);
-                return BadRequest(new { Errors = errors });
+                return StatusCode(400, ServiceResult<ProductAdminDto?>.Failure(
+                    errors: errors));
             }
 
             var serviceResult = await service.UpdateAsync(id, dto);
 
-            return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -264,14 +250,14 @@ namespace Inventory_Order_Tracking.API.Controllers
                     .ToList();
 
                 logger.LogWarning("[ProductsController][AdminsAddStock] Validation failed: {@errors}", errors);
-                return BadRequest(new { Errors = errors });
+
+                return StatusCode(400, ServiceResult<ProductAdminDto?>.Failure(
+                    errors: errors));
             }
 
             var serviceResult = await service.AddAsync(dto);
 
-            return serviceResult.IsSuccessful
-                ? Created()
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -288,9 +274,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await service.DeleteAsync(id);
 
-            return serviceResult.IsSuccessful
-                ? NoContent()
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
     }
 }

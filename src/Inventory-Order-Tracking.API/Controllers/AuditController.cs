@@ -30,9 +30,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await auditService.GetAllAsync();
 
-            return serviceResult.IsSuccessful
-            ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -51,9 +49,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await auditService.GetAllForUserAsync(userId);
 
-            return serviceResult.IsSuccessful
-            ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -72,9 +68,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await auditService.GetAllForDateAsync(date);
 
-            return serviceResult.IsSuccessful
-            ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
     }
 }

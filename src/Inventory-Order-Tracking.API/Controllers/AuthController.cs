@@ -1,5 +1,6 @@
 ﻿using Inventory_Order_Tracking.API.Dtos;
 using Inventory_Order_Tracking.API.Services.Interfaces;
+using Inventory_Order_Tracking.API.Services.Shared;
 using Inventory_Order_Tracking.API.Utils;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,14 +36,15 @@ namespace Inventory_Order_Tracking.API.Controllers
                     request.Username,
                     string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)));
 
-                return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage) });
+                return StatusCode(400, ServiceResult<string>.Failure(
+                    errors: validationResult.Errors.Select(e => e.ErrorMessage).ToList(), 
+                    statusCode:400));
+
             }
 
             var serviceResult = await authService.RegisterAsync(request);
 
-            return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -58,9 +60,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await authService.LoginAsync(request);
 
-            return serviceResult.IsSuccessful
-                ? Ok(serviceResult.Data)
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
 
         /// <summary>
@@ -75,9 +75,7 @@ namespace Inventory_Order_Tracking.API.Controllers
         {
             var serviceResult = await emailService.VerifyEmailAsync(tokenId);
 
-            return serviceResult.IsSuccessful
-                ? Ok()
-                : StatusCode((int)serviceResult.StatusCode, serviceResult.ErrorMessage);
+            return StatusCode(serviceResult.StatusCode, serviceResult);
         }
     }
 }

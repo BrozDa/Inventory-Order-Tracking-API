@@ -9,88 +9,30 @@ namespace Inventory_Order_Tracking.API.Services.Shared
     public class ServiceResult<T>
     {
         public bool IsSuccessful { get; set; }
-        public HttpStatusCode StatusCode { get; set; }
-        public string? ErrorMessage { get; set; }
+        public int StatusCode { get; set; }
+        public string? Message { get; set; }
+        public List<string>? Errors { get; set; }
         public T? Data { get; set; }
 
-        //Documentation is left out from static methods due to self-explanatory nature
 
-        public static ServiceResult<T> Ok(T? data = default)
+        public static ServiceResult<T> Success(T? data = default, string? message = null, int statusCode = 200)
         {
             return new ServiceResult<T>
             {
                 IsSuccessful = true,
-                StatusCode = HttpStatusCode.OK,
+                StatusCode = statusCode,
+                Message = message,
                 Data = data
             };
         }
-
-        public static ServiceResult<T> Created(T data)
+        public static ServiceResult<T> Failure(T? data = default, List<string>? errors = null, int statusCode = 400)
         {
             return new ServiceResult<T>
             {
                 IsSuccessful = true,
-                StatusCode = HttpStatusCode.Created,
+                StatusCode = statusCode,
+                Errors = errors,
                 Data = data
-            };
-        }
-
-        public static ServiceResult<T> NoContent()
-        {
-            return new ServiceResult<T>
-            {
-                IsSuccessful = true,
-                StatusCode = HttpStatusCode.NoContent,
-            };
-        }
-
-        public static ServiceResult<T> BadRequest(string? errorMessage)
-        {
-            return new ServiceResult<T>
-            {
-                IsSuccessful = false,
-                StatusCode = HttpStatusCode.BadRequest,
-                ErrorMessage = errorMessage ?? "Bad request"
-            };
-        }
-
-        public static ServiceResult<T> NotFound(string errorMessage = "Not found")
-        {
-            return new ServiceResult<T>
-            {
-                IsSuccessful = false,
-                StatusCode = HttpStatusCode.NotFound,
-                ErrorMessage = errorMessage
-            };
-        }
-
-        public static ServiceResult<T> InternalServerError(string? errorMessage)
-        {
-            return new ServiceResult<T>
-            {
-                IsSuccessful = false,
-                StatusCode = HttpStatusCode.InternalServerError,
-                ErrorMessage = errorMessage ?? "Resource not found"
-            };
-        }
-
-        public static ServiceResult<T> Unauthorized(string errorMessage = "Unauthorized")
-        {
-            return new ServiceResult<T>
-            {
-                IsSuccessful = false,
-                StatusCode = HttpStatusCode.Unauthorized,
-                ErrorMessage = errorMessage
-            };
-        }
-
-        public static ServiceResult<T> Forbidden()
-        {
-            return new ServiceResult<T>
-            {
-                IsSuccessful = false,
-                StatusCode = HttpStatusCode.Forbidden,
-                ErrorMessage = "Forbidden"
             };
         }
     }
