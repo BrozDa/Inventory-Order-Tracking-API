@@ -2,12 +2,15 @@
 
 namespace Inventory_Order_Tracking.API.Validators
 {
+    /// <summary>
+    /// Validates the password in registration request is not empty and in valid format.
+    /// Valid PW - One upperCase, oneLowerCase, one number, 8+ characters.
+    /// </summary>
     public class PasswordValidator : AbstractValidator<string>
     {
-        //Valid PW - One upperCase, oneLowerCase, one number, 8+ characters
-
         public PasswordValidator()
         {
+
             RuleFor(password => password)
                 .NotEmpty().WithMessage("Password cannot be empty")
                 .MinimumLength(8).WithMessage("Password have to be at least 8 characters long")

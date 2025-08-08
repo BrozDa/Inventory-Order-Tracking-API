@@ -2,6 +2,10 @@
 
 namespace Inventory_Order_Tracking.API.Validators
 {
+    /// <summary>
+    /// Validates the username in registration request is not empty and in valid format.
+    /// Valid Username - between 5 and 16 characters, only alphanumeric characters.
+    /// </summary>
     public class UsernameValidator : AbstractValidator<string>
     {
         public UsernameValidator()
