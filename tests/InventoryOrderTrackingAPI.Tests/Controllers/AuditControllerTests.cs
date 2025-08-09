@@ -21,27 +21,32 @@ namespace InventoryManagement.API.Tests.Controllers
         public async Task GetAllLogs_FailedRequest_ReturnsOtherThanOK()
         {
             //arrange
-            var serviceResult = ServiceResult<List<AuditLogDto>>.BadRequest("Test failure");
+            var serviceResult = ServiceResult<List<AuditLogDto>>.Failure(
+                        errors: ["Test failure"],
+                        statusCode: 400);
+
             _auditServiceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(serviceResult);
 
             //act
-            var result = await _sut.GetAllLogs();
+            var result = await _sut.GetAllLogs() as ObjectResult;
             //assert
-            Assert.IsNotType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.NotEqual(200, result.StatusCode);
         }
 
         [Fact]
-        public async Task GetAllLogs_SuccessfulRequest_ReturnsCreated()
+        public async Task GetAllLogs_SuccessfulRequest_ReturnsOk()
         {
             //arrange
             var logs = new List<AuditLogDto>();
-            var serviceResult = ServiceResult<List<AuditLogDto>>.Ok(logs);
+            var serviceResult = ServiceResult<List<AuditLogDto>>.Success(data: logs);
             _auditServiceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(serviceResult);
 
             //act
-            var result = await _sut.GetAllLogs();
+            var result = await _sut.GetAllLogs() as ObjectResult;
             //assert
-            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]
@@ -49,30 +54,34 @@ namespace InventoryManagement.API.Tests.Controllers
         {
             //arrange
             var userId = Guid.NewGuid();
-            var serviceResult = ServiceResult<List<AuditLogDto>>.BadRequest("Test failure");
+            var serviceResult = ServiceResult<List<AuditLogDto>>.Failure(
+                        errors: ["Test failure"],
+                        statusCode: 400);
 
             _auditServiceMock.Setup(s => s.GetAllForUserAsync(userId)).ReturnsAsync(serviceResult);
 
             //act
-            var result = await _sut.GetAllForUser(userId);
+            var result = await _sut.GetAllForUser(userId) as ObjectResult;
             //assert
-            Assert.IsNotType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.NotEqual(200, result.StatusCode);
         }
 
         [Fact]
-        public async Task GetAllForUser_SuccessfulRequest_ReturnsCreated()
+        public async Task GetAllForUser_SuccessfulRequest_ReturnsOk()
         {
             //arrange
             var userId = Guid.NewGuid();
             var logs = new List<AuditLogDto>();
-            var serviceResult = ServiceResult<List<AuditLogDto>>.Ok(logs);
+            var serviceResult = ServiceResult<List<AuditLogDto>>.Success(data: logs);
 
             _auditServiceMock.Setup(s => s.GetAllForUserAsync(userId)).ReturnsAsync(serviceResult);
 
             //act
-            var result = await _sut.GetAllForUser(userId);
+            var result = await _sut.GetAllForUser(userId) as ObjectResult;
             //assert
-            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]
@@ -80,30 +89,34 @@ namespace InventoryManagement.API.Tests.Controllers
         {
             //arrange
             var date = DateTime.UtcNow;
-            var serviceResult = ServiceResult<List<AuditLogDto>>.BadRequest("Test failure");
+            var serviceResult = ServiceResult<List<AuditLogDto>>.Failure(
+                        errors: ["Test failure"],
+                        statusCode: 400);
 
             _auditServiceMock.Setup(s => s.GetAllForDateAsync(date)).ReturnsAsync(serviceResult);
 
             //act
-            var result = await _sut.GetAllForDate(date);
+            var result = await _sut.GetAllForDate(date) as ObjectResult;
             //assert
-            Assert.IsNotType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.NotEqual(200, result.StatusCode);
         }
 
         [Fact]
-        public async Task GetAllForDate_SuccessfulRequest_ReturnsCreated()
+        public async Task GetAllForDate_SuccessfulRequest_ReturnsOk()
         {
             //arrange
             var date = DateTime.UtcNow;
             var logs = new List<AuditLogDto>();
-            var serviceResult = ServiceResult<List<AuditLogDto>>.Ok(logs);
+            var serviceResult = ServiceResult<List<AuditLogDto>>.Success(data: logs);
 
             _auditServiceMock.Setup(s => s.GetAllForDateAsync(date)).ReturnsAsync(serviceResult);
 
             //act
-            var result = await _sut.GetAllForDate(date);
+            var result = await _sut.GetAllForDate(date) as ObjectResult;
             //assert
-            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
         }
     }
 }

@@ -4,6 +4,7 @@ using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Inventory_Order_Tracking.API.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
@@ -34,14 +35,19 @@ public class AuthControllerTests
             Email = "InvalidEmail"
         };
 
+        var serviceResult = ServiceResult<string>.Failure(
+                errors: ["Invalid inputs"],
+                statusCode: 400);
+
         _authServiceMock.Setup(
             s => s.RegisterAsync(request))
-            .ReturnsAsync(ServiceResult<string>.BadRequest("Invalid inputs"));
+            .ReturnsAsync(serviceResult);
         //act
-        var result = await _sut.Register(request);
+        var result = await _sut.Register(request) as ObjectResult;
 
         //assert
-        Assert.IsType<BadRequestObjectResult>(result);
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
     }
 
     [Fact]
@@ -55,14 +61,19 @@ public class AuthControllerTests
             Email = "valid@email.com"
         };
 
+        var serviceResult = ServiceResult<string>.Success(
+                message: "Registration successfull",
+                statusCode: 200);
+
         _authServiceMock.Setup(
             s => s.RegisterAsync(request))
-            .ReturnsAsync(ServiceResult<string>.Ok("Registration successfull"));
+            .ReturnsAsync(serviceResult);
         //act
-        var result = await _sut.Register(request);
+        var result = await _sut.Register(request) as ObjectResult;
 
         //assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.NotNull(result);
+        Assert.Equal(200, result.StatusCode);
     }
 
     [Fact]
@@ -75,14 +86,18 @@ public class AuthControllerTests
             Password = "InvalidPass",
         };
 
+        var serviceResult = ServiceResult<TokenResponseDto>.Failure(
+                errors: ["Invalid Login"],
+                statusCode: 400);
+
         _authServiceMock.Setup(
             s => s.LoginAsync(request))
-            .ReturnsAsync(ServiceResult<TokenResponseDto>.BadRequest("Invalid Login"));
+            .ReturnsAsync(serviceResult);
         //act
-        var result = await _sut.Login(request);
+        var result = await _sut.Login(request) as ObjectResult;
         //assert
-        var badResult = Assert.IsType<ObjectResult>(result);
-        Assert.Equal(badResult.StatusCode, 400);
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
     }
 
     [Fact]
@@ -95,57 +110,57 @@ public class AuthControllerTests
             Password = "V4lidPassword"
         };
 
+        var tokenResponseDto = new TokenResponseDto
+        {
+            AccessToken = "Sample Token",
+            RefreshToken = "Refresh token"
+        };
+        var serviceResult = ServiceResult<TokenResponseDto>.Success(
+                data: tokenResponseDto,
+                statusCode: 200);
+
         _authServiceMock.Setup(
             s => s.LoginAsync(request))
-            .ReturnsAsync(ServiceResult<TokenResponseDto>
-            .Ok(new TokenResponseDto
-            {
-                AccessToken = "Sample Token",
-                RefreshToken = "Refresh token"
-            }
-            ));
+            .ReturnsAsync(serviceResult);
         //act
-        var result = await _sut.Login(request);
+        var result = await _sut.Login(request) as ObjectResult;
         //assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-    }
-
-    [Fact]
-    public async Task Verify_InvalidInput_ReturnsOtherThanOk()
-    {
-        //arrange
-        var serviceResult = new ServiceResult<object>
-        {
-            IsSuccessful = true,
-            StatusCode = HttpStatusCode.OK
-        };
-
-        _emailVerificationServiceMock.Setup(x => x.VerifyEmailAsync(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
-        //act
-
-        var result = await _sut.Verify(Guid.NewGuid());
-
-        //assert
-        Assert.IsType<OkResult>(result);
+        Assert.NotNull(result);
+        Assert.Equal(200, result.StatusCode);
     }
 
     [Fact]
     public async Task Verify_ValidInput_ReturnsOk()
     {
         //arrange
-        var serviceResult = new ServiceResult<object>
-        {
-            IsSuccessful = false,
-            ErrorMessage = "This is test generated error",
-            StatusCode = HttpStatusCode.Unauthorized
-        };
+        var serviceResult = ServiceResult<object>.Success(statusCode: 200);
 
         _emailVerificationServiceMock.Setup(x => x.VerifyEmailAsync(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
         //act
 
-        var result = await _sut.Verify(Guid.NewGuid());
+        var result = await _sut.Verify(Guid.NewGuid()) as ObjectResult;
 
         //assert
-        Assert.IsNotType<OkResult>(result);
+        Assert.NotNull(result);
+        Assert.Equal(200, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task Verify_InvalidInput_ReturnsOtherThan()
+    {
+        //arrange
+        var serviceResult = ServiceResult<object>.Failure(
+            errors: ["This is test generated error"],
+            statusCode: 401);
+
+
+        _emailVerificationServiceMock.Setup(x => x.VerifyEmailAsync(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
+        //act
+
+        var result = await _sut.Verify(Guid.NewGuid()) as ObjectResult;
+
+        //assert
+        Assert.NotNull(result);
+        Assert.Equal(401, result.StatusCode);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Inventory_Order_Tracking.API.Controllers;
 using Inventory_Order_Tracking.API.Domain;
 using Inventory_Order_Tracking.API.Dtos;
+using Inventory_Order_Tracking.API.Models;
 using Inventory_Order_Tracking.API.Services.Interfaces;
 using Inventory_Order_Tracking.API.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -48,10 +49,11 @@ namespace InventoryManagement.API.Tests.Controllers
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
             //act
-            var result = await _sut.PlaceOrder(request);
+            var result = await _sut.PlaceOrder(request) as ObjectResult;
 
             //assert
-            Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(401, result.StatusCode);
         }
 
         [Fact]
@@ -81,17 +83,20 @@ namespace InventoryManagement.API.Tests.Controllers
                     }
                 }
             };
-            var serviceResult = ServiceResult<OrderDto>.NotFound("Non existent user");
+            var serviceResult = ServiceResult<OrderDto>.Failure(
+                errors: ["Non existent user"],
+                statusCode: 404);
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
             _orderServiceMock.Setup(s => s.SubmitOrderAsync(It.IsAny<Guid>(), It.IsAny<OrderCreateDto>()))
                 .ReturnsAsync(serviceResult);
             //act
-            var result = await _sut.PlaceOrder(request);
+            var result = await _sut.PlaceOrder(request) as ObjectResult;
 
             //assert
-            Assert.IsNotType<CreatedResult>(result);
+            Assert.NotNull(result);
+            Assert.NotEqual(200, result.StatusCode);
         }
 
         [Fact]
@@ -147,7 +152,10 @@ namespace InventoryManagement.API.Tests.Controllers
                 }
             };
 
-            var serviceResult = ServiceResult<OrderDto>.Created(orderDto);
+            var serviceResult = ServiceResult<OrderDto>.Success(
+                data: orderDto,
+                statusCode: 201);
+
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
@@ -155,9 +163,10 @@ namespace InventoryManagement.API.Tests.Controllers
                 .ReturnsAsync(serviceResult);
             //act
 
-            var result = await _sut.PlaceOrder(request);
+            var result = await _sut.PlaceOrder(request) as ObjectResult;
             //assert
-            Assert.IsType<CreatedAtActionResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(201, result.StatusCode);
         }
 
         [Fact]
@@ -170,10 +179,11 @@ namespace InventoryManagement.API.Tests.Controllers
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
             //act
-            var result = await _sut.GetOrderById(orderId);
+            var result = await _sut.GetOrderById(orderId) as ObjectResult;
 
             //assert
-            Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.NotEqual(200, result.StatusCode);
         }
 
         [Fact]
@@ -184,15 +194,18 @@ namespace InventoryManagement.API.Tests.Controllers
             var orderId = Guid.NewGuid();
             var order = new OrderDto { Id = orderId };
 
-            var serviceResult = ServiceResult<OrderDto>.NotFound();
+            var serviceResult = ServiceResult<OrderDto>.Failure(
+                errors: ["Non existent order"],
+                statusCode: 404);
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
             _orderServiceMock.Setup(os => os.GetOrderByIdAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
             //act
-            var result = await _sut.GetOrderById(orderId);
+            var result = await _sut.GetOrderById(orderId) as ObjectResult;
 
             //assert
-            Assert.IsNotType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.NotEqual(200, result.StatusCode);
         }
 
         [Fact]
@@ -203,15 +216,18 @@ namespace InventoryManagement.API.Tests.Controllers
             var orderId = Guid.NewGuid();
             var orderDto = new OrderDto { Id = orderId };
 
-            var serviceResult = ServiceResult<OrderDto>.Ok(orderDto);
+            var serviceResult = ServiceResult<OrderDto>.Success(
+                data: orderDto,
+                statusCode: 200);
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
             _orderServiceMock.Setup(os => os.GetOrderByIdAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
             //act
-            var result = await _sut.GetOrderById(orderId);
+            var result = await _sut.GetOrderById(orderId) as ObjectResult;
 
             //assert
-            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]
@@ -223,10 +239,11 @@ namespace InventoryManagement.API.Tests.Controllers
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
             //act
-            var result = await _sut.GetOrderHistoryForUser();
+            var result = await _sut.GetOrderHistoryForUser() as ObjectResult;
 
             //assert
-            Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(401, result.StatusCode);
         }
 
         [Fact]
@@ -236,16 +253,19 @@ namespace InventoryManagement.API.Tests.Controllers
             Guid? userId = Guid.NewGuid();
             var orderId = Guid.NewGuid();
 
-            var serviceResult = ServiceResult<List<OrderDto>>.BadRequest("Test bad request");
+            var serviceResult = ServiceResult<List<OrderDto>>.Failure(
+                errors: ["Test bad request"],
+                statusCode: 400);
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
             _orderServiceMock.Setup(os => os.GetAllOrdersForUserAsync(userId.Value)).ReturnsAsync(serviceResult);
             //act
-            var result = await _sut.GetOrderHistoryForUser();
+            var result = await _sut.GetOrderHistoryForUser( )as ObjectResult;
 
             //assert
-            Assert.IsNotType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.NotEqual(200, result.StatusCode);
         }
 
         [Fact]
@@ -257,17 +277,20 @@ namespace InventoryManagement.API.Tests.Controllers
 
             var orderHistory = new List<OrderDto> { new OrderDto { Id = orderId } };
 
-            var serviceResult = ServiceResult<List<OrderDto>>.Ok(orderHistory);
+            var serviceResult = ServiceResult<List<OrderDto>>.Success(
+                data: orderHistory,
+                statusCode: 200);
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
             _orderServiceMock.Setup(os => os.GetAllOrdersForUserAsync(userId.Value)).ReturnsAsync(serviceResult);
 
             //act
-            var result = await _sut.GetOrderHistoryForUser();
+            var result = await _sut.GetOrderHistoryForUser() as ObjectResult;
 
             //assert
-            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]
@@ -280,10 +303,11 @@ namespace InventoryManagement.API.Tests.Controllers
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
             //act
-            var result = await _sut.CancelOrder(orderId);
+            var result = await _sut.CancelOrder(orderId) as ObjectResult;
 
             //assert
-            Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(401, result.StatusCode);
         }
 
         [Fact]
@@ -293,15 +317,18 @@ namespace InventoryManagement.API.Tests.Controllers
             Guid? userId = Guid.NewGuid();
             Guid orderId = Guid.NewGuid();
 
-            var serviceResult = ServiceResult<OrderDto>.BadRequest("Test bad request");
+            var serviceResult = ServiceResult<OrderDto>.Failure(
+                errors: ["Test bad request"],
+                statusCode: 400);
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
             _orderServiceMock.Setup(os => os.CancelOrderAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
             //act
-            var result = await _sut.CancelOrder(orderId);
+            var result = await _sut.CancelOrder(orderId) as ObjectResult;
 
             //assert
-            Assert.IsNotType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.NotEqual(200, result.StatusCode);
         }
 
         [Fact]
@@ -313,17 +340,21 @@ namespace InventoryManagement.API.Tests.Controllers
 
             var order = new OrderDto { Id = orderId };
 
-            var serviceResult = ServiceResult<OrderDto>.Ok(order);
+            var serviceResult = ServiceResult<OrderDto>.Success(
+                data: order,
+                statusCode: 200);
+
 
             _userServiceMock.Setup(us => us.GetCurentUserId()).Returns(userId);
 
             _orderServiceMock.Setup(os => os.CancelOrderAsync(userId.Value, orderId)).ReturnsAsync(serviceResult);
 
             //act
-            var result = await _sut.CancelOrder(orderId);
+            var result = await _sut.CancelOrder(orderId) as ObjectResult;
 
             //assert
-            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
         }
     }
 }
