@@ -53,8 +53,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.Equal("Non existent user", result.ErrorMessage);
+            Assert.Equal(400, result.StatusCode);
+            Assert.Equal(["Non existent user"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -98,8 +98,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to submit order", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to submit order"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -183,7 +183,7 @@ namespace InventoryManagement.API.Tests.Services
 
             // Assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+            Assert.Equal(201, result.StatusCode);
             Assert.NotNull(result.Data);
 
             _auditServiceMock.Verify(
@@ -205,8 +205,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
-            Assert.Equal("Non existent user", result.ErrorMessage);
+            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(["Non existent user"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -235,8 +235,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
-            Assert.Equal("Non existent order", result.ErrorMessage);
+            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(["Non existent order"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -266,7 +266,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
+            Assert.Equal(403, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -296,7 +296,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.NotNull(result.Data);
         }
 
@@ -313,8 +313,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
-            Assert.Equal("Non existent user", result.ErrorMessage);
+            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(["Non existent user"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -342,8 +342,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to fetch the order history", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to fetch the order history"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -376,7 +376,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.NotNull(result.Data);
         }
 
@@ -394,8 +394,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
-            Assert.Equal("Non existent user", result.ErrorMessage);
+            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(["Non existent user"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -428,8 +428,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
-            Assert.Equal("Non existent order", result.ErrorMessage);
+            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(["Non existent order"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -463,7 +463,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
+            Assert.Equal(403, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -497,8 +497,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.Equal("Only orders in submitted state can be cancelled", result.ErrorMessage);
+            Assert.Equal(400, result.StatusCode);
+            Assert.Equal(["Only orders in submitted state can be cancelled"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -532,8 +532,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to cancel the order", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to cancel the order"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -567,7 +567,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.NotNull(result.Data);
             Assert.Equal(OrderStatus.Cancelled, result.Data.Status);
 

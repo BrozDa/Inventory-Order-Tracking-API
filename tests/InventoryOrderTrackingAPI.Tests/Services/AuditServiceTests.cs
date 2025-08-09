@@ -29,10 +29,11 @@ namespace InventoryManagement.API.Tests.Services
             //act
 
             var result = await _sut.GetAllAsync();
+
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to fetch logs", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to fetch logs"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -55,7 +56,7 @@ namespace InventoryManagement.API.Tests.Services
             var result = await _sut.GetAllAsync();
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.NotNull(logs);
         }
 
@@ -71,8 +72,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to fetch logs", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to fetch logs"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -97,8 +98,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.Equal("Cannot get logs for future date", result.ErrorMessage);
+            Assert.Equal(400, result.StatusCode);
+            Assert.Equal(["Cannot get logs for future date"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -123,7 +124,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.NotNull(logs);
         }
 
@@ -140,7 +141,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.NotNull(logs);
         }
 
@@ -158,8 +159,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to fetch logs", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to fetch logs"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -186,8 +187,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.Equal("User with provided Id does not exist", result.ErrorMessage);
+            Assert.Equal(400, result.StatusCode);
+            Assert.Equal(["User with provided Id does not exist"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -214,7 +215,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.NotNull(logs);
         }
 
@@ -245,8 +246,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to add new log", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to add new log"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -285,8 +286,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.Equal("Cannot add logs for non existent user", result.ErrorMessage);
+            Assert.Equal(400, result.StatusCode);
+            Assert.Equal(["Cannot add logs for non existent user"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -325,7 +326,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+            Assert.Equal(201, result.StatusCode);
             Assert.NotNull(result.Data);
         }
     }

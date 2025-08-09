@@ -93,8 +93,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to fetch products from database", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to fetch products from database"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -119,7 +119,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]
@@ -135,7 +135,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(404, result.StatusCode);
         }
 
         [Fact]
@@ -152,8 +152,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to fetch product from database", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to fetch product from database"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -229,8 +229,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to fetch products from database", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to fetch products from database"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -255,7 +255,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]
@@ -271,7 +271,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(404, result.StatusCode);
         }
 
         [Fact]
@@ -288,8 +288,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to fetch product from database", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to fetch product from database"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -324,7 +324,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.Equal(newName, existing.Name);
 
             _auditServiceMock.Verify(
@@ -347,7 +347,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(404, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -379,8 +379,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to update name", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to update product name"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -420,7 +420,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.Equal(newDescription, existing.Description);
 
             _auditServiceMock.Verify(
@@ -443,7 +443,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(404, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -475,8 +475,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to update description", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to update product description"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -516,7 +516,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.Equal(newPrice, existing.Price);
 
             _auditServiceMock.Verify(
@@ -539,7 +539,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(404, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -571,8 +571,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to update price", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to update product price"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -612,7 +612,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.Equal(newStockSquantity, existing.StockQuantity);
 
             _auditServiceMock.Verify(
@@ -635,7 +635,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(404, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -667,8 +667,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to update stock quantity", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to update product stock quantity"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -706,8 +706,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to create new product", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to create new product"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -751,7 +751,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+            Assert.Equal(201, result.StatusCode);
 
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
@@ -779,7 +779,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(404, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -818,8 +818,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to update product", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to update product"], result.Errors);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -867,7 +867,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
 
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
@@ -888,7 +888,7 @@ namespace InventoryManagement.API.Tests.Services
             //assert
 
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(404, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -920,7 +920,7 @@ namespace InventoryManagement.API.Tests.Services
             //assert
 
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+            Assert.Equal(500, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -961,7 +961,7 @@ namespace InventoryManagement.API.Tests.Services
             //assert
 
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+            Assert.Equal(204, result.StatusCode);
 
             _auditServiceMock.Verify(
                 s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),

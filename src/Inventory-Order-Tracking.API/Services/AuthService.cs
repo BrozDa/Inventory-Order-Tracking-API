@@ -102,7 +102,7 @@ namespace Inventory_Order_Tracking.API.Services
                     logger.LogWarning("[AuthService][LoginAsync] Unverified user login: {Username}", request.Username);
                     return ServiceResult<TokenResponseDto>.Failure(
                         errors: ["User not verified"],
-                        statusCode: 401);
+                        statusCode: 400);
                 }
 
                 TokenResponseDto tokenResponse = await GenerateTokenResponse(user);

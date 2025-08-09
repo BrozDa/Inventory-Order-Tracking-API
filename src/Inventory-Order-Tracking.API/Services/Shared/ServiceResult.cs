@@ -29,11 +29,13 @@ namespace Inventory_Order_Tracking.API.Services.Shared
         {
             return new ServiceResult<T>
             {
-                IsSuccessful = true,
+                IsSuccessful = false,
                 StatusCode = statusCode,
                 Errors = errors,
                 Data = data
             };
         }
+
+
     }
 }

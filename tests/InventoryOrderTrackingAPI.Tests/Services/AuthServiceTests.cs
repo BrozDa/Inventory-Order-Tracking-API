@@ -53,8 +53,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("User Already Exists", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        Assert.Equal(["User with same name already exists"], result.Errors);
+        Assert.Equal(400, result.StatusCode);
 
         _loggerMock.Verify(
         x => x.Log(
@@ -89,8 +89,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("Password cannot be empty", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        Assert.Equal(["Password cannot be empty"], result.Errors);
+        Assert.Equal(400, result.StatusCode);
 
         _auditServiceMock.Verify(
             s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
@@ -98,7 +98,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task Register_DbFailure_ReturnsBadRequestAndLogsError()
+    public async Task Register_DbFailure_ReturnsInternalServerErrorAndLogsError()
     {
         //arrange
         var request = new UserRegistrationDto
@@ -117,8 +117,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("A database error occured during processing the request", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+        Assert.Equal(["An Unexpected error occured during processing the request"], result.Errors);
+        Assert.Equal(500, result.StatusCode);
 
         _auditServiceMock.Verify(
             s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
@@ -145,8 +145,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("An Unexpected error occured during processing the request", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+        Assert.Equal(["An Unexpected error occured during processing the request"], result.Errors);
+        Assert.Equal(500, result.StatusCode);
 
         _loggerMock.Verify(
         x => x.Log(
@@ -180,8 +180,8 @@ public class AuthServiceTests
         var result = await _sut.RegisterAsync(request);
         //assert
         Assert.True(result.IsSuccessful);
-        Assert.Equal("Registration successful. Please verify your email to activate your account.", result.Data);
-        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        Assert.Equal("Registration successful. Please verify your email to activate your account.", result.Message);
+        Assert.Equal(200, result.StatusCode);
 
         _auditServiceMock.Verify(
             s => s.AddNewLogAsync(It.IsAny<AuditLogAddDto>()),
@@ -207,8 +207,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("Invalid username or password", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        Assert.Equal(["Invalid username or password"], result.Errors);
+        Assert.Equal(400, result.StatusCode);
 
         _loggerMock.Verify(
         x => x.Log(
@@ -250,8 +250,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("Invalid username or password", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        Assert.Equal(["Invalid username or password"], result.Errors);
+        Assert.Equal(400, result.StatusCode);
 
         _loggerMock.Verify(
         x => x.Log(
@@ -293,8 +293,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("Invalid username or password", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        Assert.Equal(["Invalid username or password"], result.Errors);
+        Assert.Equal(400, result.StatusCode);
 
         _loggerMock.Verify(
         x => x.Log(
@@ -336,8 +336,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("User not verified", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        Assert.Equal(["User not verified"], result.Errors);
+        Assert.Equal(400, result.StatusCode);
 
         _loggerMock.Verify(
         x => x.Log(
@@ -379,8 +379,8 @@ public class AuthServiceTests
 
         //assert
         Assert.False(result.IsSuccessful);
-        Assert.Equal("An Unexpected error occured during processing the request", result.ErrorMessage);
-        Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+        Assert.Equal(["An Unexpected error occured during processing the request"], result.Errors);
+        Assert.Equal(500, result.StatusCode);
 
         _loggerMock.Verify(
         x => x.Log(
@@ -394,7 +394,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task RefreshTokens_InvalidUserId_ReturnUnauthorized()
+    public async Task RefreshTokens_InvalidUserId_ReturnsBadRequest()
     {
         var userId = Guid.NewGuid();
         var expiredToken = "ThisIsExpiredRefreshToken";
@@ -409,11 +409,11 @@ public class AuthServiceTests
         var result = await _sut.RefreshTokens(request);
 
         Assert.False(result.IsSuccessful);
-        Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+        Assert.Equal(400, result.StatusCode);
     }
 
     [Fact]
-    public async Task RefreshTokens_RefreshTokensDontMatch_ReturnsUnauthorized()
+    public async Task RefreshTokens_RefreshTokensDontMatch_ReturnsBadRequest()
     {
         var userId = Guid.NewGuid();
         var expiredToken = "ThisIsExpiredRefreshToken";
@@ -441,11 +441,11 @@ public class AuthServiceTests
         var result = await _sut.RefreshTokens(request);
 
         Assert.False(result.IsSuccessful);
-        Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+        Assert.Equal(400, result.StatusCode);
     }
 
     [Fact]
-    public async Task RefreshTokens_RefreshTokenExpired_ReturnsUnauthorized()
+    public async Task RefreshTokens_RefreshTokenExpired_ReturnsBadRequest()
     {
         var userId = Guid.NewGuid();
         var expiredToken = "ThisIsExpiredRefreshToken";
@@ -473,7 +473,7 @@ public class AuthServiceTests
         var result = await _sut.RefreshTokens(request);
 
         Assert.False(result.IsSuccessful);
-        Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+        Assert.Equal(400, result.StatusCode);
     }
 
     [Fact]
@@ -505,6 +505,6 @@ public class AuthServiceTests
         var result = await _sut.RefreshTokens(request);
 
         Assert.True(result.IsSuccessful);
-        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        Assert.Equal(200, result.StatusCode);
     }
 }

@@ -64,8 +64,8 @@ namespace InventoryManagement.API.Tests.Services
             var result = await _sut.SendVerificationEmailAsync(user);
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Could not store email verification token.", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Could not store email verification token."], result.Errors);
         }
 
         [Fact]
@@ -113,8 +113,8 @@ namespace InventoryManagement.API.Tests.Services
             var result = await _sut.SendVerificationEmailAsync(user);
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Failed to sent verification email", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Failed to sent verification email"], result.Errors);
         }
 
         [Fact]
@@ -163,8 +163,8 @@ namespace InventoryManagement.API.Tests.Services
             var result = await _sut.SendVerificationEmailAsync(user);
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            Assert.Equal("Unhandled error occurred", result.ErrorMessage);
+            Assert.Equal(500, result.StatusCode);
+            Assert.Equal(["Unhandled error occurred"], result.Errors);
         }
 
         [Fact]
@@ -214,11 +214,11 @@ namespace InventoryManagement.API.Tests.Services
             var result = await _sut.SendVerificationEmailAsync(user);
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]
-        public async Task VerifyEmail_InvalidToken_ReturnsUnauthorizedAndLogs()
+        public async Task VerifyEmail_InvalidToken_ReturnsBadRequestAndLogs()
         {//reponse text ["Invalid Token received"]
             //arrange
             var id = Guid.NewGuid();
@@ -228,8 +228,8 @@ namespace InventoryManagement.API.Tests.Services
             //assert
 
             Assert.False(result.IsSuccessful);
-            Assert.Equal("Invalid Token received", result.ErrorMessage);
-            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+            Assert.Equal(["Invalid Token received"], result.Errors);
+            Assert.Equal(400, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -242,7 +242,7 @@ namespace InventoryManagement.API.Tests.Services
         }
 
         [Fact]
-        public async Task VerifyEmail_TokenExpired_ReturnsUnauthorizedAndLogs()
+        public async Task VerifyEmail_TokenExpired_ReturnsBadRequestAndLogs()
         {//reponse text ["Verification link expired"]
          //arrange
             var id = Guid.NewGuid();
@@ -274,8 +274,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal("Verification link expired", result.ErrorMessage);
-            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+            Assert.Equal(["Verification link expired"], result.Errors);
+            Assert.Equal(400, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -288,7 +288,7 @@ namespace InventoryManagement.API.Tests.Services
         }
 
         [Fact]
-        public async Task VerifyEmail_UserAlreadyVerified_ReturnsUnauthorizedAndLogs()
+        public async Task VerifyEmail_UserAlreadyVerified_ReturnsBadRequestAndLogs()
         {//reponse text ["User already verified"]
             //arrange
             var id = Guid.NewGuid();
@@ -320,8 +320,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal("User already verified", result.ErrorMessage);
-            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+            Assert.Equal(["User already verified"], result.Errors);
+            Assert.Equal(400, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -353,8 +353,8 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.False(result.IsSuccessful);
-            Assert.Equal("Unhandled error occurred", result.ErrorMessage);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+            Assert.Equal(["Unhandled error occurred"], result.Errors);
+            Assert.Equal(500, result.StatusCode);
 
             _loggerMock.Verify(
                 x => x.Log(
@@ -400,7 +400,7 @@ namespace InventoryManagement.API.Tests.Services
 
             //assert
             Assert.True(result.IsSuccessful);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
         }
     }
 }
