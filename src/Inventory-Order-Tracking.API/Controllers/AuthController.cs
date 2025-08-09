@@ -11,6 +11,7 @@ namespace Inventory_Order_Tracking.API.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class AuthController(
         RegisterRequestValidator validator,
         IAuthService authService,
@@ -21,9 +22,10 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// <summary>
         /// Registers new user and sends verification email.
         /// </summary>
-        /// <param name="request">An username and password of the new user 
-        /// <response code="200">Success message.</response>
-        /// <response code="400">List of errors encountered during validation.</response>
+        /// <param name="request">An username and password of the new user </param>
+        /// <returns>A service result containing the success message in data field.</returns>
+        /// <response code="200">User successfully registered.</response>
+        /// <response code="400">Errors encountered during validation.</response>
         /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegistrationDto request)
@@ -48,12 +50,12 @@ namespace Inventory_Order_Tracking.API.Controllers
         }
 
         /// <summary>
-        /// Perform login of an user.
+        /// Perform login of an user and responds with JTW and refresh tokens.
         /// </summary>
-        /// <param name="request">An username and password of existing user 
-        /// </param>
-        /// <response code="200">A JWT and refresh token</response>
-        /// <response code="400">List of errors encountered during validation.</response>
+        /// <param name="request">An username and password of existing user </param>
+        /// <returns>A service result containing JTW and refresh tokens in data field.</returns>
+        /// <response code="200">User successfully logged-in.</response>
+        /// <response code="400">Errors encountered during validation.</response>
         /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto request)
@@ -66,10 +68,10 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// <summary>
         /// Perform email verification of an user.
         /// </summary>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> on success.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <returns>A service result containing the verification success message.</returns>
+        /// <response code="200">Email (User) successfuly validated</response>
+        /// <response code="400">Errors encountered during validation.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpGet("user/verify/{tokenId:guid}")]
         public async Task<IActionResult> Verify(Guid tokenId)
         {

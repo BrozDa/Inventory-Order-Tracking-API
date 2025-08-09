@@ -11,20 +11,21 @@ namespace Inventory_Order_Tracking.API.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class OrderController(
         ICurrentUserService userService,
         IOrderService orderService) : ControllerBase
     {
+
         /// <summary>
         /// Submits new order for an user.
         /// </summary>
-        /// <param name="orderDto">An <see cref="OrderCreateDto"/> containing list of <see cref="OrderItemDto"/>
-        /// representing ordered items
-        /// </param>
-        /// <returns>
-        /// An Created <see cref="IActionResult"/> containing information about submitted order on success.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <param name="orderDto">A list of of ordered items and quantities </param>
+        /// <returns>A service result containing information about submitted order  in data field.</returns>
+        /// <response code="201">Order successfully submitted.</response>
+        /// <response code="400">Errors encountered during validation.</response>
+        /// <response code="401">Invalid JWT token.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> PlaceOrder([FromBody] OrderCreateDto orderDto)
@@ -37,16 +38,17 @@ namespace Inventory_Order_Tracking.API.Controllers
 
             return StatusCode(serviceResult.StatusCode, serviceResult);
         }
-
         /// <summary>
         /// Retrieves specified order for the user.
         /// </summary>
-        /// <param name="orderId">An <see cref="Guid"/> or order to be retrieved
-        /// </param>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> containing information requested order on success.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <param name="orderId">An Id of order to be retrieved </param>
+        /// <returns>A service result containing retrieved order in data field.</returns>
+        /// <response code="200">Order successfully retrieved..</response>
+        /// <response code="400">Errors encountered during validation.</response>
+        /// <response code="401">Invalid JWT token.</response>
+        /// <response code="403">Order belogs to different user.</response>
+        /// <response code="404">Non existent user or order Id.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpGet("{orderId:guid}")]
         [Authorize]
         public async Task<IActionResult> GetOrderById(Guid orderId)
@@ -66,12 +68,15 @@ namespace Inventory_Order_Tracking.API.Controllers
         }
 
         /// <summary>
-        /// Retrieves specified all orders submitted by the user.
+        /// Retrieves all orders for the user.
         /// </summary>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> containing a list of orders.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <returns>A service result containing retrieved orders in data field.</returns>
+        /// <response code="200">Orders successfully retrieved.</response>
+        /// <response code="400">Errors encountered during validation.</response>
+        /// <response code="401">Invalid JWT token.</response>
+        /// <response code="403">Order belogs to different user.</response>
+        /// <response code="404">Non existent user.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpGet("user/all")]
         [Authorize]
         public async Task<IActionResult> GetOrderHistoryForUser()
@@ -88,12 +93,14 @@ namespace Inventory_Order_Tracking.API.Controllers
         /// <summary>
         /// Cancels specified order submitted by the user.
         /// </summary>
-        /// <param name="orderId">An <see cref="Guid"/> or order to be cancelled
-        /// </param>
-        /// <returns>
-        /// An OK <see cref="IActionResult"/> containing information about cancelled order.
-        /// Returns an appropriate status code and error message on failure.
-        /// </returns>
+        /// <param name="orderId">An id of order to be cancelled </param>
+        /// <returns>A service result containing the cancelled order in data field.</returns>
+        /// <response code="200">Orders successfully cancelled.</response>
+        /// <response code="400">Order not in submitted state.</response>
+        /// <response code="401">Invalid JWT token.</response>
+        /// <response code="403">Order belogs to different user.</response>
+        /// <response code="404">Non existent user or order.</response>
+        /// <response code="500">An unexpected server-side error occurred.</response>
         [HttpPatch("{orderId:guid}/cancel")]
         [Authorize]
         public async Task<IActionResult> CancelOrder(Guid orderId)
