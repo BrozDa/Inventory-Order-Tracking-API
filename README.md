@@ -55,6 +55,7 @@ Designed to practice API design with authentication, logging, error handling, an
   - PaperCut SMTP - for email tests
 
 ## Areas for Improvement:
+  - Add integration tests
   - Add functionality to re-send verification emails
   - Add background tasks to clear non-verified user and expired email validation tokens
   - Implement product search & filtering
