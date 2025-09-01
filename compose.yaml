@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    volumes:
+      - inventory-dbdata:/var/opt/mssql:rw
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=MySecretP4ssword!!##
+    networks:
+      - inventory-net
+
+  api:
+    build: ./
+    depends_on:
+      - db
+    ports:
+      - "7024:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=Inventory;User Id=sa;Password=MySecretP4ssword!!##;TrustServerCertificate=True;
+    networks:
+      - inventory-net
+
+  papercut:
+    image: changemakerstudiosus/papercut-smtp:latest
+    depends_on:
+      - api
+    ports:
+      - 8080:80
+      - 25:25
+    networks:
+      - inventory-net
+
+volumes:
+  inventory-dbdata:
+
+networks:
+  inventory-net:

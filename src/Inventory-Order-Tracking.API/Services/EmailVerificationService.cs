@@ -125,7 +125,7 @@ namespace Inventory_Order_Tracking.API.Services
             if (httpContext is null)
             {
                 logger.LogError("HttpContext null when trying to generate email verification link");
-                return $"https://localhost:7296/api/auth/user/verify/{token.Id}";
+                return $"https://localhost:7024/api/auth/user/verify/{token.Id}";
             }
 
             var uri = linkGenerator.GetUriByAction(

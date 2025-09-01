@@ -11,7 +11,6 @@
         /// <param name="app">The <see cref="WebApplication"/> instance to extend.</param>
         public static void AddMiddleware(this WebApplication app)
         {
-            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();

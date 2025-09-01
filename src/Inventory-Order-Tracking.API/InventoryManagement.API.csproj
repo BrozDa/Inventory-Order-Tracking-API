@@ -6,6 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Inventory_Order_Tracking.API</RootNamespace>
 	 <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	 <UserSecretsId>e2e2c565-9a02-4b4d-95ae-9d5ba06720f6</UserSecretsId>
+	 <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	 <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +25,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
