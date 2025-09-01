@@ -53,7 +53,23 @@ Designed to practice API design with authentication, logging, error handling, an
 ## Tools used
   - Postman - for endpoints tests
   - PaperCut SMTP - for email tests
+## Running the app within a docker container
+### Prerequisites:
+- [Docker Desktop](https://docs.docker.com/desktop/) (includes Docker Engine, CLI, and Compose)
+- Alternatively  which includes all 3 components
 
+### Run the app:
+```sh
+docker compose up --build
+```
+  **Which**: 
+  1. Starts a SQL Server 2022 instance
+  2. Build and start the Inventory-Management.API
+  3. Starts Papercut SMTP server and email viewer
+    
+### Accessing components:
+  - API → http://localhost:7024
+  - Papercut GUI → http://localhost:8080
 ## Areas for Improvement:
   - Add integration tests
   - Add functionality to re-send verification emails
